@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopify-like Minimalist Design</title>
+    <title>Інтер</title>
     <style>
         body {
             margin: 0;
@@ -39,29 +39,26 @@
             text-decoration: underline;
         }
 
-        .hero-section,
         .promo-section {
             position: relative;
             width: 100%;
-            height: 450px;
+            height: 300px;
             background-color: #f4f4f4;
             text-align: center;
             margin: 0 auto;
         }
 
-        .hero-section img,
         .promo-section img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        .hero-content,
         .promo-content {
             position: absolute;
             top: 50%;
-            left: 50%;
-            transform: translate(-40%, -40%);
+            left: 70%;
+            transform: translate(-50%, -50%);
             color: #ffffff;
             background-color: rgba(0, 0, 0, 0.6);
             padding: 20px;
@@ -69,17 +66,14 @@
             text-align: center;
         }
 
-        .hero-content button,
         .promo-content button {
             padding: 10px 20px;
-            background-color: #333333;
+            background-color: #ffffff;
             border: none;
-            color: white;
+            color: #333333;
             cursor: pointer;
             border-radius: 4px;
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
+            margin-top: 20px;
         }
 
         .content {
@@ -195,6 +189,10 @@
         .footer ul li a:hover {
             text-decoration: underline;
         }
+
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 
@@ -211,19 +209,10 @@
     </nav>
 </header>
 
-<div class="hero-section">
-    <img src="path/to/your/hero-image.jpg" alt="Hero Image">
-    <div class="hero-content">
-        <h1>Hero Title</h1>
-        <p>Some introductory text</p>
-        <button>Детальніше</button>
-    </div>
-</div>
-
 <div style="height: 100px;"></div>
 
 <div class="content">
-    <h2>Categories</h2>
+    <h2>Категорії</h2>
     <div class="categories">
         <div class="category" th:each="category : ${categoriesList}">
             <img th:src="${category.imageURL}" alt="Category Image">
@@ -232,10 +221,10 @@
     </div>
 </div>
 
-<div style="height: 190px;"></div>
+<div style="height: 100px;"></div>
 
 <div class="promo-section">
-    <img src="path/to/your/promo-image.jpg" alt="Promo Image">
+    <img src="/images/Screenshot%202024-12-31%20at%2003.40.21.png" alt="Promo Image">
     <div class="promo-content">
         <h1>Promo Title</h1>
         <p>Some promotional text</p>
@@ -246,15 +235,15 @@
 <div style="height: 100px;"></div>
 
 <div class="content">
-    <h2>Most Popular Items</h2>
+    <h2>Найпопулярніше</h2>
     <div style="height: 50px;"></div>
     <div class="popular-items">
-        <div class="item" th:each="item : ${popularItemsList}">
+        <div class="item" th:each="item : ${categoriesList}">
             <img th:src="${item.imageURL}" alt="Item Image">
             <h3 th:text="${item.name}">Item Name</h3>
         </div>
     </div>
-    <button class="load-more">Load more products</button>
+    <button class="load-more" onclick="showMoreItems()">Load more products</button>
 </div>
 
 <div style="height: 120px;"></div>
@@ -296,6 +285,16 @@
         </ul>
     </div>
 </footer>
+
+<script>
+    function showMoreItems() {
+        const hiddenItems = document.querySelectorAll('.popular-items .item.hidden');
+        hiddenItems.forEach(item => {
+            item.classList.remove('hidden');
+        });
+        document.querySelector('.load-more').style.display = 'none';
+    }
+</script>
 </body>
 
 </html>
