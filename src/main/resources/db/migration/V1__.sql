@@ -39,6 +39,7 @@ CREATE TABLE products
 (
     id             BIGINT AUTO_INCREMENT NOT NULL,
     category_id    BIGINT       NOT NULL,
+    subcategory_id BIGINT       NOT NULL,
     name           VARCHAR(255) NOT NULL,
     `description`  TEXT NULL,
     color          VARCHAR(255) NULL,
@@ -69,6 +70,9 @@ ALTER TABLE order_items
 
 ALTER TABLE products
     ADD CONSTRAINT FK_PRODUCTS_ON_CATEGORY FOREIGN KEY (category_id) REFERENCES categories (id);
+
+ALTER TABLE products
+    ADD CONSTRAINT FK_PRODUCTS_ON_SUBCATEGORY FOREIGN KEY (subcategory_id) REFERENCES subcategories (id);
 
 ALTER TABLE subcategories
     ADD CONSTRAINT FK_SUBCATEGORIES_ON_CATEGORY FOREIGN KEY (category_id) REFERENCES categories (id);

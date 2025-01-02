@@ -215,11 +215,18 @@
     <h2>Категорії</h2>
     <div class="categories">
         <div class="category" th:each="category : ${categoriesList}">
-            <img th:src="${category.imageURL}" alt="Category Image">
-            <h3 th:text="${category.name}">Category Name</h3>
+            <!-- Ссылка оборачивает изображение -->
+            <a th:href="@{/category/{id}(id=${category.id})}">
+                <img th:src="${category.imageURL}" alt="Category Image">
+            </a>
+            <!-- Ссылка для текста -->
+            <a th:href="@{/category/{id}(id=${category.id})}">
+                <h3 th:text="${category.name}">Category Name</h3>
+            </a>
         </div>
     </div>
 </div>
+
 
 <div style="height: 100px;"></div>
 

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products with Sidebar</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #ffffff;
+            color: #333333;
+        }
+
+        .header {
+            background-color: #333333;
+            height: 100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .header a {
+            color: #ffffff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .header a:hover {
+            text-decoration: underline;
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex: 1;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #f8f8f8;
+            padding: 20px;
+            border-right: 1px solid #eaeaea;
+            box-sizing: border-box;
+        }
+
+        .sidebar h3 {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: #333333;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .filter-category, .filter-color, .filter-price {
+            margin-bottom: 20px;
+        }
+
+        .filter-category ul, .filter-price ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .filter-category ul li, .filter-price ul li {
+            margin: 10px 0;
+        }
+
+        .filter-category ul li a {
+            text-decoration: none;
+            color: #333333;
+        }
+
+        .filter-category ul li a:hover {
+            color: #007bff;
+        }
+
+        .filter-color .color-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .filter-color .color-option {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            transition: transform 0.2s;
+        }
+
+        .filter-color .color-option:hover {
+            transform: scale(1.2);
+            border-color: #007bff;
+        }
+
+        .filter-price ul li input {
+            margin-right: 8px;
+        }
+
+        .content {
+            flex: 1;
+            padding: 40px 20px;
+        }
+
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin: 0 -18px;
+        }
+
+        .category {
+            background-color: #ffffff;
+            border: 1px solid #eaeaea;
+            border-radius: 8px;
+            margin: 18px;
+            padding: 0;
+            width: calc(25% - 36px);
+            box-sizing: border-box;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .category:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .category img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .category h3 {
+            padding: 10px;
+            font-size: 1.2em;
+            margin: 0;
+            color: #333333;
+            background-color: #ffffff;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+<header class="header">
+    <div class="logo">
+        <a href="/">My Website</a>
+    </div>
+    <nav>
+        <a href="/link1">Link 1</a>
+        <a href="/link2">Link 2</a>
+        <a href="/link3">Link 3</a>
+        <a href="/link4">Link 4</a>
+    </nav>
+</header>
+
+<div class="content-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="filter-category">
+            <h3>Підкатегорії</h3>
+            <ul>
+                <li th:each="subcategory : ${subcategories}">
+                    <a th:href="@{/subcategory/{id}(id=${subcategory.id})}" th:text="${subcategory.name}">Матраци</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="filter-color">
+            <h3>Цвет</h3>
+            <div class="color-options">
+                <div class="color-option" style="background-color: red;"></div>
+                <div class="color-option" style="background-color: green;"></div>
+                <div class="color-option" style="background-color: blue;"></div>
+                <!-- Add more color options -->
+            </div>
+        </div>
+
+        <div class="filter-price">
+            <h3>Цена</h3>
+            <ul>
+                <li>
+                    <input type="checkbox" id="price1" name="price" value="0-2000">
+                    <label for="price1">0 - 2000₴</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="price2" name="price" value="2000-4000">
+                    <label for="price2">2000 - 4000₴</label>
+                </li>
+                <!-- Add more price ranges -->
+            </ul>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="content">
+        <h2 th:text="${categoryName}">Category Name</h2>
+        <div class="categories">
+            <div class="category" th:each="product : ${productList}">
+                <a th:href="@{/product/{id}(id=${product.id})}">
+                    <img th:src="${product.imageUrl}" alt="Category Image">
+                </a>
+                <a th:href="@{/product/{id}(id=${product.id})}">
+                    <h3 th:text="${product.name}">Product Name</h3>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>
