@@ -31,10 +31,13 @@ public class ProductController {
 
     @GetMapping("category/{id}")
         public String getAllProductsFromCategory(@PathVariable Long id, Model model) {
-            List<Product> productsList = productService.findAllByCategoryId(id);
-            model.addAttribute("productList",productsList);
 
 
+        List<Product> productsList = productService.findAllByCategoryId(id);
+        model.addAttribute("productList",productsList);
+
+        String categoryName = productsList.get(0).getCategory().getName();
+        model.addAttribute("categoryName",categoryName);
 
         List<String> priceRanges = Arrays.asList("0-2000", "2000-4000", "4000-6000");
         model.addAttribute("priceRanges", priceRanges);
