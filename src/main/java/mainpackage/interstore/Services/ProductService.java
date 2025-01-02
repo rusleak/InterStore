@@ -34,7 +34,7 @@ public class ProductService {
     }
     public List<Long> findMinAndMaxPrice(List<Product> productList) {
         if (productList == null || productList.isEmpty()) {
-            throw new IllegalArgumentException("Subcategory list cannot be null or empty");
+            throw new IllegalArgumentException("Products list cannot be null or empty");
         }
 
         long minPrice = Long.MAX_VALUE;
