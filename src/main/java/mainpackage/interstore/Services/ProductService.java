@@ -44,7 +44,7 @@ public class ProductService {
             BigDecimal price = product.getPrice();
             Long priceLong = price.toBigInteger().longValue();
             if (priceLong < minPrice) {
-                minPrice = priceLong+1;
+                minPrice = priceLong;
             }
             if (priceLong > maxPrice) {
                 maxPrice = priceLong+1;
