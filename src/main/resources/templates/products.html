@@ -60,17 +60,21 @@
             padding-bottom: 5px;
         }
 
-        .filter-category, .filter-color, .filter-price {
+        .filter-category,
+        .filter-color,
+        .filter-price {
             margin-bottom: 20px;
         }
 
-        .filter-category ul, .filter-price ul {
+        .filter-category ul,
+        .filter-price ul {
             list-style: none;
             padding: 0;
             margin: 0;
         }
 
-        .filter-category ul li, .filter-price ul li {
+        .filter-category ul li,
+        .filter-price ul li {
             margin: 10px 0;
         }
 
@@ -101,10 +105,6 @@
         .filter-color .color-option:hover {
             transform: scale(1.2);
             border-color: #007bff;
-        }
-
-        .filter-price ul li input {
-            margin-right: 8px;
         }
 
         .content {
@@ -150,6 +150,26 @@
             background-color: #ffffff;
             text-align: center;
         }
+
+        .price-inputs {
+            display: flex;
+            flex-direction: column;
+            margin-top: 10px;
+        }
+
+        .price-inputs label {
+            margin-right: 10px;
+        }
+
+        .price-inputs input[type="number"] {
+            width: 100%;
+            margin: 5px 0;
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -184,23 +204,22 @@
                 <div class="color-option" style="background-color: red;"></div>
                 <div class="color-option" style="background-color: green;"></div>
                 <div class="color-option" style="background-color: blue;"></div>
-                <!-- Add more color options -->
             </div>
         </div>
 
         <div class="filter-price">
             <h3>Цена</h3>
-            <ul>
-                <li>
-                    <input type="checkbox" id="price1" name="price" value="0-2000">
-                    <label for="price1">0 - 2000₴</label>
-                </li>
-                <li>
-                    <input type="checkbox" id="price2" name="price" value="2000-4000">
-                    <label for="price2">2000 - 4000₴</label>
-                </li>
-                <!-- Add more price ranges -->
-            </ul>
+            <div class="price-inputs">
+                <div>
+                    <label for="minPrice">Від:</label>
+                    <input type="number" id="minPrice" th:value="${userMinPrice}" placeholder="Минимум" min="0" step="100" />
+                </div>
+                <div>
+                    <label for="maxPrice">До:</label>
+                    <input type="number" id="maxPrice" th:value="${userMaxPrice}" placeholder="Максимум" min="0" step="100" />
+                </div>
+            </div>
+            <button onclick="applyPriceFilter()">Застосувати</button>
         </div>
     </aside>
 
@@ -219,6 +238,20 @@
         </div>
     </div>
 </div>
+
+<script>
+    const minPriceInput = document.getElementById('minPrice');
+    const maxPriceInput = document.getElementById('maxPrice');
+
+    // Применить фильтр
+    function applyPriceFilter() {
+        const url = new URL(window.location.href);
+        url.searchParams.set('minPrice', minPriceInput.value);
+        url.searchParams.set('maxPrice', maxPriceInput.value);
+        window.location.href = url.toString();
+    }
+</script>
+
 </body>
 
 </html>

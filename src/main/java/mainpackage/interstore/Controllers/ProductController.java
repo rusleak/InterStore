@@ -36,8 +36,13 @@ public class ProductController {
         List<Product> productsList = productService.findAllByCategoryId(id);
         model.addAttribute("productList",productsList);
 
-        String categoryName = productsList.get(0).getCategory().getName();
-        model.addAttribute("categoryName",categoryName);
+        if (!productsList.isEmpty()){
+            String categoryName = productsList.get(0).getCategory().getName();
+            model.addAttribute("categoryName",categoryName);
+        } else {
+            String categoryName = "В цій категорії немає товарів";
+            model.addAttribute("categoryName",categoryName);
+        }
 
         List<String> priceRanges = Arrays.asList("0-2000", "2000-4000", "4000-6000");
         model.addAttribute("priceRanges", priceRanges);

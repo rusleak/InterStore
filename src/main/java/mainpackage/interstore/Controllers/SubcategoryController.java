@@ -72,11 +72,15 @@ public class SubcategoryController {
             List<String> colors = Arrays.asList("red", "green", "blue");
             model.addAttribute("colors", colors);
 
-            // Price ranges
-            List<Long> minMaxPrice = productService.findMinAndMaxPrice(productList);
-            System.out.println(minMaxPrice.toString());
-            model.addAttribute("minPriceFromCategory", minMaxPrice.get(0));
-            model.addAttribute("maxPriceFromCategory", minMaxPrice.get(1));
+            if(!productList.isEmpty()){
+                // Price ranges
+                List<Long> minMaxPrice = productService.findMinAndMaxPrice(productList);
+                model.addAttribute("minPriceFromCategory", minMaxPrice.get(0));
+                model.addAttribute("maxPriceFromCategory", minMaxPrice.get(1));
+                model.addAttribute("userMinPrice", minPrice != null ? minPrice : minMaxPrice.get(0));
+                model.addAttribute("userMaxPrice", maxPrice != null ? maxPrice : minMaxPrice.get(1));
+            }
+
         }
         return "products";
     }
