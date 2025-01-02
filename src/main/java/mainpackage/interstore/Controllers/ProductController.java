@@ -44,10 +44,6 @@ public class ProductController {
             model.addAttribute("categoryName",categoryName);
         }
 
-        List<String> priceRanges = Arrays.asList("0-2000", "2000-4000", "4000-6000");
-        model.addAttribute("priceRanges", priceRanges);
-
-
         List<Subcategory> subcategories = subcategoryService.getSubcategoriesByCategoryId(id);
         model.addAttribute("subcategories", subcategories);
 

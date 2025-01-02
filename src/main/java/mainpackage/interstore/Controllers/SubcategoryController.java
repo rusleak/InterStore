@@ -43,7 +43,7 @@ public class SubcategoryController {
 
             //Всі должен быть с id 0 в бд обящзательно
             List<Product> productList;
-            if (currentSubcategory.getName().equals("Всі") || currentSubcategory.getId() == 0){
+            if (currentSubcategory.getName().equals("Всі")){
                 productList = productService.findAll();
             } else {
                 productList = productService.findAllBySubcategoryId(id);
