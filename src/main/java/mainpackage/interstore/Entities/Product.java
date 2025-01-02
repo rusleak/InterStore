@@ -35,6 +35,7 @@ public class Product {
 
     private String color;
 
+    @Column(precision = 10, scale = 2)
     private BigDecimal price;
 
     private Boolean discounted;

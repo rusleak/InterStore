@@ -50,6 +50,11 @@ public class SubcategoryController {
             model.addAttribute("colors", colors);
 
             // Диапазоны цен
+           List<Long> minMaxPrice = productService.findMinAndMaxPrice(productList);
+           Long minPriceFromCategory = minMaxPrice.get(0);
+           Long maxPriceFromCategory = minMaxPrice.get(1);
+           model.addAttribute(minPriceFromCategory);
+           model.addAttribute(maxPriceFromCategory);
         }
 
 

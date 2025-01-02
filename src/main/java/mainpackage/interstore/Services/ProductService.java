@@ -1,11 +1,16 @@
 package mainpackage.interstore.Services;
 
 import mainpackage.interstore.Entities.Product;
+import mainpackage.interstore.Entities.Subcategory;
 import mainpackage.interstore.Repositories.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Array;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -26,5 +31,30 @@ public class ProductService {
 
     public List<Product> findAllBySubcategoryId(Long id) {
         return productRepo.findAllBySubcategoryId(id);
+    }
+    public List<Long> findMinAndMaxPrice(List<Product> productList) {
+        if (productList == null || productList.isEmpty()) {
+            throw new IllegalArgumentException("Subcategory list cannot be null or empty");
+        }
+
+        long minPrice = Long.MAX_VALUE;
+        long maxPrice = Long.MIN_VALUE;
+
+        for (Product product : productList) {
+            BigDecimal price = product.getPrice();
+            Long priceLong = price.toBigInteger().longValue();
+            if (priceLong < minPrice) {
+                minPrice = priceLong+1;
+            }
+            if (priceLong > maxPrice) {
+                maxPrice = priceLong+1;
+            }
+        }
+
+        List<Long> result = new ArrayList<>();
+        result.add(minPrice);
+        result.add(maxPrice);
+
+        return result;
     }
 }

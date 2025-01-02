@@ -1,11 +1,13 @@
 package mainpackage.interstore.Services;
 
+import mainpackage.interstore.Entities.Product;
 import mainpackage.interstore.Entities.Subcategory;
 import mainpackage.interstore.Repositories.SubcategoryRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,4 +27,6 @@ public class SubcategoryService {
     public Optional<Subcategory> findById(Long id) {
         return subcategoryRepo.findById(id);
     }
+
+
 }
