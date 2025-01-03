@@ -52,8 +52,8 @@ public class Product {
 
     @ManyToMany
     @JoinTable(name = "product_color",
-            joinColumns = @JoinColumn(name = "color_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id"))
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "color_id"))
     private List<Color> colors;
 
 }

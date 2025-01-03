@@ -15,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "colors")
 public class Color {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,5 +32,4 @@ public class Color {
         joinColumns = @JoinColumn(name = "color_id"),
         inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> products;
-
 }

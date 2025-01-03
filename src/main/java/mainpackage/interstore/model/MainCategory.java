@@ -28,5 +28,4 @@ public class MainCategory {
 
     @OneToMany(mappedBy = "mainCategory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Subcategory> subCategories = new ArrayList<>();
-
 }
