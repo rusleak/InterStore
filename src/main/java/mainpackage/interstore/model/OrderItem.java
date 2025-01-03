@@ -1,24 +1,17 @@
-package mainpackage.interstore.Entities;
+package mainpackage.interstore.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
 @Entity
-@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "order_items")
 public class OrderItem {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    //TODO embeeded ID
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
@@ -28,10 +21,8 @@ public class OrderItem {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    private Integer quantity;
+    @Column(name = "quantity_ordered")
+    private Integer quantityOrdered;
 
-    private BigDecimal price;
-
-    // Getters and Setters
 }
 
