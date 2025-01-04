@@ -2,7 +2,6 @@ package mainpackage.interstore.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -22,17 +21,17 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Pattern(regexp = "[A-Z][a-z]+", message = "Must start from capital letter")
-    @NotBlank
+    @Column(name = "name", nullable = false)
     private String name;
 
     @NotBlank
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(precision = 8, scale = 2, nullable = false)
+    @Column(name = "price", precision = 8, scale = 2, nullable = false)
     private BigDecimal price;
 
+    @Column(name = "discount")
     private Integer discount;
 
     @Column(name = "image_url")
@@ -41,6 +40,7 @@ public class Product {
     @Column(name = "stock_quantity", nullable = false)
     private Integer stockQuantity;
 
+    @Column(name = "brand")
     private String brand;
 
     @ManyToOne

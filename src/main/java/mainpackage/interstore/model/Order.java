@@ -5,11 +5,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,17 +21,19 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "full_name", nullable = false) //TODO regexp for full name
+    @Column(name = "full_name", nullable = false)
     private String fullName;
 
-    @Column(nullable = false) //TODO regexp for phone
+    @Column(name = "phone", nullable = false)
     private String phone;
 
     @Email(message = "Email should be valid")
     @NotBlank(message = "Email should not be blank")
+    @Column(name = "email")
     private String email;
 
     @NotBlank(message = "Address should not be blank")
+    @Column(name = "address")
     private String address;
 
     @Column(name = "order_date")

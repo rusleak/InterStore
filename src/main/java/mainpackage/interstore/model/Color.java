@@ -2,7 +2,7 @@ package mainpackage.interstore.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -21,7 +21,8 @@ public class Color {
     private Long id;
 
     @NotBlank(message = "Name cannot be blank")
-    @NotNull
+    @Pattern(regexp = "[A-Z][a-z]+", message = "Must start from capital letter")
+    @Column(name = "name")
     private String name;
 
     @Column(name = "image_url", nullable = false)

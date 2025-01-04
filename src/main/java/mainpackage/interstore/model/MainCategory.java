@@ -1,7 +1,6 @@
 package mainpackage.interstore.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
@@ -20,7 +19,7 @@ public class MainCategory {
     private Long id;
 
     @Pattern(regexp = "[A-Z][a-z]+", message = "Must start from capital letter")
-    @NotBlank
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "image_url", nullable = false)
