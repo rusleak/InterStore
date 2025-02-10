@@ -2,11 +2,16 @@ package mainpackage.interstore.service;
 
 import lombok.RequiredArgsConstructor;
 import mainpackage.interstore.repository.OrderRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class OrderService {
-
     private final OrderRepository orderRepository;
+    @Autowired
+    public OrderService(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+    }
+
+
 }
