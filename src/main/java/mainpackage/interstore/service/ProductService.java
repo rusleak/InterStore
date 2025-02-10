@@ -53,9 +53,9 @@ public class ProductService {
         return products;
     }
 
-    public Map<Subcategory, List<NestedCategory>> getCategoriesFilter(){
+    public Map<Subcategory, List<NestedCategory>> getCategoriesFilter(long id){
         Map<Subcategory, List<NestedCategory>> map = new HashMap<>();
-        List<Subcategory> subcategories = subcategoryService.findAll();
+        List<Subcategory> subcategories = subcategoryService.findAllByMainCategoryId(id);
         for (Subcategory subcategory : subcategories) {
             map.put(subcategory,subcategory.getNestedCategories());
         }

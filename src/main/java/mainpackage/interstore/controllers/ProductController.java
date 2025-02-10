@@ -37,7 +37,7 @@ public class ProductController {
         List<Product> products;
         if (nestedCategoryId !=null) {
             products = productService.getProductsByNestedCategoryId(nestedCategoryId);
-        } else if (subcategoryId != null && nestedCategoryId== null) {
+        } else if (subcategoryId != null) {
             products = productService.getProductsBySubCategoryId(subcategoryId);
         } else {
             products = productService.getProductsByMainCategoryId(id);
@@ -45,7 +45,8 @@ public class ProductController {
         model.addAttribute("productsList", products);
 
         //Filters
-        model.addAttribute("categoryFilters",productService.getCategoriesFilter());
+        Map<Subcategory, List<NestedCategory>> categoryFilters = productService.getCategoriesFilter(id);
+        model.addAttribute("categoryFilters",categoryFilters);
         model.addAttribute("mainCategoryId", id);
 
 

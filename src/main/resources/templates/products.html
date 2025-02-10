@@ -18,10 +18,14 @@
             <h3>Категории</h3>
             <ul>
                 <li th:each="entry : ${categoryFilters}">
-                    <span th:text="${entry.key.name}">Категория</span>
+                    <!-- Отображение подкатегории -->
+                    <a th:href="@{/main-category/{id}(id=${mainCategoryId}, subcategoryId=${entry.key.id})}"
+                       th:text="${entry.key.name}">Подкатегория</a>
                     <ul>
+                        <!-- Вложенные категории -->
                         <li th:each="nestedCategory : ${entry.value}">
-                            <a th:href="@{/main-category/{id}(id=${nestedCategory.getId()})}" th:text="${nestedCategory.getName()}">Подкатегория</a>
+                            <a th:href="@{/main-category/{id}(id=${mainCategoryId}, subcategoryId=${entry.key.id}, nestedCategoryId=${nestedCategory.id})}"
+                               th:text="${nestedCategory.name}">Вложенная категория</a>
                         </li>
                     </ul>
                 </li>
@@ -29,13 +33,14 @@
         </div>
     </div>
 
+
     <!-- Блок с товарами -->
     <div class="products">
         <div class="product" th:each="product : ${productsList}">
-            <a th:href="@{/product/{id}(id=${product.getId()})}">
-                <img th:src="@{/images/{imageName}(imageName=${product.getImageUrl()})}" alt="Product Image">
-                <h3 th:text="${product.getName()}">Product Name</h3>
-                <p th:text="${product.getPrice()}">Product Price</p>
+            <a th:href="@{/product/{id}(id=${product.id})}">
+                <img th:src="@{/images/{imageName}(imageName=${product.imageUrl})}" alt="Product Image">
+                <h3 th:text="${product.name}">Product Name</h3>
+                <p th:text="${product.price}">Product Price</p>
             </a>
         </div>
     </div>

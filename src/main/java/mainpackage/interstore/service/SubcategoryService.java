@@ -24,6 +24,9 @@ public class SubcategoryService {
     public List<Subcategory> findAll() {
         return subcategoryRepository.findAll();
     }
+    public List<Subcategory> findAllByMainCategoryId(long id) {
+        return subcategoryRepository.findAllByMainCategoryId(id);
+    }
 
 
 
