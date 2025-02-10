@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Інтер</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<!-- Включаем header -->
+<div th:replace="~{includes/header :: header}"></div>
+
+<div class="main-content">
+    <!-- Слева блок с фильтрами -->
+    <div class="sidebar">
+        <!-- Фильтры по категориям -->
+        <div class="filter-category">
+            <h3>Категории</h3>
+            <ul>
+                <li th:each="entry : ${categoryFilters}">
+                    <span th:text="${entry.key.name}">Категория</span>
+                    <ul>
+                        <li th:each="nestedCategory : ${entry.value}">
+                            <a th:href="@{/main-category/{id}(id=${nestedCategory.getId()})}" th:text="${nestedCategory.getName()}">Подкатегория</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Блок с товарами -->
+    <div class="products">
+        <div class="product" th:each="product : ${productsList}">
+            <a th:href="@{/product/{id}(id=${product.getId()})}">
+                <img th:src="@{/images/{imageName}(imageName=${product.getImageUrl()})}" alt="Product Image">
+                <h3 th:text="${product.getName()}">Product Name</h3>
+                <p th:text="${product.getPrice()}">Product Price</p>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Включаем footer -->
+<div th:replace="~{includes/footer.html}"></div>
+</body>
+</html>

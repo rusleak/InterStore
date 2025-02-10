@@ -7,6 +7,7 @@ body {
     background-color: #ffffff;
     color: #333333;
 }
+
 .header {
     background-color: #333333;
     height: 100px;
@@ -19,14 +20,17 @@ body {
     z-index: 1000;
     border-bottom: 1px solid #eaeaea;
 }
+
 .header a {
     color: #ffffff;
     text-decoration: none;
     margin: 0 10px;
 }
+
 .header a:hover {
     text-decoration: underline;
 }
+
 .promo-section {
     position: relative;
     width: 100%;
@@ -35,11 +39,13 @@ body {
     text-align: center;
     margin: 0 auto;
 }
+
 .promo-section img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
+
 .promo-content {
     position: absolute;
     top: 50%;
@@ -51,6 +57,7 @@ body {
     border-radius: 8px;
     text-align: center;
 }
+
 .promo-content button {
     padding: 10px 20px;
     background-color: #ffffff;
@@ -60,16 +67,19 @@ body {
     border-radius: 4px;
     margin-top: 20px;
 }
+
 .content {
     flex: 1;
     padding: 40px 20px;
 }
+
 .content h2 {
     text-align: center;
     margin-bottom: 40px;
     font-size: 2em;
     color: #333333;
 }
+
 .categories,
 .popular-items {
     display: flex;
@@ -77,6 +87,7 @@ body {
     justify-content: space-between;
     margin: 0 -18px;
 }
+
 .category,
 .item {
     background-color: #ffffff;
@@ -89,17 +100,20 @@ body {
     overflow: hidden;
     transition: transform 0.3s, box-shadow 0.3s;
 }
+
 .category:hover,
 .item:hover {
     transform: translateY(-10px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
 .category img,
 .item img {
     width: 100%;
     height: auto;
     display: block;
 }
+
 .category h3,
 .item h3 {
     padding: 10px;
@@ -109,6 +123,7 @@ body {
     background-color: #ffffff;
     text-align: center;
 }
+
 .load-more {
     display: block;
     margin: 40px auto;
@@ -119,6 +134,7 @@ body {
     cursor: pointer;
     border-radius: 4px;
 }
+
 .footer {
     background-color: #333333;
     color: #ffffff;
@@ -127,36 +143,126 @@ body {
     padding: 40px 20px;
     border-top: 1px solid #333333;
 }
+
 .footer .section {
     padding: 10px;
 }
+
 .footer .section.contacts {
     flex: 3;
 }
+
 .footer .section.services,
 .footer .section.pages,
 .footer .section.company {
     flex: 2;
 }
+
 .footer h3 {
     border-bottom: 2px solid #ffffff;
     padding-bottom: 10px;
     margin-bottom: 20px;
 }
+
 .footer ul {
     list-style-type: none;
     padding: 0;
 }
+
 .footer ul li {
     margin: 10px 0;
 }
+
 .footer ul li a {
     color: #ffffff;
     text-decoration: none;
 }
+
 .footer ul li a:hover {
     text-decoration: underline;
 }
+
 .hidden {
     display: none;
+}
+
+/* Стили для блока товаров */
+.products {
+    display: grid; /* Используем Grid вместо Flexbox */
+    grid-template-columns: repeat(5, 1fr); /* 5 колонок на больших экранах */
+    gap: 20px; /* Расстояние между товарами */
+    width: 80%;
+}
+
+/* Стили для отдельных товаров */
+.product {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    box-sizing: border-box;
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-align: center;
+}
+
+.product:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.product img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+}
+
+.product h3 {
+    font-size: 1.2em;
+    margin: 10px 0;
+}
+
+.product p {
+    font-size: 1em;
+    color: #666666;
+}
+
+.main-content {
+    display: flex; /* Элементы в строку */
+    align-items: flex-start; /* Выровнять по верхнему краю */
+    gap: 20px; /* Расстояние между блоками */
+    width: 100%;
+}
+
+.sidebar {
+    width: 200px; /* Фиксированная ширина сайдбара */
+    flex-shrink: 0; /* Сайдбар не будет сжиматься */
+    padding-left: 10px;
+}
+
+.products {
+    flex-grow: 1; /* Блок с товарами займет оставшееся пространство */
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    padding-right: 10px;
+}
+
+/* Мобильная версия */
+@media (max-width: 1200px) {
+    .products {
+        grid-template-columns: repeat(4, 1fr); /* 4 колонки на экранах с шириной до 1200px */
+    }
+}
+
+@media (max-width: 900px) {
+    .products {
+        grid-template-columns: repeat(3, 1fr); /* 3 колонки на экранах с шириной до 900px */
+    }
+}
+
+@media (max-width: 600px) {
+    .products {
+        grid-template-columns: 1fr; /* 1 колонка на экранах с шириной до 600px */
+    }
 }
