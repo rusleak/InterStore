@@ -119,4 +119,16 @@ public class ProductService {
         return newProductList;
     }
 
+    public List<Product> filterProductsByColors(List<Product> products, List<Long> colorIds) {
+        if (colorIds == null || colorIds.isEmpty()) {
+            return products; // Если фильтр не выбран – возвращаем все товары
+        }
+
+        return products.stream()
+                .filter(product -> product.getColors().stream()
+                        .anyMatch(color -> colorIds.contains(color.getId())))
+                .toList();
+    }
+
+
 }

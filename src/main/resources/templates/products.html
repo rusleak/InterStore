@@ -47,6 +47,51 @@
             <button type="submit">Фильтровать</button>
         </form>
 
+        <div class="color-filters">
+            <h3>Цвета</h3>
+            <div th:each="color : ${availableColors}" class="color-checkbox">
+                <input type="checkbox" name="colors" th:value="${color.id}" th:id="'color-' + ${color.id}"
+                       th:checked="${selectedColors != null and #lists.contains(selectedColors, color.id)}" />
+                <label th:for="'color-' + ${color.id}"
+                       th:style="'background-image: url(\'/colors_for_products/' + ${color.imageUrl} + '\'); background-size: cover; background-position: center;'">
+                </label>
+            </div>
+        </div>
+
+        <style>
+            .color-checkbox input[type="checkbox"] {
+                display: none; /* Скрыть стандартный чекбокс */
+            }
+
+            .color-checkbox label {
+                width: 30px;
+                height: 30px;
+                display: inline-block;
+                border: 1px solid #000;
+                cursor: pointer;
+                position: relative;
+                background-size: cover;
+                background-position: center;
+            }
+
+            /* Состояние при выбранном чекбоксе */
+            .color-checkbox input[type="checkbox"]:checked + label {
+                border: 2px solid #f50000; /* Для выделения активного цвета */
+            }
+
+            /* Отображение галочки на выбранном чекбоксе */
+            .color-checkbox input[type="checkbox"]:checked + label::after {
+                content: '✓'; /* Галочка */
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 18px;
+                color: #f50000; /* Цвет галочки */
+                font-weight: bold;
+            }
+        </style>
+
 
         <script>
             const slider = document.getElementById('priceSlider');
@@ -69,6 +114,7 @@
         </div>
     </div>
 </div>
+
 
 <!-- Включаем footer -->
 <div th:replace="~{includes/footer.html}"></div>

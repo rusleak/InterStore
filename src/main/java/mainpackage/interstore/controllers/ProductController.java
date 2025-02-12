@@ -1,10 +1,8 @@
 package mainpackage.interstore.controllers;
 
-import mainpackage.interstore.model.MainCategory;
-import mainpackage.interstore.model.NestedCategory;
-import mainpackage.interstore.model.Product;
-import mainpackage.interstore.model.Subcategory;
+import mainpackage.interstore.model.*;
 import mainpackage.interstore.priceUtils.PriceUtils;
+import mainpackage.interstore.service.ColorService;
 import mainpackage.interstore.service.MainCategoryService;
 import mainpackage.interstore.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +21,12 @@ public class ProductController {
     private final MainCategoryService mainCategoryService;
 
     private final ProductService productService;
+    private final ColorService colorService;
     @Autowired
-    public ProductController(MainCategoryService mainCategoryService, ProductService productService) {
+    public ProductController(MainCategoryService mainCategoryService, ProductService productService, ColorService colorService) {
         this.mainCategoryService = mainCategoryService;
         this.productService = productService;
+        this.colorService = colorService;
     }
 
     @GetMapping("/main-category/{id}")
@@ -34,6 +34,7 @@ public class ProductController {
                        @RequestParam(required = false) Long subcategoryId,
                        @RequestParam(required = false) Long nestedCategoryId,
                        @RequestParam(required = false) List<String> priceRange,
+                       @RequestParam(required = false) List<Long> colors,
                        Model model) {
         model.addAttribute("nestedCategoryId",nestedCategoryId);
         model.addAttribute("subcategoryId", subcategoryId);
@@ -45,6 +46,7 @@ public class ProductController {
         } else {
             products = productService.getProductsByMainCategoryId(id);
         }
+
         //Что бы чекбоксы оставались на месте после их выбора
         model.addAttribute("priceRangeFilters", priceRange);
 
@@ -59,6 +61,16 @@ public class ProductController {
                 products = productService.getAllProductsByPriceRange(products,priceRange);
             }
         }
+
+        //Colors
+        // Фильтрация по цветам (после всех других фильтров)
+        if (colors != null && !colors.isEmpty()) {
+            products = productService.filterProductsByColors(products, colors);
+        }
+        List<Color> availableColors = colorService.getAvailableColors(products);
+        model.addAttribute("availableColors", availableColors);
+        model.addAttribute("selectedColors", colors); // Передаём уже выбранные фильтры
+
         //Sorting by decreasing price
         products.sort(Comparator.comparing(Product::getPrice).reversed());
         model.addAttribute("productsList", products);

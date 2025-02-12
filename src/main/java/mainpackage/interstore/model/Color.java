@@ -28,9 +28,38 @@ public class Color {
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
-    @ManyToMany
+
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "product_color",
         joinColumns = @JoinColumn(name = "color_id"),
         inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> products;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
+    public Long getId() {
+        return id;
+    }
 }
