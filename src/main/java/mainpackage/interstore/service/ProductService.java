@@ -1,10 +1,7 @@
 package mainpackage.interstore.service;
 
 import lombok.RequiredArgsConstructor;
-import mainpackage.interstore.model.MainCategory;
-import mainpackage.interstore.model.NestedCategory;
-import mainpackage.interstore.model.Product;
-import mainpackage.interstore.model.Subcategory;
+import mainpackage.interstore.model.*;
 import mainpackage.interstore.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -124,11 +121,23 @@ public class ProductService {
             return products; // Если фильтр не выбран – возвращаем все товары
         }
 
-        return products.stream()
-                .filter(product -> product.getColors().stream()
-                        .anyMatch(color -> colorIds.contains(color.getId())))
-                .toList();
+        List<Product> filteredProducts = new ArrayList<>();
+
+        for (Product product : products) {
+            if (product.getColors() != null) {
+                for (Color color : product.getColors()) {
+                    if (colorIds.contains(color.getId())) {
+                        filteredProducts.add(product);
+                        break; // Если хотя бы один цвет совпал, добавляем товар и выходим из цикла
+                    }
+                }
+            }
+        }
+
+        return filteredProducts;
     }
+
+
 
 
 }

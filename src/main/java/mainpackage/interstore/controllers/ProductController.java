@@ -11,7 +11,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-
+//TODO сделать так что бы лист категорий и цветов не менял положение при пэйдж релоаде
+//TODO подумать про discounts и их отображение
+//TODO подумать про размер фоток и как их сделать одинаковыми
+//TODO сдать тест на почте
+//TODO проблема с цветами и их работой
 @Controller
 @RequestMapping("")
 @SessionAttributes({"availableColors"})
@@ -65,6 +69,7 @@ public class ProductController {
         if (colors != null && !colors.isEmpty()) {
             products = productService.filterProductsByColors(products, colors);
         }
+
         List<Color> availableColors = colorService.getAvailableColors(products);
         model.addAttribute("availableColors", availableColors);
         model.addAttribute("selectedColors", colors); // Передаём уже выбранные фильтры
