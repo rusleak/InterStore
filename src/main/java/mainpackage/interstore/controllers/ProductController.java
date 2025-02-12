@@ -59,6 +59,8 @@ public class ProductController {
                 products = productService.getAllProductsByPriceRange(products,priceRange);
             }
         }
+        //Sorting by decreasing price
+        products.sort(Comparator.comparing(Product::getPrice).reversed());
         model.addAttribute("productsList", products);
 
 
