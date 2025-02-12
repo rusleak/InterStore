@@ -68,213 +68,19 @@
             </div>
             <button type="submit">Фильтровать</button>
         </form>
-
-        <style>
-            .color-filters {
-                margin-top: 20px;
-                display: grid;
-                grid-template-columns: repeat(5, 1fr); /* 5 колонок */
-                gap: 10px; /* Расстояние между чекбоксами */
-            }
-
-            .color-checkbox input[type="checkbox"] {
-                display: none; /* Скрыть стандартный чекбокс */
-            }
-
-            .color-checkbox label {
-                width: 45px; /* Увеличиваем размер */
-                height: 45px; /* Увеличиваем размер */
-                display: inline-block;
-                border: 1px solid #000;
-                cursor: pointer;
-                position: relative;
-                background-size: cover;
-                background-position: center;
-                border-radius: 50%; /* Делаем чекбоксы круглыми */
-                transition: border 0.3s ease, box-shadow 0.3s ease;
-            }
-
-            .color-checkbox input[type="checkbox"]:checked + label {
-                border: 3px solid #007bff; /* Синий бордюр при выборе */
-                box-shadow: 0 0 10px rgba(0, 123, 255, 0.5); /* Тень при выборе */
-            }
-
-            /* Убираем красную обводку, только с галочкой */
-            .color-checkbox input[type="checkbox"]:checked + label::after {
-                content: '✓'; /* Галочка */
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                font-size: 24px; /* Увеличиваем размер галочки */
-                color: #fff; /* Цвет галочки */
-                font-weight: bold;
-            }
-
-            /* При наведении на чекбокс */
-            .color-checkbox label:hover {
-                opacity: 0.8; /* Лёгкое изменение прозрачности при наведении */
-            }
-
-            .filter-category ul {
-                list-style-type: none;
-                padding: 0;
-            }
-
-            .filter-category li {
-                margin-bottom: 10px;
-            }
-
-            .subcategory-container {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                cursor: pointer;
-                font-weight: bold;
-                padding: 10px;
-                border-radius: 4px;
-                transition: background-color 0.3s ease, box-shadow 0.3s ease;
-                background-color: #e9e9e9;
-            }
-
-            .subcategory-container:hover {
-                background-color: #d0d0d0;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            }
-
-            .subcategory-link {
-                text-decoration: none;
-                color: black;
-                flex-grow: 1;
-                transition: color 0.3s ease;
-            }
-
-            .subcategory-link:hover {
-                color: #007bff;
-            }
-
-            .arrow-container {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                width: 30px;
-                height: 30px;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                background-color: #f0f0f0;
-                cursor: pointer;
-                transition: background-color 0.3s ease;
-            }
-
-            .arrow-container:hover {
-                background-color: #e0e0e0;
-            }
-
-            .arrow {
-                font-size: 12px;
-            }
-
-            .nested-category {
-                display: none;
-                margin-left: 20px;
-                margin-top: 10px; /* Add some space between subcategory and nested categories */
-            }
-
-            .nested-category a {
-                text-decoration: none;
-                color: #333;
-                padding: 5px 0;
-                display: block;
-                transition: color 0.3s ease;
-            }
-
-            .nested-category a:hover {
-                color: #007bff;
-            }
-
-            .active .nested-category {
-                display: block;
-            }
-
-            .active .arrow {
-                transform: rotate(180deg);
-            }
-
-            .price-filters {
-                margin-top: 20px;
-            }
-
-            .price-checkbox-container {
-                display: flex;
-                align-items: center;
-                margin-bottom: 10px;
-            }
-
-            .price-checkbox-container input[type="checkbox"] {
-                margin-right: 10px;
-                transform: scale(1.2);
-                cursor: pointer;
-            }
-
-            .price-checkbox-container label {
-                font-size: 1.1em;
-                color: #333;
-            }
-
-            .price-checkbox-container label span {
-                display: block;
-                padding: 5px 10px;
-                background-color: #f4f4f4;
-                border-radius: 4px;
-                transition: background-color 0.3s ease;
-            }
-
-            .price-checkbox-container label span:hover {
-                background-color: #e0e0e0;
-            }
-
-            .filter-form {
-                margin-bottom: 20px; /* Add spacing between forms */
-            }
-
-            button[type="submit"] {
-                width: 100%;
-                padding: 10px;
-                background-color: #333;
-                color: white;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-                transition: background-color 0.3s ease;
-                margin-top: 20px; /* Add spacing above the button */
-            }
-
-            button[type="submit"]:hover {
-                background-color: #555;
-            }
-        </style>
-
-        <script>
-            function toggleNestedCategories(element) {
-                element.parentElement.parentElement.classList.toggle('active');
-            }
-
-            const slider = document.getElementById('priceSlider');
-            const sliderValue = document.getElementById('sliderValue');
-
-            slider.oninput = function() {
-                sliderValue.textContent = this.value;
-            }
-        </script>
     </div>
 
     <!-- Блок с товарами -->
     <div class="products">
         <div class="product" th:each="product : ${productsList}">
             <a th:href="@{/product/{id}(id=${product.id})}">
-                <img th:src="@{/images/{imageName}(imageName=${product.imageUrl})}" alt="Product Image">
-                <h3 th:text="${product.name}">Product Name</h3>
-                <p th:text="${product.price}">Product Price</p>
+                <div class="product-image-wrapper">
+                    <img th:src="@{/images/{imageName}(imageName=${product.imageUrl})}" alt="Product Image">
+                </div>
+                <div class="product-info">
+                    <h3 th:text="${product.name}">Product Name</h3>
+                    <p th:text="${product.price}">Product Price</p>
+                </div>
             </a>
         </div>
     </div>
@@ -282,5 +88,18 @@
 
 <!-- Включаем footer -->
 <div th:replace="~{includes/footer.html}"></div>
+
+<script>
+    function toggleNestedCategories(element) {
+        element.parentElement.parentElement.classList.toggle('active');
+    }
+
+    const slider = document.getElementById('priceSlider');
+    const sliderValue = document.getElementById('sliderValue');
+
+    slider.oninput = function() {
+        sliderValue.textContent = this.value;
+    }
+</script>
 </body>
 </html>
