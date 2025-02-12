@@ -35,12 +35,13 @@
                 </li>
             </ul>
         </div>
-        <form th:action="@{/main-category/{id}(id=${mainCategoryId})}" method="get">
+        <form th:action="@{/main-category/{id}(id=${mainCategoryId})}" method="get" class="filter-form">
             <input type="hidden" th:name="nestedCategoryId" th:value="${nestedCategoryId}" />
             <input type="hidden" th:name="subcategoryId" th:value="${subcategoryId}" />
 
             <div class="price-filters">
-                <div th:each="priceRange : ${priceRanges}" class="checkbox-container">
+                <h3>Цена</h3>
+                <div th:each="priceRange : ${priceRanges}" class="price-checkbox-container">
                     <input type="checkbox" class="priceFilter" name="priceRange" th:value="${priceRange}" th:id="${priceRange}"
                            th:checked="${priceRangeFilters != null and #lists.contains(priceRangeFilters, priceRange)}" />
                     <label th:for="${priceRange}">
@@ -51,16 +52,22 @@
             <button type="submit">Фильтровать</button>
         </form>
 
-        <div class="color-filters">
-            <h3>Цвета</h3>
-            <div th:each="color : ${availableColors}" class="color-checkbox">
-                <input type="checkbox" name="colors" th:value="${color.id}" th:id="'color-' + ${color.id}"
-                       th:checked="${selectedColors != null and #lists.contains(selectedColors, color.id)}" />
-                <label th:for="'color-' + ${color.id}"
-                       th:style="'background-image: url(\'/colors_for_products/' + ${color.imageUrl} + '\'); background-size: cover; background-position: center;'">
-                </label>
+        <form th:action="@{/main-category/{id}(id=${mainCategoryId})}" method="get" class="filter-form">
+            <input type="hidden" th:name="nestedCategoryId" th:value="${nestedCategoryId}" />
+            <input type="hidden" th:name="subcategoryId" th:value="${subcategoryId}" />
+
+            <div class="color-filters">
+                <h3>Цвета</h3>
+                <div th:each="color : ${availableColors}" class="color-checkbox">
+                    <input type="checkbox" name="colors" th:value="${color.id}" th:id="'color-' + ${color.id}"
+                           th:checked="${selectedColors != null and #lists.contains(selectedColors, color.id)}" />
+                    <label th:for="'color-' + ${color.id}"
+                           th:style="'background-image: url(\'/colors_for_products/' + ${color.imageUrl} + '\'); background-size: cover; background-position: center;'">
+                    </label>
+                </div>
             </div>
-        </div>
+            <button type="submit">Фильтровать</button>
+        </form>
 
         <style>
             .color-filters {
@@ -84,6 +91,12 @@
                 background-size: cover;
                 background-position: center;
                 border-radius: 50%; /* Делаем чекбоксы круглыми */
+                transition: border 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            .color-checkbox input[type="checkbox"]:checked + label {
+                border: 3px solid #007bff; /* Синий бордюр при выборе */
+                box-shadow: 0 0 10px rgba(0, 123, 255, 0.5); /* Тень при выборе */
             }
 
             /* Убираем красную обводку, только с галочкой */
@@ -94,7 +107,7 @@
                 left: 50%;
                 transform: translate(-50%, -50%);
                 font-size: 24px; /* Увеличиваем размер галочки */
-                color: #000; /* Цвет галочки */
+                color: #fff; /* Цвет галочки */
                 font-weight: bold;
             }
 
@@ -185,6 +198,59 @@
 
             .active .arrow {
                 transform: rotate(180deg);
+            }
+
+            .price-filters {
+                margin-top: 20px;
+            }
+
+            .price-checkbox-container {
+                display: flex;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+
+            .price-checkbox-container input[type="checkbox"] {
+                margin-right: 10px;
+                transform: scale(1.2);
+                cursor: pointer;
+            }
+
+            .price-checkbox-container label {
+                font-size: 1.1em;
+                color: #333;
+            }
+
+            .price-checkbox-container label span {
+                display: block;
+                padding: 5px 10px;
+                background-color: #f4f4f4;
+                border-radius: 4px;
+                transition: background-color 0.3s ease;
+            }
+
+            .price-checkbox-container label span:hover {
+                background-color: #e0e0e0;
+            }
+
+            .filter-form {
+                margin-bottom: 20px; /* Add spacing between forms */
+            }
+
+            button[type="submit"] {
+                width: 100%;
+                padding: 10px;
+                background-color: #333;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+                margin-top: 20px; /* Add spacing above the button */
+            }
+
+            button[type="submit"]:hover {
+                background-color: #555;
             }
         </style>
 

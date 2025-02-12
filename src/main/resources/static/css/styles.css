@@ -258,32 +258,52 @@ body {
 .price-filters {
     display: flex;
     flex-direction: column;
+    margin-top: 20px;
 }
 
-/* Увеличиваем размер чекбоксов и текста */
-.checkbox-container {
+.price-checkbox-container {
     display: flex;
     align-items: center;
-    margin-bottom: 15px; /* Отступы между чекбоксами */
+    margin-bottom: 10px;
 }
 
-.checkbox-container input[type="checkbox"] {
-    margin-right: 15px; /* Отступ между чекбоксом и текстом */
-    transform: scale(1.6); /* Увеличиваем размер чекбокса */
-    cursor: pointer; /* Курсор-указатель при наведении */
+.price-checkbox-container input[type="checkbox"] {
+    margin-right: 10px;
+    transform: scale(1.2);
+    cursor: pointer;
 }
 
-.checkbox-container label {
-    font-size: 1.3em; /* Увеличиваем размер текста */
-    color: #333333; /* Цвет текста */
+.price-checkbox-container label {
+    font-size: 1.1em;
+    color: #333;
 }
+
+.price-checkbox-container label span {
+    display: block;
+    padding: 5px 10px;
+    background-color: #f4f4f4;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.price-checkbox-container label span:hover {
+    background-color: #e0e0e0;
+}
+
+.filter-form {
+    margin-bottom: 20px; /* Add spacing between forms */
+}
+
 button[type="submit"] {
-    padding: 10px 20px;
+    width: 100%;
+    padding: 10px;
     background-color: #333;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px; /* Add spacing above the button */
 }
 
 button[type="submit"]:hover {
