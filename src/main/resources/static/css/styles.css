@@ -188,10 +188,11 @@ body {
 
 /* Стили для блока товаров */
 .products {
-    display: grid; /* Используем Grid вместо Flexbox */
-    grid-template-columns: repeat(5, 1fr); /* 5 колонок на больших экранах */
-    gap: 20px; /* Расстояние между товарами */
-    width: 80%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 колонки */
+    gap: 20px;
+    padding: 20px;
+    flex-grow: 1;
 }
 
 /* Стили для отдельных товаров */
@@ -228,37 +229,80 @@ body {
 }
 
 .main-content {
-    display: flex; /* Элементы в строку */
-    align-items: flex-start; /* Выровнять по верхнему краю */
-    gap: 20px; /* Расстояние между блоками */
-    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
 }
 
 .sidebar {
-    width: 200px; /* Фиксированная ширина сайдбара */
-    flex-shrink: 0; /* Сайдбар не будет сжиматься */
-    padding-left: 10px;
+    width: 250px;
+    flex-shrink: 0;
+    padding: 10px;
 }
 
-.products {
-    flex-grow: 1; /* Блок с товарами займет оставшееся пространство */
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 20px;
-    padding-right: 10px;
+.slider-container {
+    width: 100%;
+    text-align: center;
 }
+
+.slider {
+    width: 100%;
+}
+
+.value {
+    font-size: 20px;
+    margin-top: 10px;
+}
+
+.price-filters {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Увеличиваем размер чекбоксов и текста */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px; /* Отступы между чекбоксами */
+}
+
+.checkbox-container input[type="checkbox"] {
+    margin-right: 15px; /* Отступ между чекбоксом и текстом */
+    transform: scale(1.6); /* Увеличиваем размер чекбокса */
+    cursor: pointer; /* Курсор-указатель при наведении */
+}
+
+.checkbox-container label {
+    font-size: 1.3em; /* Увеличиваем размер текста */
+    color: #333333; /* Цвет текста */
+}
+button[type="submit"] {
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background-color: #555;
+}
+
+
 
 
 /* Мобильная версия */
 @media (max-width: 1200px) {
     .products {
-        grid-template-columns: repeat(4, 1fr); /* 4 колонки на экранах с шириной до 1200px */
+        grid-template-columns: repeat(3, 1fr); /* 3 колонки на экранах с шириной до 1200px */
     }
 }
 
 @media (max-width: 900px) {
     .products {
-        grid-template-columns: repeat(3, 1fr); /* 3 колонки на экранах с шириной до 900px */
+        grid-template-columns: repeat(2, 1fr); /* 2 колонки на экранах с шириной до 900px */
     }
 }
 
@@ -267,3 +311,4 @@ body {
         grid-template-columns: 1fr; /* 1 колонка на экранах с шириной до 600px */
     }
 }
+

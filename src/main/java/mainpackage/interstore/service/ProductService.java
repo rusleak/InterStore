@@ -9,6 +9,7 @@ import mainpackage.interstore.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -61,5 +62,60 @@ public class ProductService {
         }
         return map;
     }
+    public double[] getMinAndMaxPriceFromProductList(List<Product> productList) {
+        double[] result = new double[2];
+            OptionalDouble maxPrice = productList.stream()
+                    .mapToDouble(product -> product.getPrice().doubleValue())
+                    .max();
 
+        OptionalDouble minPrice = productList.stream()
+                .mapToDouble(product -> product.getPrice().doubleValue())
+                .min();
+
+        if(minPrice.isPresent()) {
+            result[0] = minPrice.getAsDouble();
+        } else {
+            result[0] = 0;
+        }
+            if(maxPrice.isPresent()) {
+                result[1] = maxPrice.getAsDouble()+1;
+            } else {
+                result[1] = 100000;
+            }
+            return result;
+    }
+    public List<Product> getAllProductsByPriceRange(List<Product> productList,Long minPrice, Long maxPrice) {
+        List<Product> newProductList = new ArrayList<>();
+        BigDecimal minPriceDecimal = new BigDecimal(minPrice);
+        BigDecimal maxPriceDecimal = new BigDecimal(maxPrice);
+        for (Product product : productList) {
+            if (product.getPrice().compareTo(minPriceDecimal) >= 0 && product.getPrice().compareTo(maxPriceDecimal) <= 0) {
+                newProductList.add(product);
+            }
+        }
+        return newProductList;
+    }
+    public List<Product> getAllProductsByPriceRange(List<Product> productList, List<String> priceRanges) {
+        List<Product> newProductList = new ArrayList<>();
+
+        // Проверяем на null и пустоту списка
+        if (priceRanges != null && !priceRanges.isEmpty()) {
+            for (String range : priceRanges) {
+                String[] bounds = range.split("-");
+                long minPrice = Long.parseLong(bounds[0]);
+                long maxPrice = Long.parseLong(bounds[1]);
+
+                // Получаем товары для каждого диапазона цен
+                List<Product> temporaryProducts = getAllProductsByPriceRange(productList, minPrice, maxPrice);
+
+                // Добавляем товары в новый список, избегая дублирования
+                for (Product product : temporaryProducts) {
+                    if (!newProductList.contains(product)) {
+                        newProductList.add(product);
+                    }
+                }
+            }
+        }
+        return newProductList;
+    }
 }

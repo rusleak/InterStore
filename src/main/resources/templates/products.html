@@ -31,8 +31,32 @@
                 </li>
             </ul>
         </div>
-    </div>
+        <form th:action="@{/main-category/{id}(id=${mainCategoryId})}" method="get">
+            <input type="hidden" th:name="nestedCategoryId" th:value="${nestedCategoryId}" />
+            <input type="hidden" th:name="subcategoryId" th:value="${subcategoryId}" />
 
+            <div class="price-filters">
+                <div th:each="priceRange : ${priceRanges}" class="checkbox-container">
+                    <input type="checkbox" class="priceFilter" name="priceRange" th:value="${priceRange}" th:id="${priceRange}"
+                           th:checked="${priceRangeFilters != null and #lists.contains(priceRangeFilters, priceRange)}" />
+                    <label th:for="${priceRange}">
+                        <span th:text="'от ' + ${priceRange.split('-')[0]} + ' до ' + ${priceRange.split('-')[1]}"></span>
+                    </label>
+                </div>
+            </div>
+            <button type="submit">Фильтровать</button>
+        </form>
+
+
+        <script>
+            const slider = document.getElementById('priceSlider');
+            const sliderValue = document.getElementById('sliderValue');
+
+            slider.oninput = function() {
+                sliderValue.textContent = this.value;
+            }
+        </script>
+    </div>
 
     <!-- Блок с товарами -->
     <div class="products">

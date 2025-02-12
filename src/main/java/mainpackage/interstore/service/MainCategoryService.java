@@ -1,6 +1,7 @@
 package mainpackage.interstore.service;
 
 import mainpackage.interstore.model.MainCategory;
+import mainpackage.interstore.model.Product;
 import mainpackage.interstore.repository.MainCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

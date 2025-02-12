@@ -1,6 +1,7 @@
 package mainpackage.interstore.repository;
 
 import mainpackage.interstore.model.MainCategory;
+import mainpackage.interstore.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
