@@ -24,10 +24,10 @@ public class ColorService {
         Set<Color> availableColors = new HashSet<>();
 
         for (Product product : productList) {
-            availableColors.addAll(product.getColors()); // Добавляем все цвета товара в Set (чтобы не было дубликатов)
+            availableColors.addAll(product.getColors()); // Add all colors of the product to the set (to avoid duplicates)
         }
 
-        return new ArrayList<>(availableColors); // Возвращаем как List
+        return new ArrayList<>(availableColors); // Return as a list
     }
 
 }
