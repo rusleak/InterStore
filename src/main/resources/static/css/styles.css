@@ -290,9 +290,6 @@ button[type="submit"]:hover {
     background-color: #555;
 }
 
-
-
-
 /* Мобильная версия */
 @media (max-width: 1200px) {
     .products {
@@ -311,4 +308,3 @@ button[type="submit"]:hover {
         grid-template-columns: 1fr; /* 1 колонка на экранах с шириной до 600px */
     }
 }
-
