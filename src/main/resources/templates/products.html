@@ -59,38 +59,47 @@
         </div>
 
         <style>
+            .color-filters {
+                margin-top: 20px;
+                display: grid;
+                grid-template-columns: repeat(5, 1fr); /* 5 колонок */
+                gap: 10px; /* Расстояние между чекбоксами */
+            }
+
             .color-checkbox input[type="checkbox"] {
                 display: none; /* Скрыть стандартный чекбокс */
             }
 
             .color-checkbox label {
-                width: 30px;
-                height: 30px;
+                width: 45px; /* Увеличиваем размер */
+                height: 45px; /* Увеличиваем размер */
                 display: inline-block;
                 border: 1px solid #000;
                 cursor: pointer;
                 position: relative;
                 background-size: cover;
                 background-position: center;
+                border-radius: 50%; /* Делаем чекбоксы круглыми */
             }
 
-            /* Состояние при выбранном чекбоксе */
-            .color-checkbox input[type="checkbox"]:checked + label {
-                border: 2px solid #f50000; /* Для выделения активного цвета */
-            }
-
-            /* Отображение галочки на выбранном чекбоксе */
+            /* Убираем красную обводку, только с галочкой */
             .color-checkbox input[type="checkbox"]:checked + label::after {
                 content: '✓'; /* Галочка */
                 position: absolute;
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%);
-                font-size: 18px;
-                color: #f50000; /* Цвет галочки */
+                font-size: 24px; /* Увеличиваем размер галочки */
+                color: #000; /* Цвет галочки */
                 font-weight: bold;
             }
+
+            /* При наведении на чекбокс */
+            .color-checkbox label:hover {
+                opacity: 0.8; /* Лёгкое изменение прозрачности при наведении */
+            }
         </style>
+
 
 
         <script>
