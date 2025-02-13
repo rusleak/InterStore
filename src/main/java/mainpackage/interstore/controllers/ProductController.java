@@ -11,7 +11,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-
+//TODO сделать так что бы лист категорий и цветов не менял положение при пэйдж релоаде
+//TODO подумать про discounts и их отображение
+//TODO подумать про размер фоток и как их сделать одинаковыми
+//TODO сдать тест на почте
 @Controller
 @RequestMapping("")
 @SessionAttributes({"availableColors"})

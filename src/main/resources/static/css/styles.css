@@ -110,8 +110,11 @@ body {
 .category img,
 .item img {
     width: 100%;
-    height: auto;
+    /*height: auto;*/
     display: block;
+    aspect-ratio: 2 / 1.7;
+    object-fit: cover;
+    object-position: center;
 }
 
 .category h3,
@@ -227,7 +230,10 @@ body {
 
 .product img {
     width: 100%;
-    height: auto;
+    /*height: auto;*/
+    aspect-ratio: 2 / 1.7;
+    object-fit: cover;
+    object-position: center;
     display: block;
     transition: transform 0.3s;
 }
