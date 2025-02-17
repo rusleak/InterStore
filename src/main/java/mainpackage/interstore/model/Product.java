@@ -31,8 +31,8 @@ public class Product {
     @Column(name = "price", precision = 8, scale = 2, nullable = false)
     private BigDecimal price;
 
-    @Column(name = "discount")
-    private Integer discount;
+    @Column(name = "discounted_price")
+    private BigDecimal discountedPrice;
 
     @Column(name = "image_url")
     private String imageUrl;
@@ -43,6 +43,8 @@ public class Product {
     @Column(name = "brand")
     private String brand;
 
+    @Column(name = "dimensions")
+    private String dimensions;
     @ManyToOne
     @JoinColumn(name = "nested_category_id")
     private NestedCategory nestedCategory;
@@ -55,6 +57,16 @@ public class Product {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "color_id"))
     private List<Color> colors;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "product_tag",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private List<Tag> tagList;
+
+    @Column(name = "oneC_id", nullable = false)
+    private Long oneC_id;
+
 
     public Long getId() {
         return id;
@@ -88,13 +100,6 @@ public class Product {
         this.price = price;
     }
 
-    public Integer getDiscount() {
-        return discount;
-    }
-
-    public void setDiscount(Integer discount) {
-        this.discount = discount;
-    }
 
     public String getImageUrl() {
         return imageUrl;
