@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Table(name = "subcategories")
-public class Subcategory {
+public class Subcategory implements Comparable<Subcategory>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -70,5 +70,17 @@ public class Subcategory {
     public void setNestedCategories(List<NestedCategory> nestedCategories) {
         this.nestedCategories = nestedCategories;
     }
+
+    @Override
+    public int compareTo(Subcategory o) {
+        if (o == null) {
+            throw new NullPointerException("Cannot compare with null");
+        }
+        if (this.id == null || o.id == null) {
+            throw new IllegalStateException("Cannot compare entities with null ID");
+        }
+        return this.id.compareTo(o.id);
+    }
+
 }
 

@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "colors")
-public class Color {
+public class Color implements Comparable<Color>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,4 +62,17 @@ public class Color {
     public Long getId() {
         return id;
     }
+
+
+    @Override
+    public int compareTo(Color o) {
+        if (o == null) {
+            throw new NullPointerException("Cannot compare with null");
+        }
+        if (this.id == null || o.id == null) {
+            throw new IllegalStateException("Cannot compare entities with null ID");
+        }
+        return this.id.compareTo(o.id);
+    }
+
 }

@@ -53,6 +53,9 @@ public class ProductController {
             products = productService.getProductsByMainCategoryId(id);
             availableColors = colorService.getAvailableColors(products);
         }
+        if(availableColors != null) {
+            Collections.sort(availableColors);
+        }
         // Available colors for current product list
         model.addAttribute("availableColors", availableColors);
         // Preserve price range filters
@@ -84,7 +87,7 @@ public class ProductController {
         model.addAttribute("productsList", products);
 
         // Category filters
-        Map<Subcategory, List<NestedCategory>> categoryFilters = productService.getCategoriesFilter(id);
+        TreeMap<Subcategory, List<NestedCategory>> categoryFilters = productService.getCategoriesFilter(id);
         model.addAttribute("categoryFilters", categoryFilters);
         model.addAttribute("mainCategoryId", id);
 
