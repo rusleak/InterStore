@@ -1,7 +1,6 @@
 package mainpackage.interstore.controllers;
 
 import mainpackage.interstore.model.*;
-import mainpackage.interstore.priceUtils.PriceUtils;
 import mainpackage.interstore.service.ColorService;
 import mainpackage.interstore.service.MainCategoryService;
 import mainpackage.interstore.service.ProductService;
@@ -12,8 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-//TODO Реализовать tag
-//TODO цена сбивает цвет
+//TODO Реализовать tag List<Tag> tagList
+//TODO Реализовать sizes private String dimensions;
 
 @Controller
 @RequestMapping("")
@@ -36,11 +35,14 @@ public class ProductController {
                        @RequestParam(required = false) String filterMinPrice,
                        @RequestParam(required = false) String filterMaxPrice,
                        @RequestParam(required = false) List<Long> colors,
-                       @RequestParam(required = false) List<Long> sizesFromClient,
-                       @RequestParam(required = false) List<Long> tagsFromClient,
+                       @RequestParam(required = false) List<String> dimensions,
+                       @RequestParam(required = false) List<String> tagsFromClient,
                        Model model) {
         model.addAttribute("nestedCategoryId", nestedCategoryId);
         model.addAttribute("subcategoryId", subcategoryId);
+
+        System.out.println("Received dimensions: " + dimensions);
+
 
         // Available colors for current product list
         List<Color> availableColors;
@@ -55,6 +57,19 @@ public class ProductController {
             products = productService.getProductsByMainCategoryId(id);
             availableColors = colorService.getAvailableColors(products);
         }
+
+        //Filtering by dimensions
+        Set<String> availableDimensions = productService.getAllDimensionsFromProducts(products);
+        model.addAttribute("availableDimensions",availableDimensions);
+        if(dimensions != null) {
+            if(!dimensions.isEmpty()) {
+                products = productService.getAllProductsByGivenDimensions(products, dimensions);
+            }
+        }
+        model.addAttribute("selectedDimensions", dimensions);
+
+
+
         if(availableColors != null) {
             Collections.sort(availableColors);
         }

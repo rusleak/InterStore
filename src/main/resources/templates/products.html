@@ -47,6 +47,11 @@
                 <input type="hidden" name="colors" th:value="${selectedColor}" />
             </div>
 
+            <!-- Preserve dimension filter state -->
+            <div th:each="dimension : ${selectedDimensions}">
+                <input type="hidden" name="dimensions" th:value="${dimension}" />
+            </div>
+
             <div class="price-filters">
                 <h3>Цена</h3>
                 <div class="price-range-container">
@@ -62,7 +67,31 @@
             </div>
             <button type="submit">Застосувати фільтри</button>
         </form>
+        <!-- Dimension Filter Form -->
+        <form th:action="@{/main-category/{id}(id=${mainCategoryId})}" method="get" class="filter-form">
+            <!-- Preserve nestedCategoryId and subcategoryId -->
+            <input type="hidden" th:name="nestedCategoryId" th:value="${nestedCategoryId}" />
+            <input type="hidden" th:name="subcategoryId" th:value="${subcategoryId}" />
 
+            <!-- Preserve price filter state -->
+            <input type="hidden" name="filterMinPrice" th:value="${filterMinPrice}" />
+            <input type="hidden" name="filterMaxPrice" th:value="${filterMaxPrice}" />
+
+            <!-- Preserve color filter state -->
+            <div th:each="selectedColor : ${selectedColors}">
+                <input type="hidden" name="colors" th:value="${selectedColor}" />
+            </div>
+
+            <h3>Розміри</h3>
+            <div class="dimension-filters">
+                <div th:each="dimension : ${availableDimensions}" class="dimension-checkbox">
+                    <input type="checkbox" name="dimensions" th:value="${dimension}" th:id="'dimension-' + ${dimension}"
+                           th:checked="${selectedDimensions != null and #lists.contains(selectedDimensions, dimension)}" />
+                    <label th:for="'dimension-' + ${dimension}" th:text="${dimension}">Розмір</label>
+                </div>
+            </div>
+            <button type="submit">Застосувати фільтри</button>
+        </form>
         <!-- Color Filter Form -->
         <form th:action="@{/main-category/{id}(id=${mainCategoryId})}" method="get" class="filter-form">
             <!-- Preserve nestedCategoryId and subcategoryId -->
@@ -72,6 +101,11 @@
             <!-- Preserve price filter state -->
             <input type="hidden" name="filterMinPrice" th:value="${filterMinPrice}" />
             <input type="hidden" name="filterMaxPrice" th:value="${filterMaxPrice}" />
+
+            <!-- Preserve dimension filter state -->
+            <div th:each="dimension : ${selectedDimensions}">
+                <input type="hidden" name="dimensions" th:value="${dimension}" />
+            </div>
 
             <h3>Цвета</h3>
             <div class="color-filters">
@@ -85,6 +119,8 @@
             </div>
             <button type="submit">Застосувати фільтри</button>
         </form>
+
+
 
         <!-- Reset Filters Button -->
         <a th:href="@{/main-category/{id}(id=${mainCategoryId})}" class="reset-filters-button">Видалити фільтри</a>

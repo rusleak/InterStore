@@ -149,4 +149,36 @@ public class Product {
     public void setColors(List<Color> colors) {
         this.colors = colors;
     }
+
+    public BigDecimal getDiscountedPrice() {
+        return discountedPrice;
+    }
+
+    public void setDiscountedPrice(BigDecimal discountedPrice) {
+        this.discountedPrice = discountedPrice;
+    }
+
+    public String getDimensions() {
+        return dimensions;
+    }
+
+    public void setDimensions(String dimensions) {
+        this.dimensions = dimensions;
+    }
+
+    public List<Tag> getTagList() {
+        return tagList;
+    }
+
+    public void setTagList(List<Tag> tagList) {
+        this.tagList = tagList;
+    }
+
+    public Long getOneC_id() {
+        return oneC_id;
+    }
+
+    public void setOneC_id(Long oneC_id) {
+        this.oneC_id = oneC_id;
+    }
 }

@@ -167,4 +167,20 @@ public class ProductService {
         }
         return products;
     }
+
+    public List<Product> getAllProductsByGivenDimensions(List<Product> productList, List<String> dimensions) {
+        return productList.stream()
+                .filter(product -> dimensions.contains(product.getDimensions()))
+                .collect(Collectors.toList());
+    }
+
+    public TreeSet<String> getAllDimensionsFromProducts(List<Product> productList) {
+        return productList.stream()
+                .map(Product::getDimensions)
+                .filter(dimension -> dimension != null)
+                .collect(Collectors.toCollection(TreeSet::new));
+    }
+
+
+
 }
