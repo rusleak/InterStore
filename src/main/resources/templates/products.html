@@ -67,8 +67,15 @@
             </div>
             <button type="submit">Застосувати фільтри</button>
         </form>
+
         <!-- Dimension Filter Form -->
-        <form th:action="@{/main-category/{id}(id=${mainCategoryId})}" method="get" class="filter-form">
+        <div class="subcategory-container" onclick="toggleDimensions(this)">
+            <span class="subcategory-link">Розміри :</span>
+            <div class="arrow-container">
+                <span class="arrow">▼</span>
+            </div>
+        </div>
+        <form th:action="@{/main-category/{id}(id=${mainCategoryId})}" method="get" class="filter-form nested-category dimension-form">
             <!-- Preserve nestedCategoryId and subcategoryId -->
             <input type="hidden" th:name="nestedCategoryId" th:value="${nestedCategoryId}" />
             <input type="hidden" th:name="subcategoryId" th:value="${subcategoryId}" />
@@ -92,6 +99,7 @@
             </div>
             <button type="submit">Застосувати фільтри</button>
         </form>
+
         <!-- Color Filter Form -->
         <form th:action="@{/main-category/{id}(id=${mainCategoryId})}" method="get" class="filter-form">
             <!-- Preserve nestedCategoryId and subcategoryId -->
@@ -120,8 +128,6 @@
             <button type="submit">Застосувати фільтри</button>
         </form>
 
-
-
         <!-- Reset Filters Button -->
         <a th:href="@{/main-category/{id}(id=${mainCategoryId})}" class="reset-filters-button">Видалити фільтри</a>
     </div>
@@ -148,6 +154,12 @@
 <script>
     function toggleNestedCategories(element) {
         element.parentElement.parentElement.classList.toggle('active');
+    }
+
+    function toggleDimensions(element) {
+        const form = document.querySelector('.dimension-form');
+        form.classList.toggle('active');
+        element.classList.toggle('active');
     }
 
     const slider = document.getElementById('priceSlider');

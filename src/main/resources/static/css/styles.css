@@ -523,6 +523,48 @@ button[type="submit"]:hover {
     background-color: #555;
 }
 
+/* Dimension Filters */
+.dimension-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.dimension-checkbox {
+    flex: 1 1 calc(33.3333% - 10px);
+    display: flex;
+    align-items: center;
+}
+
+.dimension-checkbox input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.dimension-form {
+    display: none;
+}
+
+.dimension-form.active {
+    display: block;
+}
+.dimension-checkbox {
+    flex: 1 1 calc(33.3333% - 10px);
+    display: flex;
+    align-items: center;
+    border: 1px solid grey; /* Add grey border */
+    border-radius: 5px; /* Optional: add border radius */
+    padding: 5px; /* Optional: add padding */
+    transition: border-color 0.3s ease; /* Optional: add transition for border color */
+}
+
+.dimension-checkbox:hover {
+    border-color: darkgrey; /* Optional: change border color on hover */
+}
+
+.dimension-checkbox input[type="checkbox"] {
+    margin-right: 10px;
+}
+
 
 /* Мобильная версия */
 @media (max-width: 1200px) {

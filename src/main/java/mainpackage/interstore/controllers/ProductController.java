@@ -13,7 +13,7 @@ import java.util.*;
 
 //TODO Реализовать tag List<Tag> tagList
 //TODO Реализовать sizes private String dimensions;
-
+//TODO подумать как Реализовать dimensons как лист
 @Controller
 @RequestMapping("")
 public class ProductController {
@@ -40,8 +40,6 @@ public class ProductController {
                        Model model) {
         model.addAttribute("nestedCategoryId", nestedCategoryId);
         model.addAttribute("subcategoryId", subcategoryId);
-
-        System.out.println("Received dimensions: " + dimensions);
 
 
         // Available colors for current product list
