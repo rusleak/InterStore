@@ -64,7 +64,8 @@ public class Product {
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private List<Tag> tagList;
 
-    @Column(name = "oneC_id", nullable = false)
+    //Make it unique in database it is not unique now
+    @Column(name = "oneC_id", nullable = false, unique = true)
     private Long oneC_id;
 
 

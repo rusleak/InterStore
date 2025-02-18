@@ -70,9 +70,8 @@
             <input type="hidden" th:name="subcategoryId" th:value="${subcategoryId}" />
 
             <!-- Preserve price filter state -->
-            <div th:each="priceRange : ${priceRangeFilters}">
-                <input type="hidden" name="priceRange" th:value="${priceRange}" />
-            </div>
+            <input type="hidden" name="filterMinPrice" th:value="${filterMinPrice}" />
+            <input type="hidden" name="filterMaxPrice" th:value="${filterMaxPrice}" />
 
             <h3>Цвета</h3>
             <div class="color-filters">

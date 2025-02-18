@@ -11,10 +11,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-//TODO Сделать фильтр цены полями от и до
-//TODO сделать цсс для них
+
 //TODO Реализовать tag
-//TODO Некоторые фильтры слетают при активации других
+//TODO цена сбивает цвет
 
 @Controller
 @RequestMapping("")
@@ -37,6 +36,8 @@ public class ProductController {
                        @RequestParam(required = false) String filterMinPrice,
                        @RequestParam(required = false) String filterMaxPrice,
                        @RequestParam(required = false) List<Long> colors,
+                       @RequestParam(required = false) List<Long> sizesFromClient,
+                       @RequestParam(required = false) List<Long> tagsFromClient,
                        Model model) {
         model.addAttribute("nestedCategoryId", nestedCategoryId);
         model.addAttribute("subcategoryId", subcategoryId);
@@ -59,21 +60,17 @@ public class ProductController {
         }
         // Available colors for current product list
         model.addAttribute("availableColors", availableColors);
-        // Preserve price range filters
-        //1
+        //1 Preserve price range filters
         model.addAttribute("filterMinPrice", filterMinPrice);
         model.addAttribute("filterMaxPrice", filterMaxPrice);
 
-        //2
-        // Price placeholders
+        //2 Price placeholders
         double[] minAndMaxPrice = productService.getMinAndMaxPriceFromProductList(products);
         Integer minPrice = (int) Math.floor(minAndMaxPrice[0]);
         Integer maxPrice = (int) Math.floor(minAndMaxPrice[1]);
         model.addAttribute("placeholderFromPrice", minPrice);
         model.addAttribute("placeholderToPrice", maxPrice);
-        //TODO filtering not working properly in this place
-        System.out.println("MMMIIIINNN : " + filterMinPrice);
-        System.out.println("MMMAAAXX : " + filterMaxPrice);
+
         //3 Products in price range
         products = productService.getProductsFromMinToMaxPrice(products,filterMinPrice,filterMaxPrice);
 

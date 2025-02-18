@@ -66,7 +66,7 @@ CREATE TABLE products
     brand              VARCHAR(255) NULL,
     dimensions         VARCHAR(255) NULL,
     nested_category_id BIGINT NULL,
-    onec_id            BIGINT        NOT NULL,
+    onec_id            BIGINT        NOT NULL UNIQUE ,
     CONSTRAINT pk_products PRIMARY KEY (id)
 );
 

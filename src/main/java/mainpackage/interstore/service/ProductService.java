@@ -145,7 +145,6 @@ public class ProductService {
             if (filterMinPrice != null && !filterMinPrice.trim().isEmpty()) {
                 try {
                     BigDecimal min = new BigDecimal(filterMinPrice).subtract(BigDecimal.valueOf(1));
-                    System.out.println("min method : " + min);
                     products = products.stream()
                             .filter(product -> product.getPrice().compareTo(min) >= 0)
                             .collect(Collectors.toList());
@@ -158,7 +157,6 @@ public class ProductService {
             if (filterMaxPrice != null && !filterMaxPrice.trim().isEmpty()) {
                 try {
                     BigDecimal max = new BigDecimal(filterMaxPrice).add(BigDecimal.valueOf(1));
-                    System.out.println("max method : " + max);
                     products = products.stream()
                             .filter(product -> product.getPrice().compareTo(max) <= 0)
                             .collect(Collectors.toList());
