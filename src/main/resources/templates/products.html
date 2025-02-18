@@ -5,24 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Інтер</title>
     <link rel="stylesheet" href="/css/styles.css">
-    <style>
-        .reset-filters-button {
-            display: block;
-            margin: 20px 0;
-            padding: 10px 20px;
-            background-color: #ff4c4c;
-            color: white;
-            text-align: center;
-            border: none;
-            cursor: pointer;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        .reset-filters-button:hover {
-            background-color: #ff1a1a;
-        }
-    </style>
 </head>
 <body>
 <!-- Включаем header -->
@@ -67,12 +49,15 @@
 
             <div class="price-filters">
                 <h3>Цена</h3>
-                <div th:each="priceRange : ${priceRanges}" class="price-checkbox-container">
-                    <input type="checkbox" class="priceFilter" name="priceRange" th:value="${priceRange}" th:id="${priceRange}"
-                           th:checked="${priceRangeFilters != null and #lists.contains(priceRangeFilters, priceRange)}" />
-                    <label th:for="${priceRange}">
-                        <span th:text="'от ' + ${priceRange.split('-')[0]} + ' до ' + ${priceRange.split('-')[1]}"></span>
-                    </label>
+                <div class="price-range-container">
+                    <label for="filterMinPrice">Від:</label>
+                    <input type="number" id="filterMinPrice" name="filterMinPrice"
+                           th:placeholder="${placeholderFromPrice}"
+                           th:value="${filterMinPrice}" />
+                    <label for="filterMaxPrice">До:</label>
+                    <input type="number" id="filterMaxPrice" name="filterMaxPrice"
+                           th:placeholder="${placeholderToPrice}"
+                           th:value="${filterMaxPrice}" />
                 </div>
             </div>
             <button type="submit">Застосувати фільтри</button>

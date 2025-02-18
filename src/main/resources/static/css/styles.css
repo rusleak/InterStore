@@ -470,6 +470,59 @@ button[type="submit"]:hover {
 .active .arrow {
     transform: rotate(180deg);
 }
+.reset-filters-button {
+    display: block;
+    margin: 20px 0;
+    padding: 10px 20px;
+    background-color: #ff4c4c;
+    color: white;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+}
+.reset-filters-button:hover {
+    background-color: #ff1a1a;
+}
+.price-filters {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+.price-range-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.price-range-container label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+.price-range-container input[type="number"] {
+    width: calc(50% - 10px);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+.filter-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+    font-size: medium;
+}
+.filter-form button:hover {
+    background-color: #555;
+}
+
 
 /* Мобильная версия */
 @media (max-width: 1200px) {

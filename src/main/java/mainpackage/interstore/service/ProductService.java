@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -75,7 +76,7 @@ public class ProductService {
             result[0] = 0;
         }
             if(maxPrice.isPresent()) {
-                result[1] = maxPrice.getAsDouble()+1;
+                result[1] = maxPrice.getAsDouble();
             } else {
                 result[1] = 100000;
             }
@@ -138,6 +139,34 @@ public class ProductService {
     }
 
 
+    public List<Product> getProductsFromMinToMaxPrice(List<Product> products, String filterMinPrice, String filterMaxPrice) {
+        if (products != null && !products.isEmpty()) {
+            // Фильтрация по минимальной цене
+            if (filterMinPrice != null && !filterMinPrice.trim().isEmpty()) {
+                try {
+                    BigDecimal min = new BigDecimal(filterMinPrice).subtract(BigDecimal.valueOf(1));
+                    System.out.println("min method : " + min);
+                    products = products.stream()
+                            .filter(product -> product.getPrice().compareTo(min) >= 0)
+                            .collect(Collectors.toList());
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("Некорректное значение минимальной цены: " + filterMinPrice, e);
+                }
+            }
 
-
+            // Фильтрация по максимальной цене
+            if (filterMaxPrice != null && !filterMaxPrice.trim().isEmpty()) {
+                try {
+                    BigDecimal max = new BigDecimal(filterMaxPrice).add(BigDecimal.valueOf(1));
+                    System.out.println("max method : " + max);
+                    products = products.stream()
+                            .filter(product -> product.getPrice().compareTo(max) <= 0)
+                            .collect(Collectors.toList());
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("Некорректное значение максимальной цены: " + filterMaxPrice, e);
+                }
+            }
+        }
+        return products;
+    }
 }

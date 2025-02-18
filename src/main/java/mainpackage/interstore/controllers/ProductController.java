@@ -11,13 +11,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-//TODO сделать так что бы лист категорий и цветов не менял положение при пэйдж релоаде
-//TODO подумать про discounts и их отображение
-//TODO подумать про размер фоток и как их сделать одинаковыми
-//TODO сдать тест на почте
+//TODO Сделать фильтр цены полями от и до
+//TODO сделать цсс для них
+//TODO Реализовать tag
+//TODO Некоторые фильтры слетают при активации других
+
 @Controller
 @RequestMapping("")
-@SessionAttributes({"availableColors"})
 public class ProductController {
     private final MainCategoryService mainCategoryService;
     private final ProductService productService;
@@ -34,7 +34,8 @@ public class ProductController {
     String getProducts(@PathVariable("id") Long id,
                        @RequestParam(required = false) Long subcategoryId,
                        @RequestParam(required = false) Long nestedCategoryId,
-                       @RequestParam(required = false) List<String> priceRange,
+                       @RequestParam(required = false) String filterMinPrice,
+                       @RequestParam(required = false) String filterMaxPrice,
                        @RequestParam(required = false) List<Long> colors,
                        Model model) {
         model.addAttribute("nestedCategoryId", nestedCategoryId);
@@ -59,18 +60,22 @@ public class ProductController {
         // Available colors for current product list
         model.addAttribute("availableColors", availableColors);
         // Preserve price range filters
-        model.addAttribute("priceRangeFilters", priceRange);
+        //1
+        model.addAttribute("filterMinPrice", filterMinPrice);
+        model.addAttribute("filterMaxPrice", filterMaxPrice);
 
-        // Price filtering
+        //2
+        // Price placeholders
         double[] minAndMaxPrice = productService.getMinAndMaxPriceFromProductList(products);
         Integer minPrice = (int) Math.floor(minAndMaxPrice[0]);
         Integer maxPrice = (int) Math.floor(minAndMaxPrice[1]);
-        model.addAttribute("minPriceFromMainCategory", minPrice);
-        model.addAttribute("maxPriceFromMainCategory", maxPrice);
-
-        if (priceRange != null && !priceRange.isEmpty()) {
-            products = productService.getAllProductsByPriceRange(products, priceRange);
-        }
+        model.addAttribute("placeholderFromPrice", minPrice);
+        model.addAttribute("placeholderToPrice", maxPrice);
+        //TODO filtering not working properly in this place
+        System.out.println("MMMIIIINNN : " + filterMinPrice);
+        System.out.println("MMMAAAXX : " + filterMaxPrice);
+        //3 Products in price range
+        products = productService.getProductsFromMinToMaxPrice(products,filterMinPrice,filterMaxPrice);
 
         // Preserve color filters
         model.addAttribute("selectedColors", colors);
@@ -91,9 +96,7 @@ public class ProductController {
         model.addAttribute("categoryFilters", categoryFilters);
         model.addAttribute("mainCategoryId", id);
 
-        // Price ranges for filter checkboxes
-        List<String> priceRanges = PriceUtils.calculatePriceRanges(minPrice, maxPrice);
-        model.addAttribute("priceRanges", priceRanges);
+
 
         return "products";
     }
