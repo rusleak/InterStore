@@ -15,6 +15,7 @@ public class ProductService {
     private final MainCategoryService mainCategoryService;
     private final ProductRepository productRepository;
     private final SubcategoryService subcategoryService;
+
     public ProductService(MainCategoryService mainCategoryService, ProductRepository productRepository, SubcategoryService subcategoryService) {
         this.mainCategoryService = mainCategoryService;
         this.productRepository = productRepository;
@@ -31,58 +32,62 @@ public class ProductService {
             for (Subcategory subcategory : subcategories) {
                 nestedCategories.addAll(subcategory.getNestedCategories());
             }
-            for(NestedCategory nestedCategory : nestedCategories) {
+            for (NestedCategory nestedCategory : nestedCategories) {
                 products.addAll(nestedCategory.getProducts());
             }
-        }
-       return products;
-    }
-    public List<Product> getProductsByNestedCategoryId(long id) {
-        return productRepository.getProductsByNestedCategoryId(id);
-    }
-    public List<Product> getProductsBySubCategoryId(long id) {
-        List<Product> products = new ArrayList<>();
-        Optional<Subcategory> subcategory = subcategoryService.findById(id);
-        if (subcategory.isPresent()) {
-               List<NestedCategory> nestedCategories = subcategory.get().getNestedCategories();
-               for(NestedCategory nestedCategory : nestedCategories) {
-                  products.addAll(nestedCategory.getProducts());
-               }
         }
         return products;
     }
 
-    public TreeMap<Subcategory, List<NestedCategory>> getCategoriesFilter(long id){
+    public List<Product> getProductsByNestedCategoryId(long id) {
+        return productRepository.getProductsByNestedCategoryId(id);
+    }
+
+    public List<Product> getProductsBySubCategoryId(long id) {
+        List<Product> products = new ArrayList<>();
+        Optional<Subcategory> subcategory = subcategoryService.findById(id);
+        if (subcategory.isPresent()) {
+            List<NestedCategory> nestedCategories = subcategory.get().getNestedCategories();
+            for (NestedCategory nestedCategory : nestedCategories) {
+                products.addAll(nestedCategory.getProducts());
+            }
+        }
+        return products;
+    }
+
+    public TreeMap<Subcategory, List<NestedCategory>> getCategoriesFilter(long id) {
         TreeMap<Subcategory, List<NestedCategory>> map = new TreeMap<>();
         List<Subcategory> subcategories = subcategoryService.findAllByMainCategoryId(id);
         for (Subcategory subcategory : subcategories) {
-            map.put(subcategory,subcategory.getNestedCategories());
+            map.put(subcategory, subcategory.getNestedCategories());
         }
         return map;
     }
+
     public double[] getMinAndMaxPriceFromProductList(List<Product> productList) {
         double[] result = new double[2];
-            OptionalDouble maxPrice = productList.stream()
-                    .mapToDouble(product -> product.getPrice().doubleValue())
-                    .max();
+        OptionalDouble maxPrice = productList.stream()
+                .mapToDouble(product -> product.getPrice().doubleValue())
+                .max();
 
         OptionalDouble minPrice = productList.stream()
                 .mapToDouble(product -> product.getPrice().doubleValue())
                 .min();
 
-        if(minPrice.isPresent()) {
+        if (minPrice.isPresent()) {
             result[0] = minPrice.getAsDouble();
         } else {
             result[0] = 0;
         }
-            if(maxPrice.isPresent()) {
-                result[1] = maxPrice.getAsDouble();
-            } else {
-                result[1] = 100000;
-            }
-            return result;
+        if (maxPrice.isPresent()) {
+            result[1] = maxPrice.getAsDouble();
+        } else {
+            result[1] = 100000;
+        }
+        return result;
     }
-    public List<Product> getAllProductsByPriceRange(List<Product> productList,Long minPrice, Long maxPrice) {
+
+    public List<Product> getAllProductsByPriceRange(List<Product> productList, Long minPrice, Long maxPrice) {
         List<Product> newProductList = new ArrayList<>();
         BigDecimal minPriceDecimal = new BigDecimal(minPrice);
         BigDecimal maxPriceDecimal = new BigDecimal(maxPrice);
@@ -93,6 +98,7 @@ public class ProductService {
         }
         return newProductList;
     }
+
     public List<Product> getAllProductsByPriceRange(List<Product> productList, List<String> priceRanges) {
         List<Product> newProductList = new ArrayList<>();
 
@@ -118,7 +124,7 @@ public class ProductService {
     }
 
     public List<Product> filterProductsByColors(List<Product> products, List<Long> colorIds) {
-        if (colorIds == null || colorIds.isEmpty()) {
+        if (colorIds == null || colorIds.isEmpty() || products == null || products.isEmpty()) {
             return products; // Если фильтр не выбран – возвращаем все товары
         }
 
@@ -185,6 +191,7 @@ public class ProductService {
             return getProductsByMainCategoryId(mainCategoryId);
         }
     }
+
     public List<Product> filterByDimensions(List<Product> products, List<String> dimensions) {
         if (dimensions != null && !dimensions.isEmpty()) {
             return getAllProductsByGivenDimensions(products, dimensions);
@@ -223,7 +230,21 @@ public class ProductService {
                 .collect(Collectors.toCollection(TreeSet::new));
     }
 
+    public TreeSet<String> getAllBrandsFromProducts(List<Product> productList) {
+        return productList.stream()
+                .map(Product::getBrand)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(TreeSet::new));
+    }
 
+    public List<Product> filterProductsByBrands(List<Product> productList, List<String> brands) {
+        if (productList == null || brands == null || brands.isEmpty()) {
+            return productList;
+        }
+        return productList.stream()
+                .filter(product -> brands.contains(product.getBrand()))  // Проверяем, есть ли бренд в списке брендов
+                .collect(Collectors.toList());  // Собираем отфильтрованные продукты в список
+    }
 
 
 }

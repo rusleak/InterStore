@@ -599,8 +599,31 @@ button[type="submit"]:hover {
     display: block;
 }
 
-/* Other existing styles */
+/* Brand Filters */
+.brand-filters {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
 
+.brand-checkbox {
+    flex: 1 1 calc(33.3333% - 10px);
+    display: flex;
+    align-items: center;
+    border: 1px solid grey; /* Add grey border */
+    border-radius: 5px; /* Optional: add border radius */
+    padding: 5px; /* Optional: add padding */
+    transition: border-color 0.3s ease; /* Optional: add transition for border color */
+}
+
+.brand-checkbox:hover {
+    border-color: #2761cb; /* Optional: change border color on hover */
+}
+
+.brand-checkbox input[type="checkbox"] {
+    margin-right: 10px;
+}
 /* Мобильная версия */
 @media (max-width: 1200px) {
     .products {

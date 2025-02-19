@@ -37,6 +37,7 @@ public class ProductController {
                        @RequestParam(required = false) List<Long> colors,
                        @RequestParam(required = false) List<String> dimensions,
                        @RequestParam(required = false) List<String> tagsFromClient,
+                       @RequestParam(required = false) List<String> brands,
                        Model model) {
         model.addAttribute("mainCategoryId", id);
         model.addAttribute("nestedCategoryId", nestedCategoryId);
@@ -46,6 +47,7 @@ public class ProductController {
         //Filtered products
         List<Product> products = productService.getFilteredProducts(id, subcategoryId, nestedCategoryId);
 
+
         // Available colors for current product list
         List<Color> availableColors = colorService.getAvailableColors(products);
         if(availableColors != null) {
@@ -53,6 +55,11 @@ public class ProductController {
         }
         // Available colors for current product list
         model.addAttribute("availableColors", availableColors);
+
+
+        // Brand filtering
+        model.addAttribute("availableBrands",productService.getAllBrandsFromProducts(products));
+        model.addAttribute("selectedBrands",brands);
 
 
         //Firstly get dimensions and tags from subcategory/nestedcategory product list to display them all
@@ -91,7 +98,7 @@ public class ProductController {
             products = productService.filterProductsByColors(products, colors);
         }
 
-
+        products = productService.filterProductsByBrands(products,brands);
 
         // Sorting by decreasing price
         products.sort(Comparator.comparing(Product::getPrice).reversed());
