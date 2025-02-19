@@ -46,12 +46,14 @@ public class ProductController {
         // Available colors for current product list
         List<Color> availableColors = colorService.getAvailableColors(products);
 
-        //Filtering by dimensions
-        products = productService.filterByDimensions(products, dimensions);
-
+        //Firstly get dimensions from subcategory/nestedcategory product list to display them all
         if (subcategoryId != null) {
             model.addAttribute("availableDimensions", productService.getAllDimensionsFromProducts(products));
         }
+        //Filtering by dimensions
+        products = productService.filterByDimensions(products, dimensions);
+
+
         model.addAttribute("selectedDimensions", dimensions);
 
         if(availableColors != null) {
