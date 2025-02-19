@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 //TODO Реализовать tag List<Tag> tagList
-//TODO Как показывать розмеры только если передан subcategoryId
 @Controller
 @RequestMapping("")
 public class ProductController {
@@ -41,33 +40,19 @@ public class ProductController {
         model.addAttribute("subcategoryId", subcategoryId);
 
 
+        //Filtered products
+        List<Product> products = productService.getFilteredProducts(id, subcategoryId, nestedCategoryId);
+
         // Available colors for current product list
-        List<Color> availableColors;
-        List<Product> products;
-        if (nestedCategoryId != null) {
-            products = productService.getProductsByNestedCategoryId(nestedCategoryId);
-            availableColors = colorService.getAvailableColors(products);
-        } else if (subcategoryId != null) {
-            products = productService.getProductsBySubCategoryId(subcategoryId);
-            availableColors = colorService.getAvailableColors(products);
-        } else {
-            products = productService.getProductsByMainCategoryId(id);
-            availableColors = colorService.getAvailableColors(products);
-        }
+        List<Color> availableColors = colorService.getAvailableColors(products);
 
         //Filtering by dimensions
-        if (dimensions != null) {
-            if(!dimensions.isEmpty()) {
-                products = productService.getAllProductsByGivenDimensions(products, dimensions);
-            }
-        }
-        if(subcategoryId != null) {
-            TreeSet<String> availableDimensions = productService.getAllDimensionsFromProducts(products);
-            model.addAttribute("availableDimensions",availableDimensions);
+        products = productService.filterByDimensions(products, dimensions);
+
+        if (subcategoryId != null) {
+            model.addAttribute("availableDimensions", productService.getAllDimensionsFromProducts(products));
         }
         model.addAttribute("selectedDimensions", dimensions);
-
-
 
         if(availableColors != null) {
             Collections.sort(availableColors);
@@ -103,8 +88,7 @@ public class ProductController {
         model.addAttribute("productsList", products);
 
         // Category filters
-        TreeMap<Subcategory, List<NestedCategory>> categoryFilters = productService.getCategoriesFilter(id);
-        model.addAttribute("categoryFilters", categoryFilters);
+        model.addAttribute("categoryFilters", productService.getCategoriesFilter(id));
         model.addAttribute("mainCategoryId", id);
 
 

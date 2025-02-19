@@ -176,6 +176,21 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
+    public List<Product> getFilteredProducts(Long mainCategoryId, Long subcategoryId, Long nestedCategoryId) {
+        if (nestedCategoryId != null) {
+            return getProductsByNestedCategoryId(nestedCategoryId);
+        } else if (subcategoryId != null) {
+            return getProductsBySubCategoryId(subcategoryId);
+        } else {
+            return getProductsByMainCategoryId(mainCategoryId);
+        }
+    }
+    public List<Product> filterByDimensions(List<Product> products, List<String> dimensions) {
+        if (dimensions != null && !dimensions.isEmpty()) {
+            return getAllProductsByGivenDimensions(products, dimensions);
+        }
+        return products;
+    }
 
     public TreeSet<String> getAllDimensionsFromProducts(List<Product> productList) {
         return productList.stream()
