@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-//TODO Реализовать tag List<Tag> tagList
+//TODO Фильтрация по производителю
+//TODO Какая категория активна добавить строку
+//TODO Навести порядок в продукт сервисе
 @Controller
 @RequestMapping("")
 public class ProductController {
@@ -36,6 +38,7 @@ public class ProductController {
                        @RequestParam(required = false) List<String> dimensions,
                        @RequestParam(required = false) List<String> tagsFromClient,
                        Model model) {
+        model.addAttribute("mainCategoryId", id);
         model.addAttribute("nestedCategoryId", nestedCategoryId);
         model.addAttribute("subcategoryId", subcategoryId);
 
@@ -45,22 +48,27 @@ public class ProductController {
 
         // Available colors for current product list
         List<Color> availableColors = colorService.getAvailableColors(products);
-
-        //Firstly get dimensions from subcategory/nestedcategory product list to display them all
-        if (subcategoryId != null) {
-            model.addAttribute("availableDimensions", productService.getAllDimensionsFromProducts(products));
-        }
-        //Filtering by dimensions
-        products = productService.filterByDimensions(products, dimensions);
-
-
-        model.addAttribute("selectedDimensions", dimensions);
-
         if(availableColors != null) {
             Collections.sort(availableColors);
         }
         // Available colors for current product list
         model.addAttribute("availableColors", availableColors);
+
+
+        //Firstly get dimensions and tags from subcategory/nestedcategory product list to display them all
+        if (subcategoryId != null) {
+            model.addAttribute("availableDimensions", productService.getAllDimensionsFromProducts(products));
+            model.addAttribute("availableTags",productService.getAllTagsFromProducts(products));
+        }
+
+        //Filtering by dimensions
+        products = productService.filterByDimensions(products, dimensions);
+        //Filtering by tags
+        products = productService.filterProductsByTags(products,tagsFromClient);
+        model.addAttribute("selectedTags", tagsFromClient);
+        model.addAttribute("selectedDimensions", dimensions);
+
+
         //1 Preserve price range filters
         model.addAttribute("filterMinPrice", filterMinPrice);
         model.addAttribute("filterMaxPrice", filterMaxPrice);
@@ -91,7 +99,7 @@ public class ProductController {
 
         // Category filters
         model.addAttribute("categoryFilters", productService.getCategoriesFilter(id));
-        model.addAttribute("mainCategoryId", id);
+
 
 
 

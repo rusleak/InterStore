@@ -200,6 +200,29 @@ public class ProductService {
                 .collect(Collectors.toCollection(TreeSet::new)); // Собираем в `TreeSet`
     }
 
+    public List<Product> filterProductsByTags(List<Product> productList, List<String> tags) {
+        if (productList == null || tags == null || tags.isEmpty()) {
+            return productList != null ? productList : Collections.emptyList();
+        }
+        return productList.stream()
+                .filter(product -> product.getTagList().stream()
+                        .map(Tag::getName)
+                        .anyMatch(tags::contains))
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+
+    public TreeSet<String> getAllTagsFromProducts(List<Product> productList) {
+        return productList.stream()
+                .flatMap(product -> Optional.ofNullable(product.getTagList()) // Безопасно обрабатываем null
+                        .stream()
+                        .flatMap(List::stream)
+                )
+                .filter(Objects::nonNull) // Убираем возможные null-значения
+                .map(Tag::getName)
+                .collect(Collectors.toCollection(TreeSet::new));
+    }
+
 
 
 
