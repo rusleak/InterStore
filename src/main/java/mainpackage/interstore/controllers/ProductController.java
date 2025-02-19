@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 //TODO Реализовать tag List<Tag> tagList
-//TODO подумать как Реализовать dimensons как лист
+//TODO Как показывать розмеры только если передан subcategoryId
 @Controller
 @RequestMapping("")
 public class ProductController {
@@ -56,12 +56,14 @@ public class ProductController {
         }
 
         //Filtering by dimensions
-        TreeSet<String> availableDimensions = productService.getAllDimensionsFromProducts(products);
-        model.addAttribute("availableDimensions",availableDimensions);
-        if(dimensions != null) {
+        if (dimensions != null) {
             if(!dimensions.isEmpty()) {
                 products = productService.getAllProductsByGivenDimensions(products, dimensions);
             }
+        }
+        if(subcategoryId != null) {
+            TreeSet<String> availableDimensions = productService.getAllDimensionsFromProducts(products);
+            model.addAttribute("availableDimensions",availableDimensions);
         }
         model.addAttribute("selectedDimensions", dimensions);
 

@@ -69,13 +69,13 @@
         </form>
 
         <!-- Dimension Filter Form -->
-        <div class="subcategory-container" onclick="toggleDimensions(this)">
+        <div class="subcategory-container" th:if="${subcategoryId != null}" onclick="toggleDimensions(this)">
             <span class="subcategory-link">Розміри :</span>
             <div class="arrow-container">
                 <span class="arrow">▼</span>
             </div>
         </div>
-        <form th:action="@{/main-category/{id}(id=${mainCategoryId})}" method="get" class="filter-form nested-category dimension-form">
+        <form th:action="@{/main-category/{id}(id=${mainCategoryId})}" method="get" class="filter-form nested-category dimension-form" th:if="${subcategoryId != null}">
             <!-- Preserve nestedCategoryId and subcategoryId -->
             <input type="hidden" th:name="nestedCategoryId" th:value="${nestedCategoryId}" />
             <input type="hidden" th:name="subcategoryId" th:value="${subcategoryId}" />
