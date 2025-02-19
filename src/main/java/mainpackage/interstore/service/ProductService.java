@@ -170,16 +170,21 @@ public class ProductService {
 
     public List<Product> getAllProductsByGivenDimensions(List<Product> productList, List<String> dimensions) {
         return productList.stream()
-                .filter(product -> dimensions.contains(product.getDimensions()))
+                .filter(product -> product.getDimensions().stream()
+                        .map(Dimensions::getSize)
+                        .anyMatch(dimensions::contains)) // Проверяем, есть ли пересечение размеров
                 .collect(Collectors.toList());
     }
 
+
     public TreeSet<String> getAllDimensionsFromProducts(List<Product> productList) {
         return productList.stream()
-                .map(Product::getDimensions)
-                .filter(dimension -> dimension != null)
-                .collect(Collectors.toCollection(TreeSet::new));
+                .flatMap(product -> product.getDimensions().stream()) // Разворачиваем список размеров
+                .filter(Objects::nonNull) // Фильтруем `null`
+                .map(Dimensions::getSize) // Преобразуем `Dimension` в `String`
+                .collect(Collectors.toCollection(TreeSet::new)); // Собираем в `TreeSet`
     }
+
 
 
 

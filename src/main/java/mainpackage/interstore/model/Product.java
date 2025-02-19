@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.awt.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +44,13 @@ public class Product {
     @Column(name = "brand")
     private String brand;
 
-    @Column(name = "dimensions")
-    private String dimensions;
+    @ManyToMany
+    @JoinTable(name = "product_dimension",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "dimension_id"))
+    private List<Dimensions> dimensions;
+
+
     @ManyToOne
     @JoinColumn(name = "nested_category_id")
     private NestedCategory nestedCategory;
@@ -158,11 +164,11 @@ public class Product {
         this.discountedPrice = discountedPrice;
     }
 
-    public String getDimensions() {
+    public List<Dimensions> getDimensions() {
         return dimensions;
     }
 
-    public void setDimensions(String dimensions) {
+    public void setDimensions(List<Dimensions> dimensions) {
         this.dimensions = dimensions;
     }
 

@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 //TODO Реализовать tag List<Tag> tagList
-//TODO Реализовать sizes private String dimensions;
 //TODO подумать как Реализовать dimensons как лист
 @Controller
 @RequestMapping("")
@@ -57,7 +56,7 @@ public class ProductController {
         }
 
         //Filtering by dimensions
-        Set<String> availableDimensions = productService.getAllDimensionsFromProducts(products);
+        TreeSet<String> availableDimensions = productService.getAllDimensionsFromProducts(products);
         model.addAttribute("availableDimensions",availableDimensions);
         if(dimensions != null) {
             if(!dimensions.isEmpty()) {
