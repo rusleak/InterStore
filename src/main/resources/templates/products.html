@@ -140,6 +140,11 @@
                 <input type="hidden" name="tagsFromClient" th:value="${tag}" />
             </div>
 
+            <!-- Preserve brand filter state -->
+            <div th:each="brand : ${selectedBrands}">
+                <input type="hidden" name="brands" th:value="${brand}" />
+            </div>
+
             <h3>Розміри</h3>
             <div class="dimension-filters">
                 <div th:each="dimension : ${availableDimensions}" class="dimension-checkbox">
@@ -175,6 +180,11 @@
             <!-- Preserve dimension filter state -->
             <div th:each="dimension : ${selectedDimensions}">
                 <input type="hidden" name="dimensions" th:value="${dimension}" />
+            </div>
+
+            <!-- Preserve brand filter state -->
+            <div th:each="brand : ${selectedBrands}">
+                <input type="hidden" name="brands" th:value="${brand}" />
             </div>
 
             <h3>Теги</h3>
