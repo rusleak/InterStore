@@ -35,8 +35,10 @@ public class Product {
     @Column(name = "discounted_price")
     private BigDecimal discountedPrice;
 
+    @ElementCollection
+    @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "image_url")
-    private String imageUrl;
+    private List<String> productImages = new ArrayList<>();
 
     @Column(name = "stock_quantity", nullable = false)
     private Integer stockQuantity;
@@ -105,15 +107,6 @@ public class Product {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
-    }
-
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
     }
 
     public Integer getStockQuantity() {
@@ -187,4 +180,13 @@ public class Product {
     public void setOneC_id(Long oneC_id) {
         this.oneC_id = oneC_id;
     }
+
+    public List<String> getProductImages() {
+        return productImages;
+    }
+
+    public void setProductImages(List<String> productImages) {
+        this.productImages = productImages;
+    }
+
 }

@@ -148,6 +148,19 @@ public class ProductService {
         }
     }
 
+    public List<Product> excludeNullPictures(List<Product> products) {
+        if (products != null || !products.isEmpty()) {
+            // Фильтруем продукты, у которых список изображений пуст или равен null
+            return products.stream()
+                    .filter(product -> product.getProductImages() != null && !product.getProductImages().isEmpty())
+                    .collect(Collectors.toList());
+        } else {
+            // Если список продуктов пустой или равен null, возвращаем его без изменений
+            return products;
+        }
+    }
+
+
     public List<Product> filterByDimensions(List<Product> products, List<String> dimensions) {
         if (dimensions != null && !dimensions.isEmpty()) {
             return getAllProductsByGivenDimensions(products, dimensions);
@@ -223,7 +236,6 @@ public class ProductService {
         model.addAttribute("productDiscountedPrice",product.getDiscountedPrice());
         model.addAttribute("productTags",product.getTagList());
         model.addAttribute("productStockQuantity",product.getStockQuantity());
-        model.addAttribute("productStockQuantity",product.getImageUrl());
 
     }
 

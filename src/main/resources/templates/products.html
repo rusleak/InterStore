@@ -201,7 +201,7 @@
         <div class="product" th:each="product : ${productsList}">
             <a th:href="@{/product/{id}(id=${product.id})}">
                 <div class="product-image-wrapper">
-                    <img th:src="@{/images/{imageName}(imageName=${product.imageUrl})}" alt="Product Image">
+                    <img th:src="@{/images/{imageName}(imageName=${product.productImages.get(0)})}" alt="Product Image">
                 </div>
                 <div class="product-info">
                     <h3 th:text="${product.name}">Product Name</h3>

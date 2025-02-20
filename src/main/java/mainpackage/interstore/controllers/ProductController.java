@@ -1,6 +1,7 @@
 package mainpackage.interstore.controllers;
 
 import mainpackage.interstore.model.*;
+import mainpackage.interstore.repository.ProductRepository;
 import mainpackage.interstore.service.ColorService;
 import mainpackage.interstore.service.MainCategoryService;
 import mainpackage.interstore.service.ProductService;
@@ -19,13 +20,16 @@ public class ProductController {
     private final ProductService productService;
     private final ColorService colorService;
     private final SubcategoryService subcategoryService;
+    private final ProductRepository productRepository;
 
     @Autowired
-    public ProductController(MainCategoryService mainCategoryService, ProductService productService, ColorService colorService, SubcategoryService subcategoryService) {
+    public ProductController(MainCategoryService mainCategoryService, ProductService productService, ColorService colorService, SubcategoryService subcategoryService,
+                             ProductRepository productRepository) {
         this.mainCategoryService = mainCategoryService;
         this.productService = productService;
         this.colorService = colorService;
         this.subcategoryService = subcategoryService;
+        this.productRepository = productRepository;
     }
 
     @GetMapping("/main-category/{id}")
@@ -45,7 +49,7 @@ public class ProductController {
 
         //Filtered products
         List<Product> products = productService.getFilteredProducts(id, subcategoryId, nestedCategoryId);
-
+        products = productService.excludeNullPictures(products);
 
         // Available colors for current product list
         List<Color> availableColors = colorService.getAvailableColors(products);
@@ -108,7 +112,6 @@ public class ProductController {
 
 //Adding current active category
         model.addAttribute("activeCategory",mainCategoryService.getActiveCategory(id,subcategoryId,nestedCategoryId, products));
-
 
 
         return "products";
