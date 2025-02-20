@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details</title>
+    <link rel="stylesheet" href="/css/productPage.css">
+</head>
+<body>
+<!-- Include header -->
+<div th:replace="~{includes/header :: header}"></div>
+
+<div class="product-details">
+    <h1 th:text="${product.name}">Product Name</h1>
+    <img th:src="@{${product.imageUrl}}" alt="Product Image">
+    <p th:text="${product.description}">Product Description</p>
+
+    <div class="pricing">
+        <span th:if="${product.discountedPrice != null}">
+            <strike th:text="${#numbers.formatDecimal(product.price, 2)}"></strike>
+            <span th:text="${#numbers.formatDecimal(product.discountedPrice, 2)}"></span>
+        </span>
+        <span th:if="${product.discountedPrice == null}" th:text="${#numbers.formatDecimal(product.price, 2)}"></span>
+    </div>
+
+    <p>Stock Quantity: <span th:text="${product.stockQuantity}">0</span></p>
+    <p>Brand: <span th:text="${product.brand}">Brand Name</span></p>
+    <p>1C ID: <span th:text="${product.oneC_id}">1C ID</span></p>
+
+    <div class="categories">
+        <p>Category: <span th:text="${product.nestedCategory.name}">Category Name</span></p>
+    </div>
+
+    <div class="dimensions">
+        <h3>Dimensions:</h3>
+        <ul>
+            <li th:each="dimension : ${product.dimensions}" th:text="${dimension.size}">Dimension</li>
+        </ul>
+    </div>
+
+    <div class="colors">
+        <h3>Available Colors:</h3>
+        <ul>
+            <li th:each="color : ${product.colors}" th:text="${color.name}"></li>
+        </ul>
+    </div>
+
+    <div class="tags">
+        <h3>Tags:</h3>
+        <ul>
+            <li th:each="tag : ${product.tagList}" th:text="${tag.name}">Tag</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Include footer -->
+<div th:replace="~{includes/footer.html}"></div>
+</body>
+</html>

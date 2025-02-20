@@ -1,10 +1,9 @@
 package mainpackage.interstore.service;
 
-import lombok.RequiredArgsConstructor;
 import mainpackage.interstore.model.*;
 import mainpackage.interstore.repository.ProductRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.ui.Model;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -203,6 +202,29 @@ public class ProductService {
                 .collect(Collectors.toList());  // Собираем отфильтрованные продукты в список
     }
 
+   ////////////////////PRODUCT PAGE///////////////
+    public Product findById(Long id) {
+        Product foundOne = null;
+        if(id != null) {
+            Optional<Product> product = productRepository.findById(id);
+            foundOne = product.get();
+        }
+        return foundOne;
+    }
 
+    public void fillTheModelProductPage(Model model, Long id) {
+        Product product = findById(id);
+        model.addAttribute("productName",product.getName());
+        model.addAttribute("productBrand",product.getBrand());
+        model.addAttribute("productDescription",product.getDescription());
+        model.addAttribute("productColors",product.getColors());
+        model.addAttribute("productDimensions",product.getDimensions());
+        model.addAttribute("productId",product.getOneC_id());
+        model.addAttribute("productDiscountedPrice",product.getDiscountedPrice());
+        model.addAttribute("productTags",product.getTagList());
+        model.addAttribute("productStockQuantity",product.getStockQuantity());
+        model.addAttribute("productStockQuantity",product.getImageUrl());
+
+    }
 
 }

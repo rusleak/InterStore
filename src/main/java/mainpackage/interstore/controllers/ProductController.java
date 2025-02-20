@@ -11,7 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-
+//TODO нужная пагинация
 @Controller
 @RequestMapping("")
 public class ProductController {
@@ -29,7 +29,7 @@ public class ProductController {
     }
 
     @GetMapping("/main-category/{id}")
-    String getProducts(@PathVariable("id") Long id,
+    public String getProducts(@PathVariable("id") Long id,
                        @RequestParam(required = false) Long subcategoryId,
                        @RequestParam(required = false) Long nestedCategoryId,
                        @RequestParam(required = false) String filterMinPrice,
@@ -112,5 +112,16 @@ public class ProductController {
 
 
         return "products";
+    }
+
+    @GetMapping("product/{id}")
+    public String getProduct(@PathVariable("id") Long id,
+                             Model model) {
+        model.addAttribute("product",productService.findById(id));
+
+
+
+
+        return "productPage";
     }
 }
