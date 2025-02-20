@@ -657,6 +657,14 @@ button[type="submit"]:hover {
 .brand-form.active {
     display: block;
 }
+
+.active-category-heading {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: -15px;
+    margin-top: 15px;
+}
 /* Мобильная версия */
 @media (max-width: 1200px) {
     .products {

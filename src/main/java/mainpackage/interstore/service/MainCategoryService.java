@@ -30,7 +30,7 @@ public class MainCategoryService {
     public Optional<MainCategory> findById(long id) {
         return mainCategoryRepository.findById(id);
     }
-    public String getActiveCategory(Long mainCategoryId, Long subCategoryId, Long nestedCategoryId) {
+    public String getActiveCategory(Long mainCategoryId, Long subCategoryId, Long nestedCategoryId, List<Product> products) {
         String currentActiveCategory = "";
         if(nestedCategoryId != null) {
             Optional<NestedCategory> nestedCategory = nestedCategoryService.findById(nestedCategoryId);
@@ -42,6 +42,11 @@ public class MainCategoryService {
         } else {
             currentActiveCategory = mainCategoryRepository.findById(mainCategoryId).get().getName();
         }
+
+        if(products == null || products.isEmpty()) {
+            currentActiveCategory = currentActiveCategory + "<br>На разі немає товарів з такими фільтрами або з цієї категорії";
+        }
+
         return currentActiveCategory;
     }
 }

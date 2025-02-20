@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-//TODO Оптимизировать html
 @Controller
 @RequestMapping("")
 public class ProductController {
@@ -43,8 +42,6 @@ public class ProductController {
         model.addAttribute("mainCategoryId", id);
         model.addAttribute("nestedCategoryId", nestedCategoryId);
         model.addAttribute("subcategoryId", subcategoryId);
-        //Adding current active category
-        model.addAttribute("activeCategory",mainCategoryService.getActiveCategory(id,subcategoryId,nestedCategoryId));
 
         //Filtered products
         List<Product> products = productService.getFilteredProducts(id, subcategoryId, nestedCategoryId);
@@ -109,6 +106,8 @@ public class ProductController {
         // Category filters
         model.addAttribute("categoryFilters", subcategoryService.getCategoriesFilter(id));
 
+//Adding current active category
+        model.addAttribute("activeCategory",mainCategoryService.getActiveCategory(id,subcategoryId,nestedCategoryId, products));
 
 
 
