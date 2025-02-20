@@ -5,11 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Інтер</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .active-category-heading {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: -15px;
+            margin-top: 15px;
+        }
+    </style>
 </head>
 <body>
 <!-- Включаем header -->
 <div th:replace="~{includes/header :: header}"></div>
-
+<div class="active-category-heading" th:text="'Активна категорія : ' + ${activeCategory}"></div>
 <div class="main-content">
     <!-- Слева блок с фильтрами -->
     <div class="sidebar">
@@ -245,6 +254,7 @@
         <!-- Reset Filters Button -->
         <a th:href="@{/main-category/{id}(id=${mainCategoryId})}" class="reset-filters-button">Видалити фільтри</a>
     </div>
+
 
     <!-- Блок с товарами -->
     <div class="products">
