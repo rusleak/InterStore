@@ -4,6 +4,7 @@ import mainpackage.interstore.model.*;
 import mainpackage.interstore.service.ColorService;
 import mainpackage.interstore.service.MainCategoryService;
 import mainpackage.interstore.service.ProductService;
+import mainpackage.interstore.service.SubcategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,8 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-//TODO Какая категория активна добавить строку
-//TODO Навести порядок в продукт сервисе
 //TODO Оптимизировать html
 @Controller
 @RequestMapping("")
@@ -20,12 +19,14 @@ public class ProductController {
     private final MainCategoryService mainCategoryService;
     private final ProductService productService;
     private final ColorService colorService;
+    private final SubcategoryService subcategoryService;
 
     @Autowired
-    public ProductController(MainCategoryService mainCategoryService, ProductService productService, ColorService colorService) {
+    public ProductController(MainCategoryService mainCategoryService, ProductService productService, ColorService colorService, SubcategoryService subcategoryService) {
         this.mainCategoryService = mainCategoryService;
         this.productService = productService;
         this.colorService = colorService;
+        this.subcategoryService = subcategoryService;
     }
 
     @GetMapping("/main-category/{id}")
@@ -106,7 +107,7 @@ public class ProductController {
         model.addAttribute("productsList", products);
 
         // Category filters
-        model.addAttribute("categoryFilters", productService.getCategoriesFilter(id));
+        model.addAttribute("categoryFilters", subcategoryService.getCategoriesFilter(id));
 
 
 

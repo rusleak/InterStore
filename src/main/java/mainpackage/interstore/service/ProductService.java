@@ -55,14 +55,7 @@ public class ProductService {
         return products;
     }
 
-    public TreeMap<Subcategory, List<NestedCategory>> getCategoriesFilter(long id) {
-        TreeMap<Subcategory, List<NestedCategory>> map = new TreeMap<>();
-        List<Subcategory> subcategories = subcategoryService.findAllByMainCategoryId(id);
-        for (Subcategory subcategory : subcategories) {
-            map.put(subcategory, subcategory.getNestedCategories());
-        }
-        return map;
-    }
+
 
     public double[] getMinAndMaxPriceFromProductList(List<Product> productList) {
         double[] result = new double[2];
@@ -85,42 +78,6 @@ public class ProductService {
             result[1] = 100000;
         }
         return result;
-    }
-
-    public List<Product> getAllProductsByPriceRange(List<Product> productList, Long minPrice, Long maxPrice) {
-        List<Product> newProductList = new ArrayList<>();
-        BigDecimal minPriceDecimal = new BigDecimal(minPrice);
-        BigDecimal maxPriceDecimal = new BigDecimal(maxPrice);
-        for (Product product : productList) {
-            if (product.getPrice().compareTo(minPriceDecimal) >= 0 && product.getPrice().compareTo(maxPriceDecimal) <= 0) {
-                newProductList.add(product);
-            }
-        }
-        return newProductList;
-    }
-
-    public List<Product> getAllProductsByPriceRange(List<Product> productList, List<String> priceRanges) {
-        List<Product> newProductList = new ArrayList<>();
-
-        // Проверяем на null и пустоту списка
-        if (priceRanges != null && !priceRanges.isEmpty()) {
-            for (String range : priceRanges) {
-                String[] bounds = range.split("-");
-                long minPrice = Long.parseLong(bounds[0]);
-                long maxPrice = Long.parseLong(bounds[1]);
-
-                // Получаем товары для каждого диапазона цен
-                List<Product> temporaryProducts = getAllProductsByPriceRange(productList, minPrice, maxPrice);
-
-                // Добавляем товары в новый список, избегая дублирования
-                for (Product product : temporaryProducts) {
-                    if (!newProductList.contains(product)) {
-                        newProductList.add(product);
-                    }
-                }
-            }
-        }
-        return newProductList;
     }
 
     public List<Product> filterProductsByColors(List<Product> products, List<Long> colorIds) {
