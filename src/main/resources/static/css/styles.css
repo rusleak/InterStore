@@ -470,7 +470,201 @@ button[type="submit"]:hover {
 .active .arrow {
     transform: rotate(180deg);
 }
+.reset-filters-button {
+    display: block;
+    margin: 20px 0;
+    padding: 10px 20px;
+    background-color: #ff4c4c;
+    color: white;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+}
+.reset-filters-button:hover {
+    background-color: #ff1a1a;
+}
+.price-filters {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+.price-range-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.price-range-container label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+.price-range-container input[type="number"] {
+    width: calc(50% - 10px);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+.filter-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+    font-size: medium;
+}
+.filter-form button:hover {
+    background-color: #555;
+}
 
+/* Dimension Filters */
+.dimension-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.dimension-checkbox {
+    flex: 1 1 calc(33.3333% - 10px);
+    display: flex;
+    align-items: center;
+}
+
+.dimension-checkbox input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.dimension-form {
+    display: none;
+}
+
+.dimension-form.active {
+    display: block;
+}
+.dimension-checkbox {
+    flex: 1 1 calc(33.3333% - 10px);
+    display: flex;
+    align-items: center;
+    border: 1px solid grey; /* Add grey border */
+    border-radius: 5px; /* Optional: add border radius */
+    padding: 5px; /* Optional: add padding */
+    transition: border-color 0.3s ease; /* Optional: add transition for border color */
+}
+
+.dimension-checkbox:hover {
+    border-color: #2761cb; /* Optional: change border color on hover */
+}
+
+.dimension-checkbox input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+
+    /* Tag Filters */
+.tag-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tag-checkbox {
+    flex: 1 1 calc(33.3333% - 10px);
+    display: flex;
+    align-items: center;
+    border: 1px solid grey; /* Add grey border */
+    border-radius: 5px; /* Optional: add border radius */
+    padding: 5px; /* Optional: add padding */
+    transition: border-color 0.3s ease; /* Optional: add transition for border color */
+}
+
+.tag-checkbox:hover {
+    border-color: #2761cb; /* Optional: change border color on hover */
+}
+
+.tag-checkbox input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.tag-form {
+    display: none;
+}
+
+.tag-form.active {
+    display: block;
+}
+
+/* Brand Filters */
+.brand-filters {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.brand-checkbox {
+    flex: 1 1 calc(33.3333% - 10px);
+    display: flex;
+    align-items: center;
+    border: 1px solid grey; /* Add grey border */
+    border-radius: 5px; /* Optional: add border radius */
+    padding: 5px; /* Optional: add padding */
+    transition: border-color 0.3s ease; /* Optional: add transition for border color */
+}
+
+.brand-checkbox:hover {
+    border-color: #2761cb; /* Optional: change border color on hover */
+}
+
+.brand-checkbox input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+/* Brand Filters */
+.brand-filters {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.brand-checkbox {
+    flex: 1 1 calc(33.3333% - 10px);
+    display: flex;
+    align-items: center;
+    border: 1px solid grey; /* Add grey border */
+    border-radius: 5px; /* Optional: add border radius */
+    padding: 5px; /* Optional: add padding */
+    transition: border-color 0.3s ease; /* Optional: add transition for border color */
+}
+
+.brand-checkbox:hover {
+    border-color: #2761cb; /* Optional: change border color on hover */
+}
+
+.brand-checkbox input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.brand-form {
+    display: none;
+}
+.brand-form.active {
+    display: block;
+}
+
+.active-category-heading {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: -15px;
+    margin-top: 15px;
+}
 /* Мобильная версия */
 @media (max-width: 1200px) {
     .products {

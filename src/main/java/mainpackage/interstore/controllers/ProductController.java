@@ -1,73 +1,93 @@
 package mainpackage.interstore.controllers;
 
 import mainpackage.interstore.model.*;
-import mainpackage.interstore.priceUtils.PriceUtils;
 import mainpackage.interstore.service.ColorService;
 import mainpackage.interstore.service.MainCategoryService;
 import mainpackage.interstore.service.ProductService;
+import mainpackage.interstore.service.SubcategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-//TODO сделать так что бы лист категорий и цветов не менял положение при пэйдж релоаде
-//TODO подумать про discounts и их отображение
-//TODO подумать про размер фоток и как их сделать одинаковыми
-//TODO сдать тест на почте
+
 @Controller
 @RequestMapping("")
-@SessionAttributes({"availableColors"})
 public class ProductController {
     private final MainCategoryService mainCategoryService;
     private final ProductService productService;
     private final ColorService colorService;
+    private final SubcategoryService subcategoryService;
 
     @Autowired
-    public ProductController(MainCategoryService mainCategoryService, ProductService productService, ColorService colorService) {
+    public ProductController(MainCategoryService mainCategoryService, ProductService productService, ColorService colorService, SubcategoryService subcategoryService) {
         this.mainCategoryService = mainCategoryService;
         this.productService = productService;
         this.colorService = colorService;
+        this.subcategoryService = subcategoryService;
     }
 
     @GetMapping("/main-category/{id}")
     String getProducts(@PathVariable("id") Long id,
                        @RequestParam(required = false) Long subcategoryId,
                        @RequestParam(required = false) Long nestedCategoryId,
-                       @RequestParam(required = false) List<String> priceRange,
+                       @RequestParam(required = false) String filterMinPrice,
+                       @RequestParam(required = false) String filterMaxPrice,
                        @RequestParam(required = false) List<Long> colors,
+                       @RequestParam(required = false) List<String> dimensions,
+                       @RequestParam(required = false) List<String> tagsFromClient,
+                       @RequestParam(required = false) List<String> brands,
                        Model model) {
+        model.addAttribute("mainCategoryId", id);
         model.addAttribute("nestedCategoryId", nestedCategoryId);
         model.addAttribute("subcategoryId", subcategoryId);
 
+        //Filtered products
+        List<Product> products = productService.getFilteredProducts(id, subcategoryId, nestedCategoryId);
+
+
         // Available colors for current product list
-        List<Color> availableColors;
-        List<Product> products;
-        if (nestedCategoryId != null) {
-            products = productService.getProductsByNestedCategoryId(nestedCategoryId);
-            availableColors = colorService.getAvailableColors(products);
-        } else if (subcategoryId != null) {
-            products = productService.getProductsBySubCategoryId(subcategoryId);
-            availableColors = colorService.getAvailableColors(products);
-        } else {
-            products = productService.getProductsByMainCategoryId(id);
-            availableColors = colorService.getAvailableColors(products);
+        List<Color> availableColors = colorService.getAvailableColors(products);
+        if(availableColors != null) {
+            Collections.sort(availableColors);
         }
         // Available colors for current product list
         model.addAttribute("availableColors", availableColors);
-        // Preserve price range filters
-        model.addAttribute("priceRangeFilters", priceRange);
 
-        // Price filtering
+
+        // Brand filtering
+        model.addAttribute("availableBrands",productService.getAllBrandsFromProducts(products));
+        model.addAttribute("selectedBrands",brands);
+
+
+        //Firstly get dimensions and tags from subcategory/nestedcategory product list to display them all
+        if (subcategoryId != null) {
+            model.addAttribute("availableDimensions", productService.getAllDimensionsFromProducts(products));
+            model.addAttribute("availableTags",productService.getAllTagsFromProducts(products));
+        }
+
+        //Filtering by dimensions
+        products = productService.filterByDimensions(products, dimensions);
+        //Filtering by tags
+        products = productService.filterProductsByTags(products,tagsFromClient);
+        model.addAttribute("selectedTags", tagsFromClient);
+        model.addAttribute("selectedDimensions", dimensions);
+
+
+        //1 Preserve price range filters
+        model.addAttribute("filterMinPrice", filterMinPrice);
+        model.addAttribute("filterMaxPrice", filterMaxPrice);
+
+        //2 Price placeholders
         double[] minAndMaxPrice = productService.getMinAndMaxPriceFromProductList(products);
         Integer minPrice = (int) Math.floor(minAndMaxPrice[0]);
         Integer maxPrice = (int) Math.floor(minAndMaxPrice[1]);
-        model.addAttribute("minPriceFromMainCategory", minPrice);
-        model.addAttribute("maxPriceFromMainCategory", maxPrice);
+        model.addAttribute("placeholderFromPrice", minPrice);
+        model.addAttribute("placeholderToPrice", maxPrice);
 
-        if (priceRange != null && !priceRange.isEmpty()) {
-            products = productService.getAllProductsByPriceRange(products, priceRange);
-        }
+        //3 Products in price range
+        products = productService.getProductsFromMinToMaxPrice(products,filterMinPrice,filterMaxPrice);
 
         // Preserve color filters
         model.addAttribute("selectedColors", colors);
@@ -77,20 +97,19 @@ public class ProductController {
             products = productService.filterProductsByColors(products, colors);
         }
 
-
+        products = productService.filterProductsByBrands(products,brands);
 
         // Sorting by decreasing price
         products.sort(Comparator.comparing(Product::getPrice).reversed());
         model.addAttribute("productsList", products);
 
         // Category filters
-        Map<Subcategory, List<NestedCategory>> categoryFilters = productService.getCategoriesFilter(id);
-        model.addAttribute("categoryFilters", categoryFilters);
-        model.addAttribute("mainCategoryId", id);
+        model.addAttribute("categoryFilters", subcategoryService.getCategoriesFilter(id));
 
-        // Price ranges for filter checkboxes
-        List<String> priceRanges = PriceUtils.calculatePriceRanges(minPrice, maxPrice);
-        model.addAttribute("priceRanges", priceRanges);
+//Adding current active category
+        model.addAttribute("activeCategory",mainCategoryService.getActiveCategory(id,subcategoryId,nestedCategoryId, products));
+
+
 
         return "products";
     }

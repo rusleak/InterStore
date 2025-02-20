@@ -9,7 +9,7 @@
 <body>
 <!-- Включаем header -->
 <div th:replace="~{includes/header :: header}"></div>
-<div class="active-category-heading" th:utext="'Активна категорія : ' + ${activeCategory}"></div>
+<div class="active-category-heading" th:text="'Активна категорія : ' + ${activeCategory}"></div>
 <div class="main-content">
     <!-- Слева блок с фильтрами -->
     <div class="sidebar">
@@ -36,22 +36,32 @@
             </ul>
         </div>
 
-        <!-- Filter Forms -->
+        <!-- Price Filter Form -->
         <form th:action="@{/main-category/{id}(id=${mainCategoryId})}" method="get" class="filter-form">
+            <!-- Preserve nestedCategoryId and subcategoryId -->
             <input type="hidden" th:name="nestedCategoryId" th:value="${nestedCategoryId}" />
             <input type="hidden" th:name="subcategoryId" th:value="${subcategoryId}" />
+
+            <!-- Preserve color filter state -->
             <div th:each="selectedColor : ${selectedColors}">
                 <input type="hidden" name="colors" th:value="${selectedColor}" />
             </div>
+
+            <!-- Preserve dimension filter state -->
             <div th:each="dimension : ${selectedDimensions}">
                 <input type="hidden" name="dimensions" th:value="${dimension}" />
             </div>
+
+            <!-- Preserve tag filter state -->
             <div th:each="tag : ${selectedTags}">
                 <input type="hidden" name="tagsFromClient" th:value="${tag}" />
             </div>
+
+            <!-- Preserve brand filter state -->
             <div th:each="brand : ${selectedBrands}">
                 <input type="hidden" name="brands" th:value="${brand}" />
             </div>
+
             <div class="price-filters">
                 <h3>Цена</h3>
                 <div class="price-range-container">
@@ -76,19 +86,29 @@
             </div>
         </div>
         <form th:action="@{/main-category/{id}(id=${mainCategoryId})}" method="get" class="filter-form nested-category brand-form">
+            <!-- Preserve nestedCategoryId and subcategoryId -->
             <input type="hidden" th:name="nestedCategoryId" th:value="${nestedCategoryId}" />
             <input type="hidden" th:name="subcategoryId" th:value="${subcategoryId}" />
+
+            <!-- Preserve price filter state -->
             <input type="hidden" name="filterMinPrice" th:value="${filterMinPrice}" />
             <input type="hidden" name="filterMaxPrice" th:value="${filterMaxPrice}" />
+
+            <!-- Preserve color filter state -->
             <div th:each="selectedColor : ${selectedColors}">
                 <input type="hidden" name="colors" th:value="${selectedColor}" />
             </div>
+
+            <!-- Preserve dimension filter state -->
             <div th:each="dimension : ${selectedDimensions}">
                 <input type="hidden" name="dimensions" th:value="${dimension}" />
             </div>
+
+            <!-- Preserve tag filter state -->
             <div th:each="tag : ${selectedTags}">
                 <input type="hidden" name="tagsFromClient" th:value="${tag}" />
             </div>
+
             <h3>Бренди</h3>
             <div class="brand-filters">
                 <div th:each="brand : ${availableBrands}" class="brand-checkbox">
@@ -108,19 +128,29 @@
             </div>
         </div>
         <form th:action="@{/main-category/{id}(id=${mainCategoryId})}" method="get" class="filter-form nested-category dimension-form" th:if="${subcategoryId != null}">
+            <!-- Preserve nestedCategoryId and subcategoryId -->
             <input type="hidden" th:name="nestedCategoryId" th:value="${nestedCategoryId}" />
             <input type="hidden" th:name="subcategoryId" th:value="${subcategoryId}" />
+
+            <!-- Preserve price filter state -->
             <input type="hidden" name="filterMinPrice" th:value="${filterMinPrice}" />
             <input type="hidden" name="filterMaxPrice" th:value="${filterMaxPrice}" />
+
+            <!-- Preserve color filter state -->
             <div th:each="selectedColor : ${selectedColors}">
                 <input type="hidden" name="colors" th:value="${selectedColor}" />
             </div>
+
+            <!-- Preserve tag filter state -->
             <div th:each="tag : ${selectedTags}">
                 <input type="hidden" name="tagsFromClient" th:value="${tag}" />
             </div>
+
+            <!-- Preserve brand filter state -->
             <div th:each="brand : ${selectedBrands}">
                 <input type="hidden" name="brands" th:value="${brand}" />
             </div>
+
             <h3>Розміри</h3>
             <div class="dimension-filters">
                 <div th:each="dimension : ${availableDimensions}" class="dimension-checkbox">
@@ -140,19 +170,29 @@
             </div>
         </div>
         <form th:action="@{/main-category/{id}(id=${mainCategoryId})}" method="get" class="filter-form nested-category tag-form" th:if="${subcategoryId != null}">
+            <!-- Preserve nestedCategoryId and subcategoryId -->
             <input type="hidden" th:name="nestedCategoryId" th:value="${nestedCategoryId}" />
             <input type="hidden" th:name="subcategoryId" th:value="${subcategoryId}" />
+
+            <!-- Preserve price filter state -->
             <input type="hidden" name="filterMinPrice" th:value="${filterMinPrice}" />
             <input type="hidden" name="filterMaxPrice" th:value="${filterMaxPrice}" />
+
+            <!-- Preserve color filter state -->
             <div th:each="selectedColor : ${selectedColors}">
                 <input type="hidden" name="colors" th:value="${selectedColor}" />
             </div>
+
+            <!-- Preserve dimension filter state -->
             <div th:each="dimension : ${selectedDimensions}">
                 <input type="hidden" name="dimensions" th:value="${dimension}" />
             </div>
+
+            <!-- Preserve brand filter state -->
             <div th:each="brand : ${selectedBrands}">
                 <input type="hidden" name="brands" th:value="${brand}" />
             </div>
+
             <h3>Теги</h3>
             <div class="tag-filters">
                 <div th:each="tag : ${availableTags}" class="tag-checkbox">
@@ -166,19 +206,29 @@
 
         <!-- Color Filter Form -->
         <form th:action="@{/main-category/{id}(id=${mainCategoryId})}" method="get" class="filter-form">
+            <!-- Preserve nestedCategoryId and subcategoryId -->
             <input type="hidden" th:name="nestedCategoryId" th:value="${nestedCategoryId}" />
             <input type="hidden" th:name="subcategoryId" th:value="${subcategoryId}" />
+
+            <!-- Preserve price filter state -->
             <input type="hidden" name="filterMinPrice" th:value="${filterMinPrice}" />
             <input type="hidden" name="filterMaxPrice" th:value="${filterMaxPrice}" />
+
+            <!-- Preserve dimension filter state -->
             <div th:each="dimension : ${selectedDimensions}">
                 <input type="hidden" name="dimensions" th:value="${dimension}" />
             </div>
+
+            <!-- Preserve tag filter state -->
             <div th:each="tag : ${selectedTags}">
                 <input type="hidden" name="tagsFromClient" th:value="${tag}" />
             </div>
+
+            <!-- Preserve brand filter state -->
             <div th:each="brand : ${selectedBrands}">
                 <input type="hidden" name="brands" th:value="${brand}" />
             </div>
+
             <h3>Цвета</h3>
             <div class="color-filters">
                 <div th:each="color : ${availableColors}" class="color-checkbox">
@@ -195,6 +245,7 @@
         <!-- Reset Filters Button -->
         <a th:href="@{/main-category/{id}(id=${mainCategoryId})}" class="reset-filters-button">Видалити фільтри</a>
     </div>
+
 
     <!-- Блок с товарами -->
     <div class="products">
@@ -236,6 +287,13 @@
         const form = document.querySelector('.brand-form');
         form.classList.toggle('active');
         element.classList.toggle('active');
+    }
+
+    const slider = document.getElementById('priceSlider');
+    const sliderValue = document.getElementById('sliderValue');
+
+    slider.oninput = function() {
+        sliderValue.textContent = this.value;
     }
 </script>
 </body>

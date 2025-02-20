@@ -6,10 +6,7 @@ import mainpackage.interstore.repository.SubcategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class SubcategoryService {
@@ -26,6 +23,14 @@ public class SubcategoryService {
     }
     public List<Subcategory> findAllByMainCategoryId(long id) {
         return subcategoryRepository.findAllByMainCategoryId(id);
+    }
+    public TreeMap<Subcategory, List<NestedCategory>> getCategoriesFilter(long id) {
+        TreeMap<Subcategory, List<NestedCategory>> map = new TreeMap<>();
+        List<Subcategory> subcategories = findAllByMainCategoryId(id);
+        for (Subcategory subcategory : subcategories) {
+            map.put(subcategory, subcategory.getNestedCategories());
+        }
+        return map;
     }
 
 

@@ -1,9 +1,11 @@
 package mainpackage.interstore.service;
 
-import lombok.RequiredArgsConstructor;
+import mainpackage.interstore.model.NestedCategory;
 import mainpackage.interstore.repository.NestedCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class NestedCategoryService {
@@ -11,5 +13,9 @@ public class NestedCategoryService {
     @Autowired
     public NestedCategoryService(NestedCategoryRepository nestedCategoryRepository) {
         this.nestedCategoryRepository = nestedCategoryRepository;
+    }
+
+    Optional<NestedCategory> findById(Long id) {
+        return nestedCategoryRepository.findById(id);
     }
 }

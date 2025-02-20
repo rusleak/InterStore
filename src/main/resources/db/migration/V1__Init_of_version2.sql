@@ -48,17 +48,25 @@ CREATE TABLE product_color
     product_id BIGINT NOT NULL
 );
 
+CREATE TABLE product_tag
+(
+    product_id BIGINT NOT NULL,
+    tag_id     BIGINT NOT NULL
+);
+
 CREATE TABLE products
 (
     id                 BIGINT AUTO_INCREMENT NOT NULL,
     name               VARCHAR(255)  NOT NULL,
     `description`      TEXT NULL,
     price              DECIMAL(8, 2) NOT NULL,
-    discount           INT NULL,
+    discounted_price   DECIMAL NULL,
     image_url          VARCHAR(255) NULL,
     stock_quantity     INT           NOT NULL,
     brand              VARCHAR(255) NULL,
+    dimensions         VARCHAR(255) NULL,
     nested_category_id BIGINT NULL,
+    onec_id            BIGINT        NOT NULL UNIQUE ,
     CONSTRAINT pk_products PRIMARY KEY (id)
 );
 
@@ -69,6 +77,13 @@ CREATE TABLE subcategories
     name             VARCHAR(255) NOT NULL,
     imageurl         VARCHAR(255) NOT NULL,
     CONSTRAINT pk_subcategories PRIMARY KEY (id)
+);
+
+CREATE TABLE tag
+(
+    id   BIGINT AUTO_INCREMENT NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    CONSTRAINT pk_tag PRIMARY KEY (id)
 );
 
 ALTER TABLE nested_categories
@@ -91,3 +106,9 @@ ALTER TABLE product_color
 
 ALTER TABLE product_color
     ADD CONSTRAINT fk_procol_on_product FOREIGN KEY (product_id) REFERENCES products (id);
+
+ALTER TABLE product_tag
+    ADD CONSTRAINT fk_protag_on_product FOREIGN KEY (product_id) REFERENCES products (id);
+
+ALTER TABLE product_tag
+    ADD CONSTRAINT fk_protag_on_tag FOREIGN KEY (tag_id) REFERENCES tag (id);
