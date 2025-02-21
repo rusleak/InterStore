@@ -22,7 +22,7 @@
                 <img th:src="@{'/images/' + ${image}}"
                      alt="Product Thumbnail"
                      th:data-image="${image}"
-                     th:onclick="|document.getElementById('mainImage').src = '/images/' + this.dataset.image; highlightThumbnail(this);|"/>
+                     th:onclick="|document.getElementById('mainImage').src = '/images/' + this.dataset.image; highlightThumbnail(this.parentElement);|"/>
             </div>
         </div>
     </div>

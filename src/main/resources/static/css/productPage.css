@@ -2,6 +2,13 @@ body {
     font-family: Arial, sans-serif;
 }
 
+:root {
+    --thumbnail-size: 70px; /* Change this value to adjust the size */
+    --thumbnail-border-color: #ccc; /* Border color for all thumbnails */
+    --thumbnail-selected-border-color: #000; /* Border color for selected thumbnail */
+    --thumbnail-border-width: 4px; /* Change this value to adjust the border width */
+}
+
 .product-details {
     display: flex;
 }
@@ -47,14 +54,14 @@ body {
 }
 
 .product-thumbnail img {
-    width: calc(50px * 1.7);
-    height: 50px;
+    width: calc(var(--thumbnail-size) * 1.7); /* Use the custom property for width */
+    height: var(--thumbnail-size); /* Use the custom property for height */
     object-fit: cover;
-    border: 2px solid transparent;
+    border: var(--thumbnail-border-width) solid var(--thumbnail-border-color); /* Border for all thumbnails */
 }
 
 .product-thumbnail.selected img {
-    border-color: #000;
+    border-color: var(--thumbnail-selected-border-color); /* Border color for selected thumbnail */
 }
 
 .product-info {
