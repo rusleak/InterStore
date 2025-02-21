@@ -225,6 +225,9 @@ public class ProductService {
         return foundOne;
     }
 
+
+
+
     public void fillTheModelProductPage(Model model, Long id) {
         if(id != null) {
         Product product = findById(id);

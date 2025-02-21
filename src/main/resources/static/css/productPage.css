@@ -3,31 +3,36 @@ body {
 }
 
 :root {
-    --thumbnail-size: 70px; /* Change this value to adjust the size */
+    --thumbnail-size: 60px; /* Adjusted size for thumbnails */
     --thumbnail-border-color: #ccc; /* Border color for all thumbnails */
     --thumbnail-selected-border-color: #000; /* Border color for selected thumbnail */
-    --thumbnail-border-width: 4px; /* Change this value to adjust the border width */
+    --thumbnail-border-width: 4px; /* Adjusted border width */
 }
 
 .product-details {
     display: flex;
+    justify-content: center;
+    padding: 20px; /* Added padding for free space */
 }
 
 .product-images {
-    width: 40%; /* Change this value to adjust the percentage coverage */
+    width: 40%; /* Percentage coverage */
     margin-right: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 20px; /* Added padding */
+    box-sizing: border-box; /* Include padding in the element's total width and height */
 }
 
 .product-main-image {
-    width: 100%;
+    width: 90%; /* Adjusted width */
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
     padding-bottom: calc(100% / 2 * 1.7); /* Maintain aspect ratio 2 / 1.7 */
+    margin-bottom: 20px; /* Added margin */
 }
 
 .product-main-image img {
@@ -44,7 +49,7 @@ body {
     justify-content: center;
     margin-top: 10px;
     padding: 10px;
-    width: 100%;
+    width: 90%; /* Adjusted width */
     overflow-x: auto;
 }
 
@@ -66,4 +71,86 @@ body {
 
 .product-info {
     flex: 2;
+    padding: 20px; /* Added padding */
+    box-sizing: border-box; /* Include padding in the element's total width and height */
+}
+
+.product-description-container {
+    background-color: #f0f0f0;
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+    margin-top: 20px; /* Increased margin for more space */
+    border-radius: 4px;
+    max-width: 90%; /* Adjusted width */
+    box-sizing: border-box; /* Include padding in the element's total width and height */
+    margin: 0 auto; /* Center the description box */
+}
+
+/* Product color filters */
+.product-color-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px; /* Reduced gap between radio buttons */
+    margin-top: 10px;
+}
+
+.product-color-radio {
+    flex: 0 1 45px; /* Fix width of the color radio container */
+}
+
+.product-color-radio input[type="radio"] {
+    display: none; /* Hide the standard radio button */
+}
+
+.product-color-radio label {
+    width: 45px; /* Set size */
+    height: 45px; /* Set size */
+    display: inline-block;
+    border: 1px solid #000;
+    cursor: pointer;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%; /* Make the radio buttons round */
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-color-radio input[type="radio"]:checked + label {
+    border: 3px solid #007bff; /* Blue border when selected */
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5); /* Shadow when selected */
+}
+
+.product-color-radio label:hover {
+    opacity: 0.8; /* Slight transparency change on hover */
+}
+
+/* Product dimension filters */
+.product-dimension-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Space between radio buttons */
+    margin-top: 10px;
+}
+
+.product-dimension-radio input[type="radio"] {
+    display: none; /* Hide the standard radio button */
+}
+
+.product-dimension-radio label {
+    padding: 10px 20px;
+    border: 1px solid #000;
+    cursor: pointer;
+    border-radius: 20px; /* Make the radio buttons round */
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-dimension-radio input[type="radio"]:checked + label {
+    border: 3px solid #007bff; /* Blue border when selected */
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5); /* Shadow when selected */
+}
+
+.product-dimension-radio label:hover {
+    opacity: 0.8; /* Slight transparency change on hover */
 }

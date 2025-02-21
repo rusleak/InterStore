@@ -25,18 +25,37 @@
                      th:onclick="|document.getElementById('mainImage').src = '/images/' + this.dataset.image; highlightThumbnail(this.parentElement);|"/>
             </div>
         </div>
+        <div class="product-description-container">
+            <h2>Опис:</h2>
+            <div class="product-description" th:text="${productDescription}">Product Description</div>
+        </div>
     </div>
     <div class="product-info">
         <h1 th:text="${productName}">Product Name</h1>
-        <p><strong>Brand:</strong> <span th:text="${productBrand}">Brand Name</span></p>
-        <p><strong>Description:</strong> <span th:text="${productDescription}">Product Description</span></p>
-        <p><strong>Colors:</strong> <span th:each="color : ${productColors}" th:text="${color}">Color</span></p>
-        <p><strong>Dimensions:</strong> <span th:text="${productDimensions}">Product Dimensions</span></p>
-        <p><strong>Product ID:</strong> <span th:text="${productId}">Product ID</span></p>
-        <p><strong>Discounted Price:</strong> $<span th:text="${productDiscountedPrice}">Discounted Price</span></p>
-        <p><strong>Price:</strong> $<span th:text="${productPrice}">Price</span></p>
-        <p><strong>Tags:</strong> <span th:each="tag : ${productTags}" th:text="${tag}">Tag</span></p>
-        <p><strong>Stock Quantity:</strong> <span th:text="${productStockQuantity}">Stock Quantity</span></p>
+        <p><strong>Ціна:</strong> <span th:text="${productPrice}">Price</span> грн</p>
+        <p><strong>Ціна зі знижкою:</strong> <span th:text="${productDiscountedPrice}">Discounted Price</span> грн</p>
+        <p><strong>Кольори:</strong></p>
+        <form>
+            <div class="product-color-filters">
+                <div th:each="color : ${productColors}" class="product-color-radio">
+                    <input type="radio" name="colors" th:value="${color.id}" th:id="'color-' + ${color.id}" />
+                    <label th:for="'color-' + ${color.id}"
+                           th:style="'background-image: url(\'/colors_for_products/' + ${color.imageUrl} + '\'); background-size: cover; background-position: center;'">
+                    </label>
+                </div>
+            </div>
+            <p><strong>Розміри:</strong></p>
+            <div class="product-dimension-filters">
+                <div th:each="dimension : ${productDimensions}" class="product-dimension-radio">
+                    <input type="radio" name="dimensions" th:value="${dimension}" th:id="'dimension-' + ${dimension}" />
+                    <label th:for="'dimension-' + ${dimension}" th:text="${dimension}">Dimension</label>
+                </div>
+            </div>
+        </form>
+        <p><strong>Ід продукту:</strong> <span th:text="${productId}">Product ID</span></p>
+        <p><strong>Теги:</strong> <span th:text="${#strings.listJoin(productTags, ' / ')}"></span></p>
+        <p><strong>Бренд:</strong> <span th:text="${productBrand}">Brand Name</span></p>
+        <p><strong>В наявності:</strong> <span th:text="${productStockQuantity}">Stock Quantity</span></p>
     </div>
 </div>
 
