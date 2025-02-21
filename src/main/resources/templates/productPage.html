@@ -5,55 +5,73 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Details</title>
     <link rel="stylesheet" href="/css/productPage.css">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
 <!-- Include header -->
 <div th:replace="~{includes/header :: header}"></div>
 
+<!-- Product Details -->
 <div class="product-details">
-    <h1 th:text="${product.name}">Product Name</h1>
-    <img th:src="@{${product.imageUrl}}" alt="Product Image">
-    <p th:text="${product.description}">Product Description</p>
-
-    <div class="pricing">
-        <span th:if="${product.discountedPrice != null}">
-            <strike th:text="${#numbers.formatDecimal(product.price, 2)}"></strike>
-            <span th:text="${#numbers.formatDecimal(product.discountedPrice, 2)}"></span>
-        </span>
-        <span th:if="${product.discountedPrice == null}" th:text="${#numbers.formatDecimal(product.price, 2)}"></span>
+    <div class="product-images">
+        <div class="product-main-image">
+            <img id="mainImage" th:src="@{'/images/' + ${productImages[0]}}" alt="Product Image"/>
+        </div>
+        <div class="product-thumbnail-list">
+            <div th:each="image, iterStat : ${productImages}" class="product-thumbnail" th:classappend="${iterStat.index == 0} ? 'selected' : ''">
+                <img th:src="@{'/images/' + ${image}}"
+                     alt="Product Thumbnail"
+                     th:data-image="${image}"
+                     th:onclick="|document.getElementById('mainImage').src = '/images/' + this.dataset.image; highlightThumbnail(this);|"/>
+            </div>
+        </div>
     </div>
-
-    <p>Stock Quantity: <span th:text="${product.stockQuantity}">0</span></p>
-    <p>Brand: <span th:text="${product.brand}">Brand Name</span></p>
-    <p>1C ID: <span th:text="${product.oneC_id}">1C ID</span></p>
-
-    <div class="categories">
-        <p>Category: <span th:text="${product.nestedCategory.name}">Category Name</span></p>
-    </div>
-
-    <div class="dimensions">
-        <h3>Dimensions:</h3>
-        <ul>
-            <li th:each="dimension : ${product.dimensions}" th:text="${dimension.size}">Dimension</li>
-        </ul>
-    </div>
-
-    <div class="colors">
-        <h3>Available Colors:</h3>
-        <ul>
-            <li th:each="color : ${product.colors}" th:text="${color.name}"></li>
-        </ul>
-    </div>
-
-    <div class="tags">
-        <h3>Tags:</h3>
-        <ul>
-            <li th:each="tag : ${product.tagList}" th:text="${tag.name}">Tag</li>
-        </ul>
+    <div class="product-info">
+        <h1 th:text="${productName}">Product Name</h1>
+        <p><strong>Brand:</strong> <span th:text="${productBrand}">Brand Name</span></p>
+        <p><strong>Description:</strong> <span th:text="${productDescription}">Product Description</span></p>
+        <p><strong>Colors:</strong> <span th:each="color : ${productColors}" th:text="${color}">Color</span></p>
+        <p><strong>Dimensions:</strong> <span th:text="${productDimensions}">Product Dimensions</span></p>
+        <p><strong>Product ID:</strong> <span th:text="${productId}">Product ID</span></p>
+        <p><strong>Discounted Price:</strong> $<span th:text="${productDiscountedPrice}">Discounted Price</span></p>
+        <p><strong>Price:</strong> $<span th:text="${productPrice}">Price</span></p>
+        <p><strong>Tags:</strong> <span th:each="tag : ${productTags}" th:text="${tag}">Tag</span></p>
+        <p><strong>Stock Quantity:</strong> <span th:text="${productStockQuantity}">Stock Quantity</span></p>
     </div>
 </div>
 
 <!-- Include footer -->
 <div th:replace="~{includes/footer.html}"></div>
+
+<script>
+    let currentIndex = 0;
+    const images = /*[[${productImages}]]*/ [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const thumbnails = document.querySelectorAll('.product-thumbnail img');
+
+        thumbnails.forEach((thumbnail) => {
+            images.push(thumbnail.dataset.image);
+        });
+
+        if (images.length > 0) {
+            updateMainImage();
+        }
+    });
+
+    function highlightThumbnail(selectedThumbnail) {
+        const thumbnails = document.getElementsByClassName('product-thumbnail');
+        for (let i = 0; i < thumbnails.length; i++) {
+            thumbnails[i].classList.remove('selected');
+        }
+        selectedThumbnail.classList.add('selected');
+    }
+
+    function updateMainImage() {
+        const mainImage = document.getElementById('mainImage');
+        mainImage.src = '/images/' + images[currentIndex];
+        highlightThumbnail(document.querySelector(`.product-thumbnail img[data-image="${images[currentIndex]}"]`).parentElement);
+    }
+</script>
 </body>
 </html>

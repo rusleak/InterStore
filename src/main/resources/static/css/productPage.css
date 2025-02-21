@@ -1,75 +1,62 @@
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
 }
 
 .product-details {
-    width: 80%;
-    max-width: 1000px;
-    margin: 20px auto;
-    background-color: #ffffff;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
 }
 
-.product-details h1 {
-    font-size: 2em;
-    margin-bottom: 10px;
+.product-images {
+    width: 40%; /* Change this value to adjust the percentage coverage */
+    margin-right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.product-details img {
+.product-main-image {
     width: 100%;
-    max-width: 300px;
-    height: auto;
-    display: block;
-    margin: 10px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding-bottom: calc(100% / 2 * 1.7); /* Maintain aspect ratio 2 / 1.7 */
 }
 
-.product-details p {
-    font-size: 1em;
-    line-height: 1.5em;
-    color: #333333;
+.product-main-image img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-.product-details .pricing {
-    font-size: 1.2em;
-    margin: 10px 0;
+.product-thumbnail-list {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    padding: 10px;
+    width: 100%;
+    overflow-x: auto;
 }
 
-.product-details .pricing strike {
-    color: #999999;
-    margin-right: 10px;
+.product-thumbnail {
+    margin: 0 5px;
+    cursor: pointer;
 }
 
-.product-details .categories,
-.product-details .dimensions,
-.product-details .colors,
-.product-details .tags {
-    margin: 20px 0;
+.product-thumbnail img {
+    width: calc(50px * 1.7);
+    height: 50px;
+    object-fit: cover;
+    border: 2px solid transparent;
 }
 
-.product-details .dimensions ul,
-.product-details .colors ul,
-.product-details .tags ul {
-    list-style: none;
-    padding: 0;
+.product-thumbnail.selected img {
+    border-color: #000;
 }
 
-.product-details .dimensions li,
-.product-details .colors li,
-.product-details .tags li {
-    display: inline-block;
-    background-color: #e0e0e0;
-    margin: 5px;
-    padding: 5px 10px;
-    border-radius: 5px;
-}
-
-.product-details .colors li {
-    width: 20px;
-    height: 20px;
-    display: inline-block;
-    border: 1px solid #ccc;
+.product-info {
+    flex: 2;
 }

@@ -226,17 +226,24 @@ public class ProductService {
     }
 
     public void fillTheModelProductPage(Model model, Long id) {
+        if(id != null) {
         Product product = findById(id);
         model.addAttribute("productName",product.getName());
         model.addAttribute("productBrand",product.getBrand());
         model.addAttribute("productDescription",product.getDescription());
         model.addAttribute("productColors",product.getColors());
         model.addAttribute("productDimensions",product.getDimensions());
-        model.addAttribute("productId",product.getOneC_id());
-        model.addAttribute("productDiscountedPrice",product.getDiscountedPrice());
+        model.addAttribute("productId",product.getOneC_id().toString());
+        try {
+            product.getDiscountedPrice().toString();
+            model.addAttribute("discountedPrice",product.getDiscountedPrice());
+        }catch (NullPointerException e) {
+        }
+        model.addAttribute("productPrice",product.getPrice().toString());
         model.addAttribute("productTags",product.getTagList());
-        model.addAttribute("productStockQuantity",product.getStockQuantity());
-
+        model.addAttribute("productStockQuantity",product.getStockQuantity().toString());
+        model.addAttribute("productImages",product.getProductImages());
+        }
     }
 
 }

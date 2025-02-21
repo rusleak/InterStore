@@ -120,7 +120,7 @@ public class ProductController {
     @GetMapping("product/{id}")
     public String getProduct(@PathVariable("id") Long id,
                              Model model) {
-        model.addAttribute("product",productService.findById(id));
+        productService.fillTheModelProductPage(model,id);
 
 
 
