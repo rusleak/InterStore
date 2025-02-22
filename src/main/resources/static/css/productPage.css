@@ -73,6 +73,7 @@ body {
     flex: 2;
     padding: 20px; /* Added padding */
     box-sizing: border-box; /* Include padding in the element's total width and height */
+    position: relative;
 }
 
 .product-description-container {
@@ -153,4 +154,45 @@ body {
 
 .product-dimension-radio label:hover {
     opacity: 0.8; /* Slight transparency change on hover */
+}
+
+/* Style for the productId */
+.product-id {
+    color: #ccc; /* Light grey color */
+    font-size: 0.8em; /* Smaller font size */
+}
+
+/* Style for the price */
+.price-container,
+.discounted-price-container {
+    display: flex;
+    align-items: center;
+}
+
+.price-label,
+.discounted-price-label {
+    font-size: 1.8em;
+    margin-right: 10px;
+}
+
+.price {
+    font-size: 1.5em;
+    color: #000;
+}
+
+.original-price {
+    font-size: 1.5em;
+    color: #999;
+    text-decoration: line-through;
+}
+
+.discounted-price {
+    font-size: 1.8em;
+    color: #e60000;
+    font-weight: bold;
+}
+
+/* Align meta information */
+.product-meta {
+    margin-top: 20px; /* Add margin to separate from other elements */
 }

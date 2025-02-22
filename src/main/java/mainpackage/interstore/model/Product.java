@@ -32,7 +32,7 @@ public class Product {
     @Column(name = "price", precision = 8, scale = 2, nullable = false)
     private BigDecimal price;
 
-    @Column(name = "discounted_price")
+    @Column(name = "discounted_price",precision = 8, scale = 2, nullable = true)
     private BigDecimal discountedPrice;
 
     @ElementCollection

@@ -238,11 +238,12 @@ public class ProductService {
         model.addAttribute("productDimensions",product.getDimensions());
         model.addAttribute("productId",product.getOneC_id().toString());
         try {
-            product.getDiscountedPrice().toString();
-            model.addAttribute("discountedPrice",product.getDiscountedPrice());
+
+            model.addAttribute("productDiscountedPrice",product.getDiscountedPrice().toString() + " грн");
         }catch (NullPointerException e) {
+
         }
-        model.addAttribute("productPrice",product.getPrice().toString());
+        model.addAttribute("productPrice",product.getPrice().toString() + " грн");
         model.addAttribute("productTags",product.getTagList());
         model.addAttribute("productStockQuantity",product.getStockQuantity().toString());
         model.addAttribute("productImages",product.getProductImages());

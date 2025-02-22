@@ -32,8 +32,15 @@
     </div>
     <div class="product-info">
         <h1 th:text="${productName}">Product Name</h1>
-        <p><strong>Ціна:</strong> <span th:text="${productPrice}">Price</span> грн</p>
-        <p><strong>Ціна зі знижкою:</strong> <span th:text="${productDiscountedPrice}">Discounted Price</span> грн</p>
+        <p class="price-container">
+            <strong class="price-label">Ціна:</strong>
+            <span class="original-price" th:if="${productDiscountedPrice != null}" th:text="${productPrice}">Price</span>
+            <span class="price" th:if="${productDiscountedPrice == null}" th:text="${productPrice}">Price</span>
+        </p>
+        <p class="discounted-price-container" th:if="${productDiscountedPrice != null}">
+            <strong class="discounted-price-label">Ціна зі знижкою:</strong>
+            <span class="discounted-price" th:text="${productDiscountedPrice}">Discounted Price</span>
+        </p>
         <p><strong>Кольори:</strong></p>
         <form>
             <div class="product-color-filters">
@@ -52,10 +59,12 @@
                 </div>
             </div>
         </form>
-        <p><strong>Ід продукту:</strong> <span th:text="${productId}">Product ID</span></p>
-        <p><strong>Теги:</strong> <span th:text="${#strings.listJoin(productTags, ' / ')}"></span></p>
-        <p><strong>Бренд:</strong> <span th:text="${productBrand}">Brand Name</span></p>
-        <p><strong>В наявності:</strong> <span th:text="${productStockQuantity}">Stock Quantity</span></p>
+        <div class="product-meta">
+            <p class="product-id"><strong>ID:</strong> <span th:text="${productId}">Product ID</span></p>
+            <p><strong>Теги:</strong> <span th:text="${#strings.listJoin(productTags, ' / ')}"></span></p>
+            <p><strong>Бренд:</strong> <span th:text="${productBrand}">Brand Name</span></p>
+            <p><strong>В наявності:</strong> <span th:text="${productStockQuantity}">Stock Quantity</span></p>
+        </div>
     </div>
 </div>
 
