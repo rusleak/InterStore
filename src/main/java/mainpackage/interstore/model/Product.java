@@ -8,7 +8,7 @@ import java.awt.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-//TODO Image должен быть не один
+
 @Entity
 @Builder
 @NoArgsConstructor

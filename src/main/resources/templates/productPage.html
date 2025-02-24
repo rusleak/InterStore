@@ -13,6 +13,7 @@
 
 <!-- Product Details -->
 <div class="product-details">
+    <p class="product-id"><strong>ID:</strong> <span th:text="${productId}">Product ID</span></p> <!-- Moved to top -->
     <div class="product-images">
         <div class="product-main-image">
             <img id="mainImage" th:src="@{'/images/' + ${productImages[0]}}" alt="Product Image"/>
@@ -42,10 +43,10 @@
             <span class="discounted-price" th:text="${productDiscountedPrice}">Discounted Price</span>
         </p>
         <p><strong>Кольори:</strong></p>
-        <form>
+        <form id="productForm">
             <div class="product-color-filters">
                 <div th:each="color : ${productColors}" class="product-color-radio">
-                    <input type="radio" name="colors" th:value="${color.id}" th:id="'color-' + ${color.id}" />
+                    <input type="radio" name="colors" th:value="${color.id}" th:id="'color-' + ${color.id}" required />
                     <label th:for="'color-' + ${color.id}"
                            th:style="'background-image: url(\'/colors_for_products/' + ${color.imageUrl} + '\'); background-size: cover; background-position: center;'">
                     </label>
@@ -54,13 +55,13 @@
             <p><strong>Розміри:</strong></p>
             <div class="product-dimension-filters">
                 <div th:each="dimension : ${productDimensions}" class="product-dimension-radio">
-                    <input type="radio" name="dimensions" th:value="${dimension}" th:id="'dimension-' + ${dimension}" />
+                    <input type="radio" name="dimensions" th:value="${dimension}" th:id="'dimension-' + ${dimension}" required />
                     <label th:for="'dimension-' + ${dimension}" th:text="${dimension}">Dimension</label>
                 </div>
             </div>
+            <button type="submit" id="addToCartButton" disabled>В корзину</button>
         </form>
         <div class="product-meta">
-            <p class="product-id"><strong>ID:</strong> <span th:text="${productId}">Product ID</span></p>
             <p><strong>Теги:</strong> <span th:text="${#strings.listJoin(productTags, ' / ')}"></span></p>
             <p><strong>Бренд:</strong> <span th:text="${productBrand}">Brand Name</span></p>
             <p><strong>В наявності:</strong> <span th:text="${productStockQuantity}">Stock Quantity</span></p>
@@ -77,6 +78,8 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         const thumbnails = document.querySelectorAll('.product-thumbnail img');
+        const addToCartButton = document.getElementById('addToCartButton');
+        const productForm = document.getElementById('productForm');
 
         thumbnails.forEach((thumbnail) => {
             images.push(thumbnail.dataset.image);
@@ -85,6 +88,11 @@
         if (images.length > 0) {
             updateMainImage();
         }
+
+        productForm.addEventListener('change', () => {
+            const allSelected = productForm.checkValidity();
+            addToCartButton.disabled = !allSelected;
+        });
     });
 
     function highlightThumbnail(selectedThumbnail) {

@@ -13,11 +13,23 @@ body {
     display: flex;
     justify-content: center;
     padding: 20px; /* Added padding for free space */
+    position: relative;
+}
+
+.product-id {
+    color: #ccc; /* Light grey color */
+    font-size: 1em; /* Increased font size */
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.5); /* Background color with transparency */
+    padding: 5px 10px;
+    border-radius: 5px;
 }
 
 .product-images {
     width: 40%; /* Percentage coverage */
-    margin-right: 20px;
+    margin-right: 40px; /* Increased margin */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -32,7 +44,7 @@ body {
     align-items: center;
     position: relative;
     padding-bottom: calc(100% / 2 * 1.7); /* Maintain aspect ratio 2 / 1.7 */
-    margin-bottom: 20px; /* Added margin */
+    margin-bottom: 40px; /* Increased margin */
 }
 
 .product-main-image img {
@@ -47,14 +59,14 @@ body {
 .product-thumbnail-list {
     display: flex;
     justify-content: center;
-    margin-top: 10px;
+    margin-top: 20px; /* Increased margin */
     padding: 10px;
     width: 90%; /* Adjusted width */
     overflow-x: auto;
 }
 
 .product-thumbnail {
-    margin: 0 5px;
+    margin: 0 10px; /* Increased margin */
     cursor: pointer;
 }
 
@@ -74,15 +86,13 @@ body {
     padding: 20px; /* Added padding */
     box-sizing: border-box; /* Include padding in the element's total width and height */
     position: relative;
+    font-size: 1.2em; /* Increase font size */
 }
 
 .product-description-container {
     background-color: #f0f0f0;
-    padding: 10px;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-bottom: 20px;
-    margin-top: 20px; /* Increased margin for more space */
+    padding: 20px; /* Increased padding */
+    margin-top: 40px; /* Increased margin */
     border-radius: 4px;
     max-width: 90%; /* Adjusted width */
     box-sizing: border-box; /* Include padding in the element's total width and height */
@@ -93,8 +103,8 @@ body {
 .product-color-filters {
     display: flex;
     flex-wrap: wrap;
-    gap: 5px; /* Reduced gap between radio buttons */
-    margin-top: 10px;
+    gap: 10px; /* Increased gap between radio buttons */
+    margin-top: 20px; /* Increased margin */
 }
 
 .product-color-radio {
@@ -131,8 +141,8 @@ body {
 .product-dimension-filters {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px; /* Space between radio buttons */
-    margin-top: 10px;
+    gap: 20px; /* Increased gap between radio buttons */
+    margin-top: 20px; /* Increased margin */
 }
 
 .product-dimension-radio input[type="radio"] {
@@ -159,7 +169,7 @@ body {
 /* Style for the productId */
 .product-id {
     color: #ccc; /* Light grey color */
-    font-size: 0.8em; /* Smaller font size */
+    font-size: 1em; /* Increased font size */
 }
 
 /* Style for the price */
@@ -171,28 +181,52 @@ body {
 
 .price-label,
 .discounted-price-label {
-    font-size: 1.8em;
+    font-size: 2em; /* Increased font size */
     margin-right: 10px;
 }
 
 .price {
-    font-size: 1.5em;
+    font-size: 1.7em; /* Increased font size */
     color: #000;
 }
 
 .original-price {
-    font-size: 1.5em;
+    font-size: 1.7em; /* Increased font size */
     color: #999;
     text-decoration: line-through;
 }
 
 .discounted-price {
-    font-size: 1.8em;
+    font-size: 2em; /* Increased font size */
     color: #e60000;
     font-weight: bold;
 }
 
 /* Align meta information */
 .product-meta {
-    margin-top: 20px; /* Add margin to separate from other elements */
+    margin-top: 80px; /* Doubled the margin for tags */
+}
+
+/* Style for the Add to Cart button */
+#addToCartButton {
+    width: 200px; /* Increased width */
+    height: 50px; /* Increased height */
+    background-color: #007bff; /* Button background color */
+    color: white; /* Button text color */
+    border: none; /* Remove border */
+    border-radius: 25px; /* Rounded corners */
+    font-size: 1.2em; /* Increased font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Transition effects */
+    margin-top: 30px; /* Increased top margin */
+}
+
+#addToCartButton:disabled {
+    background-color: #ccc; /* Disabled button background color */
+    cursor: not-allowed; /* Change cursor for disabled button */
+}
+
+#addToCartButton:hover:not(:disabled) {
+    background-color: #0056b3; /* Darker blue on hover */
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5); /* Shadow effect on hover */
 }
