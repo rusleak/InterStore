@@ -15,7 +15,8 @@ public class DimensionsService {
         this.dimensionsRepository = dimensionsRepository;
     }
 
-    public Optional<Dimensions> findDimensionById(Long id) {
+    public Optional<Dimensions> findDimensions(Long id) {
         return dimensionsRepository.findById(id);
     }
+
 }

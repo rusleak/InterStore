@@ -18,6 +18,15 @@ public class Cart {
         }
     }
 
+    public void updateProductQuantity(Product product, Color color, Dimensions size, int quantity) {
+
+            Long key = generateKey(product, color, size);
+            if (items.containsKey(key)) {
+                CartItem existingItem = items.get(key);
+                existingItem.setQuantity(quantity);
+            }
+    }
+
     public void removeProduct(Product product, Color color, Dimensions size) {
         Long key = generateKey(product, color, size);
         items.remove(key);
@@ -31,18 +40,16 @@ public class Cart {
         return items;
     }
 
-    public void setItems(Map<Long, CartItem> items) { // Добавляем сеттер для сериализации
+    public void setItems(Map<Long, CartItem> items) {
         this.items = items;
     }
 
-
-
     public String getTotalAmount() {
-        BigDecimal totalAmount = BigDecimal.ZERO; // Используем BigDecimal.ZERO для инициализации
+        BigDecimal totalAmount = BigDecimal.ZERO;
         for (CartItem cartItem : items.values()) {
             Product product = cartItem.getProduct();
             BigDecimal actualPrice;
-            if(product.getDiscountedPrice() != null) {
+            if (product.getDiscountedPrice() != null) {
                 actualPrice = product.getDiscountedPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity()));
             } else {
                 actualPrice = product.getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity()));

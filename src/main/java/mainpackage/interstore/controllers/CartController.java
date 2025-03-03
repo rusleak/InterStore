@@ -15,9 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
-//TODO добавить выбор клво товаров в корзину
-//TODO если нету цвета или размера то в корзину не добавляет
-//TODO
+
 @Controller
 public class CartController {
     private final ProductService productService;
@@ -38,48 +36,78 @@ public class CartController {
                             @RequestParam Long dimensionsId,
                             @RequestParam int quantity) {
 
-        Cart cart = (Cart) session.getAttribute("cart");
-        if (cart == null) {
-            cart = new Cart();
-            session.setAttribute("cart", cart);
-            System.out.println("Создана новая корзина в сессии");
+        Cart cart = getOrCreateCart(session);
+
+        Optional<Product> product = Optional.ofNullable(productService.findById(productId));
+        Optional<Color> color = colorService.findColorById(colorId);
+        Optional<Dimensions> dimensions = dimensionsService.findDimensions(dimensionsId);
+
+        if (product.isPresent() && color.isPresent() && dimensions.isPresent()) {
+            cart.addProduct(product.get(), quantity, color.get(), dimensions.get());
         }
 
-        try {
-            Product product = productService.findById(productId);
-            Optional<Color> color = colorService.findColorById(colorId);
-            Optional<Dimensions> dimensions = dimensionsService.findDimensionById(dimensionsId);
+        session.setAttribute("cart", cart);
+        return "redirect:/show-cart";
+    }
 
-            // Проверка наличия цвета и размера перед добавлением в корзину
-                cart.addProduct(product, quantity, color.get(), dimensions.get());
-                System.out.println("Добавлен товар: " + product.getName() +
-                        " | Цвет: " + color.get().getName() +
-                        " | Размер: " + dimensions.get().getSize() +
-                        " | Кол-во: " + quantity);
+    @PostMapping("/update-quantity")
+    public String updateQuantity(HttpSession session,
+                                 @RequestParam Long productId,
+                                 @RequestParam Long colorId,
+                                 @RequestParam Long dimensionsId,
+                                 @RequestParam int quantity) {
 
+        Cart cart = getOrCreateCart(session);
 
-
-            session.setAttribute("cart", cart); // Обновляем корзину в сессии
-            System.out.println("Товаров в корзине: " + cart.getItems().size());
-
-        } catch (NoSuchElementException e) {
-            System.out.println("Ошибка: " + e.getMessage());
+        Optional<Product> product = Optional.ofNullable(productService.findById(productId));
+        Optional<Color> color = colorService.findColorById(colorId);
+        Optional<Dimensions> dimensions = dimensionsService.findDimensions(dimensionsId);
+        if (product.isPresent() && color.isPresent() && dimensions.isPresent()) {
+            cart.updateProductQuantity(product.get(), color.get(), dimensions.get(), quantity);
         }
 
+        session.setAttribute("cart", cart);
+        return "redirect:/show-cart";
+    }
+
+    @PostMapping("/remove")
+    public String removeFromCart(HttpSession session,
+                                 @RequestParam Long productId,
+                                 @RequestParam Long colorId,
+                                 @RequestParam Long dimensionsId) {
+
+        Cart cart = getOrCreateCart(session);
+
+        Optional<Product> product = Optional.ofNullable(productService.findById(productId));
+        Optional<Color> color = colorService.findColorById(colorId);
+        Optional<Dimensions> dimensions = dimensionsService.findDimensions(dimensionsId);
+
+        if (product.isPresent() && color.isPresent() && dimensions.isPresent()) {
+            cart.removeProduct(product.get(), color.get(), dimensions.get());
+        }
+
+        session.setAttribute("cart", cart);
         return "redirect:/show-cart";
     }
 
     @GetMapping("/show-cart")
     public String showCart(HttpSession session, Model model) {
-        Cart cart = (Cart) session.getAttribute("cart");
-        if (cart == null) {
-            cart = new Cart();
-            session.setAttribute("cart", cart);
-        }
-        double totalAmount = 0;
+        Cart cart = getOrCreateCart(session);
 
         model.addAttribute("totalAmount", cart.getTotalAmount());
         model.addAttribute("cart", cart);
         return "cart";
     }
+
+    private Cart getOrCreateCart(HttpSession session) {
+        Cart cart = (Cart) session.getAttribute("cart");
+        if (cart == null) {
+            cart = new Cart();
+            session.setAttribute("cart", cart);
+        }
+        return cart;
+    }
+
+
+
 }
