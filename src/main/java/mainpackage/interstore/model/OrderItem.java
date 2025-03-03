@@ -26,7 +26,66 @@ public class OrderItem {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @Column(name = "quantity_ordered")
+    @Column(name = "quantity_ordered", nullable = false)
     private Integer quantityOrdered;
+
+
+    @ManyToOne
+    @JoinColumn(name = "color_id", nullable = false)
+    private Color color;
+
+
+    @ManyToOne
+    @JoinColumn(name = "dimension_id", nullable = false)
+    private Dimensions dimension;
+
+    public OrderItemId getId() {
+        return id;
+    }
+
+    public void setId(OrderItemId id) {
+        this.id = id;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public Integer getQuantityOrdered() {
+        return quantityOrdered;
+    }
+
+    public void setQuantityOrdered(Integer quantityOrdered) {
+        this.quantityOrdered = quantityOrdered;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public Dimensions getDimension() {
+        return dimension;
+    }
+
+    public void setDimension(Dimensions dimension) {
+        this.dimension = dimension;
+    }
 }
+
 

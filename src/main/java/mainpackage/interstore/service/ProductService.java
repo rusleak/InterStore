@@ -216,14 +216,9 @@ public class ProductService {
     }
 
    ////////////////////PRODUCT PAGE///////////////
-    public Product findById(Long id) {
-        Product foundOne = null;
-        if(id != null) {
-            Optional<Product> product = productRepository.findById(id);
-            foundOne = product.get();
-        }
-        return foundOne;
-    }
+   public Product findById(Long productId) {
+       return productRepository.findById(productId).orElseThrow(() -> new NoSuchElementException("No product found with ID: " + productId));
+   }
 
 
 
@@ -236,7 +231,7 @@ public class ProductService {
         model.addAttribute("productDescription",product.getDescription());
         model.addAttribute("productColors",product.getColors());
         model.addAttribute("productDimensions",product.getDimensions());
-        model.addAttribute("productId",product.getOneC_id().toString());
+        model.addAttribute("productId",product.getId().toString());
         try {
 
             model.addAttribute("productDiscountedPrice",product.getDiscountedPrice().toString() + " грн");

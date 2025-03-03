@@ -1,11 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Details</title>
     <link rel="stylesheet" href="/css/productPage.css">
     <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        /* Modal styles */
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            width: 100%;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 15px;
+            transition: background-color 0.3s ease;
+            flex: 1; /* Распределяет кнопки на всю ширину */
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
 <!-- Include header -->
@@ -44,6 +98,10 @@
         </p>
         <p><strong>Кольори:</strong></p>
         <form id="productForm">
+            <input type="hidden" name="productId" th:value="${productId}" />
+            <input type="hidden" name="colorId" id="selectedColorId" />
+            <input type="hidden" name="sizeId" id="selectedSizeId" />
+            <input type="hidden" name="quantity" value="1" />
             <div class="product-color-filters">
                 <div th:each="color : ${productColors}" class="product-color-radio">
                     <input type="radio" name="colors" th:value="${color.id}" th:id="'color-' + ${color.id}" required />
@@ -55,8 +113,8 @@
             <p><strong>Розміри:</strong></p>
             <div class="product-dimension-filters">
                 <div th:each="dimension : ${productDimensions}" class="product-dimension-radio">
-                    <input type="radio" name="dimensions" th:value="${dimension}" th:id="'dimension-' + ${dimension}" required />
-                    <label th:for="'dimension-' + ${dimension}" th:text="${dimension}">Dimension</label>
+                    <input type="radio" name="dimensionsId" th:value="${dimension.id}" th:id="'dimension-' + ${dimension.id}" required />
+                    <label th:for="'dimension-' + ${dimension.id}" th:text="${dimension.size}">Dimension</label>
                 </div>
             </div>
             <button type="submit" id="addToCartButton" disabled>В корзину</button>
@@ -72,6 +130,19 @@
 <!-- Include footer -->
 <div th:replace="~{includes/footer.html}"></div>
 
+<!-- Modal Structure -->
+<div id="cartModal" class="modal">
+    <div class="modal-content">
+        <h4>Корзина</h4>
+        <div id="cartMessage"></div> <!-- This div will contain success or error messages -->
+        <div class="modal-footer">
+        <button class="btn" id="continueShopping">Продовжити покупки</button>
+        <button class="btn" id="checkout">До кошика</button>
+            </div>
+    </div>
+
+</div>
+
 <script>
     let currentIndex = 0;
     const images = /*[[${productImages}]]*/ [];
@@ -80,6 +151,9 @@
         const thumbnails = document.querySelectorAll('.product-thumbnail img');
         const addToCartButton = document.getElementById('addToCartButton');
         const productForm = document.getElementById('productForm');
+        const cartModal = document.getElementById('cartModal');
+        const continueShoppingButton = document.getElementById('continueShopping');
+        const checkoutButton = document.getElementById('checkout');
 
         thumbnails.forEach((thumbnail) => {
             images.push(thumbnail.dataset.image);
@@ -92,6 +166,52 @@
         productForm.addEventListener('change', () => {
             const allSelected = productForm.checkValidity();
             addToCartButton.disabled = !allSelected;
+            if (allSelected) {
+                const selectedColor = document.querySelector('input[name="colors"]:checked').value;
+                const selectedSize = document.querySelector('input[name="dimensionsId"]:checked').value;
+                document.getElementById('selectedColorId').value = selectedColor;
+                document.getElementById('selectedSizeId').value = selectedSize;
+            }
+        });
+
+        productForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(productForm);
+
+            fetch('/add', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    const cartMessage = document.getElementById('cartMessage');
+                    if (response.ok) {
+                        cartMessage.innerHTML = '<p>Товар додано до корзини.</p>';
+                    } else {
+                        cartMessage.innerHTML = '<p>There was an error adding the item to the cart.</p>';
+                    }
+                    cartModal.style.display = 'flex';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('cartMessage').innerHTML = '<p>There was an error adding the item to the cart.</p>';
+                    cartModal.style.display = 'flex';
+                });
+        });
+
+        continueShoppingButton.addEventListener('click', () => {
+            cartModal.style.display = 'none';
+        });
+
+        checkoutButton.addEventListener('click', () => {
+            window.location.href = '/show-cart';
+        });
+
+        // Close the modal when clicking outside of the modal content
+        window.addEventListener('click', (event) => {
+            if (event.target === cartModal) {
+                cartModal.style.display = 'none';
+            }
         });
     });
 

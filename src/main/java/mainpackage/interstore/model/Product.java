@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
-import java.awt.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +31,10 @@ public class Product {
     @Column(name = "price", precision = 8, scale = 2, nullable = false)
     private BigDecimal price;
 
-    @Column(name = "discounted_price",precision = 8, scale = 2, nullable = true)
+    @Column(name = "discounted_price", precision = 8, scale = 2, nullable = true)
     private BigDecimal discountedPrice;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "image_url")
     private List<String> productImages = new ArrayList<>();
@@ -51,7 +50,6 @@ public class Product {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "dimension_id"))
     private List<Dimensions> dimensions;
-
 
     @ManyToOne
     @JoinColumn(name = "nested_category_id")
@@ -72,10 +70,8 @@ public class Product {
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private List<Tag> tagList;
 
-    //Make it unique in database it is not unique now
     @Column(name = "oneC_id", nullable = false, unique = true)
     private Long oneC_id;
-
 
     public Long getId() {
         return id;
@@ -109,6 +105,22 @@ public class Product {
         this.price = price;
     }
 
+    public BigDecimal getDiscountedPrice() {
+        return discountedPrice;
+    }
+
+    public void setDiscountedPrice(BigDecimal discountedPrice) {
+        this.discountedPrice = discountedPrice;
+    }
+
+    public List<String> getProductImages() {
+        return productImages;
+    }
+
+    public void setProductImages(List<String> productImages) {
+        this.productImages = productImages;
+    }
+
     public Integer getStockQuantity() {
         return stockQuantity;
     }
@@ -123,6 +135,14 @@ public class Product {
 
     public void setBrand(String brand) {
         this.brand = brand;
+    }
+
+    public List<Dimensions> getDimensions() {
+        return dimensions;
+    }
+
+    public void setDimensions(List<Dimensions> dimensions) {
+        this.dimensions = dimensions;
     }
 
     public NestedCategory getNestedCategory() {
@@ -149,22 +169,6 @@ public class Product {
         this.colors = colors;
     }
 
-    public BigDecimal getDiscountedPrice() {
-        return discountedPrice;
-    }
-
-    public void setDiscountedPrice(BigDecimal discountedPrice) {
-        this.discountedPrice = discountedPrice;
-    }
-
-    public List<Dimensions> getDimensions() {
-        return dimensions;
-    }
-
-    public void setDimensions(List<Dimensions> dimensions) {
-        this.dimensions = dimensions;
-    }
-
     public List<Tag> getTagList() {
         return tagList;
     }
@@ -180,13 +184,4 @@ public class Product {
     public void setOneC_id(Long oneC_id) {
         this.oneC_id = oneC_id;
     }
-
-    public List<String> getProductImages() {
-        return productImages;
-    }
-
-    public void setProductImages(List<String> productImages) {
-        this.productImages = productImages;
-    }
-
 }

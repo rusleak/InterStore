@@ -229,4 +229,5 @@ body {
 #addToCartButton:hover:not(:disabled) {
     background-color: #0056b3; /* Darker blue on hover */
     box-shadow: 0 0 10px rgba(0, 123, 255, 0.5); /* Shadow effect on hover */
+
 }
