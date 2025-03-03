@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Корзина</title>
+    <link rel="stylesheet" th:href="@{/css/cart.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
+
 <body>
+<div th:replace="~{includes/header :: header}"></div>
 <h1>Корзина</h1>
 
 <table>
@@ -18,8 +23,14 @@
     </thead>
     <tbody>
     <tr th:each="entry : ${cart.items}">
-        <td th:text="${entry.value.product.name}">Название товара</td>
-        <td th:text="${entry.value.selectedColor.name}">Цвет товара</td>
+        <td>
+            <img th:src="'/images/' + ${entry.value.product.productImages[0]}" alt="Product Image" class="product-image">
+            <span th:text="${entry.value.product.name}">Название товара</span>
+        </td>
+        <td>
+            <img th:src="${'/colors_for_products/' + entry.value.selectedColor.imageUrl}" alt="Selected Color" class="color-image">
+            <span th:text="${entry.value.selectedColor.name}">Цвет товара</span>
+        </td>
         <td th:text="${entry.value.selectedSize.size}">Размер товара</td>
         <td th:text="${entry.value.quantity}">Количество товара</td>
         <td th:text="${entry.value.totalPrice}">Цена товара</td>
@@ -29,6 +40,8 @@
 
 <h2>Общая сумма: <span th:text="${totalAmount}">0</span></h2>
 
-<a th:href="@{/checkout}">Перейти к оформлению заказа</a>
+<a class="checkout-button" th:href="@{/checkout}">Перейти к оформлению заказа</a>
+<div th:replace="~{includes/footer.html}"></div>
 </body>
+
 </html>

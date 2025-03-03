@@ -22,7 +22,11 @@ public class CartItem {
 
 
     public BigDecimal getTotalPrice() {
-        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
+        if (product.getDiscountedPrice() != null) {
+            return product.getDiscountedPrice().multiply(BigDecimal.valueOf(quantity));
+        } else {
+            return product.getPrice().multiply(BigDecimal.valueOf(quantity));
+        }
     }
 
     public Product getProduct() {

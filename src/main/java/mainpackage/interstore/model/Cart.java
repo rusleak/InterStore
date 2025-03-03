@@ -1,5 +1,6 @@
 package mainpackage.interstore.model;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +33,23 @@ public class Cart {
 
     public void setItems(Map<Long, CartItem> items) { // Добавляем сеттер для сериализации
         this.items = items;
+    }
+
+
+
+    public String getTotalAmount() {
+        BigDecimal totalAmount = BigDecimal.ZERO; // Используем BigDecimal.ZERO для инициализации
+        for (CartItem cartItem : items.values()) {
+            Product product = cartItem.getProduct();
+            BigDecimal actualPrice;
+            if(product.getDiscountedPrice() != null) {
+                actualPrice = product.getDiscountedPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity()));
+            } else {
+                actualPrice = product.getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity()));
+            }
+            totalAmount = totalAmount.add(actualPrice);
+        }
+        return totalAmount.toString();
     }
 
     private Long generateKey(Product product, Color color, Dimensions size) {

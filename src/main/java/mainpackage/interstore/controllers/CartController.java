@@ -77,7 +77,8 @@ public class CartController {
             session.setAttribute("cart", cart);
         }
         double totalAmount = 0;
-        model.addAttribute("totalAmount", totalAmount);
+
+        model.addAttribute("totalAmount", cart.getTotalAmount());
         model.addAttribute("cart", cart);
         return "cart";
     }
