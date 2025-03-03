@@ -7,7 +7,27 @@
     <link rel="stylesheet" href="/css/productPage.css">
     <link rel="stylesheet" href="/css/styles.css">
     <style>
-        /* Modal styles */
+        .quantity-input {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .quantity-input input[type="number"] {
+            width: 50px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 16px;
+            -moz-appearance: textfield;
+        }
+
+        .quantity-input input[type="number"]::-webkit-outer-spin-button,
+        .quantity-input input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
         /* Modal styles */
         .modal {
             display: none;
@@ -101,7 +121,6 @@
             <input type="hidden" name="productId" th:value="${productId}" />
             <input type="hidden" name="colorId" id="selectedColorId" />
             <input type="hidden" name="sizeId" id="selectedSizeId" />
-            <input type="hidden" name="quantity" value="1" />
             <div class="product-color-filters">
                 <div th:each="color : ${productColors}" class="product-color-radio">
                     <input type="radio" name="colors" th:value="${color.id}" th:id="'color-' + ${color.id}" required />
@@ -116,6 +135,10 @@
                     <input type="radio" name="dimensionsId" th:value="${dimension.id}" th:id="'dimension-' + ${dimension.id}" required />
                     <label th:for="'dimension-' + ${dimension.id}" th:text="${dimension.size}">Dimension</label>
                 </div>
+            </div>
+            <p><strong>Кількість:</strong></p>
+            <div class="quantity-input">
+                <input type="number" name="quantity" id="quantity" value="1" min="1" required />
             </div>
             <button type="submit" id="addToCartButton" disabled>В корзину</button>
         </form>
@@ -136,11 +159,10 @@
         <h4>Корзина</h4>
         <div id="cartMessage"></div> <!-- This div will contain success or error messages -->
         <div class="modal-footer">
-        <button class="btn" id="continueShopping">Продовжити покупки</button>
-        <button class="btn" id="checkout">До кошика</button>
-            </div>
+            <button class="btn" id="continueShopping">Продовжити покупки</button>
+            <button class="btn" id="checkout">До кошика</button>
+        </div>
     </div>
-
 </div>
 
 <script>
@@ -154,6 +176,7 @@
         const cartModal = document.getElementById('cartModal');
         const continueShoppingButton = document.getElementById('continueShopping');
         const checkoutButton = document.getElementById('checkout');
+        const quantityInput = document.getElementById('quantity');
 
         thumbnails.forEach((thumbnail) => {
             images.push(thumbnail.dataset.image);
