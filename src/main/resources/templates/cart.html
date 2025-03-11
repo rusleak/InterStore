@@ -29,8 +29,10 @@
             <span th:text="${entry.value.product.name}">Название товара</span>
         </td>
         <td>
-            <img th:src="${'/colors_for_products/' + entry.value.selectedColor.imageUrl}" alt="Selected Color" class="color-image">
-            <span th:text="${entry.value.selectedColor.name}">Цвет товара</span>
+            <div class="color-container">
+                <img th:src="${'/colors_for_products/' + entry.value.selectedColor.imageUrl}" alt="Selected Color" class="color-image">
+                <span class="color-name" th:text="${entry.value.selectedColor.name}">Цвет товара</span>
+            </div>
         </td>
         <td th:text="${entry.value.selectedSize.size}">Размер товара</td>
         <td>

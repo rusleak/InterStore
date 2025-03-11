@@ -44,9 +44,14 @@ td span {
     vertical-align: middle;
 }
 
+.color-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .color-name {
-    display: block;
-    margin-bottom: 5px;
+    margin-left: 5px;
 }
 
 .checkout-button {
