@@ -28,6 +28,18 @@
             -webkit-appearance: none;
             margin: 0;
         }
+
+        .quantity-input button {
+            padding: 5px 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            cursor: pointer;
+        }
+        .quantity-input button:focus {
+            outline: none;
+        }
+
         /* Modal styles */
         .modal {
             display: none;
@@ -138,7 +150,9 @@
             </div>
             <p><strong>Кількість:</strong></p>
             <div class="quantity-input">
+                <button type="button" id="decreaseQuantity">-</button>
                 <input type="number" name="quantity" id="quantity" value="1" min="1" required />
+                <button type="button" id="increaseQuantity">+</button>
             </div>
             <button type="submit" id="addToCartButton" disabled>В корзину</button>
         </form>
@@ -177,6 +191,8 @@
         const continueShoppingButton = document.getElementById('continueShopping');
         const checkoutButton = document.getElementById('checkout');
         const quantityInput = document.getElementById('quantity');
+        const increaseQuantityButton = document.getElementById('increaseQuantity');
+        const decreaseQuantityButton = document.getElementById('decreaseQuantity');
 
         thumbnails.forEach((thumbnail) => {
             images.push(thumbnail.dataset.image);
@@ -234,6 +250,16 @@
         window.addEventListener('click', (event) => {
             if (event.target === cartModal) {
                 cartModal.style.display = 'none';
+            }
+        });
+
+        increaseQuantityButton.addEventListener('click', () => {
+            quantityInput.value = parseInt(quantityInput.value) + 1;
+        });
+
+        decreaseQuantityButton.addEventListener('click', () => {
+            if (quantityInput.value > 1) {
+                quantityInput.value = parseInt(quantityInput.value) - 1;
             }
         });
     });
