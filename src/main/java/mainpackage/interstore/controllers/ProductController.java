@@ -12,7 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-//TODO нужная пагинация
+
 //TODO разбить по методам
 @Controller
 @RequestMapping("")

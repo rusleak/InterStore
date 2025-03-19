@@ -9,7 +9,7 @@
 
 <body>
 <div th:replace="~{includes/header :: header}"></div>
-<h1>Корзина</h1>
+<h1>Кошик</h1>
 
 <table>
     <thead>
@@ -59,7 +59,7 @@
 
 <h2>Общая сумма: <span th:text="${totalAmount}">0</span></h2>
 
-<a class="checkout-button" th:href="@{/checkout}">Перейти к оформлению заказа</a>
+<a class="checkout-button" th:href="@{/order}">Перейти к оформлению заказа</a>
 <div th:replace="~{includes/footer.html}"></div>
 </body>
 
