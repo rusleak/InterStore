@@ -1,16 +1,12 @@
 package mainpackage.interstore.service;
 
-import lombok.RequiredArgsConstructor;
 import mainpackage.interstore.model.Color;
 import mainpackage.interstore.model.Product;
 import mainpackage.interstore.repository.ColorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class ColorService {
@@ -30,4 +26,7 @@ public class ColorService {
         return new ArrayList<>(availableColors); // Return as a list
     }
 
+    public Optional<Color> findColorById(Long colorId) {
+        return colorRepository.findById(colorId);
+    }
 }

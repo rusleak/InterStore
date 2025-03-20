@@ -1,10 +1,9 @@
 package mainpackage.interstore.service;
 
-import lombok.RequiredArgsConstructor;
 import mainpackage.interstore.model.*;
 import mainpackage.interstore.repository.ProductRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.ui.Model;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -149,6 +148,19 @@ public class ProductService {
         }
     }
 
+    public List<Product> excludeNullPictures(List<Product> products) {
+        if (products != null || !products.isEmpty()) {
+            // Фильтруем продукты, у которых список изображений пуст или равен null
+            return products.stream()
+                    .filter(product -> product.getProductImages() != null && !product.getProductImages().isEmpty())
+                    .collect(Collectors.toList());
+        } else {
+            // Если список продуктов пустой или равен null, возвращаем его без изменений
+            return products;
+        }
+    }
+
+
     public List<Product> filterByDimensions(List<Product> products, List<String> dimensions) {
         if (dimensions != null && !dimensions.isEmpty()) {
             return getAllProductsByGivenDimensions(products, dimensions);
@@ -203,6 +215,37 @@ public class ProductService {
                 .collect(Collectors.toList());  // Собираем отфильтрованные продукты в список
     }
 
+   ////////////////////PRODUCT PAGE///////////////
+   public Product findById(Long productId) {
+       return productRepository.findById(productId).orElseThrow(() -> new NoSuchElementException("No product found with ID: " + productId));
+   }
+
+
+
+
+    public void fillTheModelProductPage(Model model, Long id) {
+        if(id != null) {
+        Product product = findById(id);
+        model.addAttribute("productName",product.getName());
+        model.addAttribute("productBrand",product.getBrand());
+        model.addAttribute("productDescription",product.getDescription());
+        model.addAttribute("productColors",product.getColors());
+        model.addAttribute("productDimensions",product.getDimensions());
+        model.addAttribute("productId",product.getId().toString());
+        try {
+
+            model.addAttribute("productDiscountedPrice",product.getDiscountedPrice().toString() + " грн");
+        }catch (NullPointerException e) {
+
+        }
+        model.addAttribute("productPrice",product.getPrice().toString() + " грн");
+        model.addAttribute("productTags",product.getTagList());
+        model.addAttribute("productStockQuantity",product.getStockQuantity().toString());
+        model.addAttribute("productImages",product.getProductImages());
+        }
+    }
+
+    //CART
 
 
 }

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Замовлення</title>
+    <link rel="stylesheet" th:href="@{/css/order.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div th:replace="~{includes/header :: header}"></div>
+<main>
+    <section class="order-section">
+        <h2>Ваше замовлення</h2>
+        <form action="/order/create" method="post">
+            <div class="form-group">
+                <label for="fullName">ПІБ</label>
+                <input type="text" id="fullName" name="fullName" required>
+            </div>
+            <div class="form-group">
+                <label for="address">Адреса</label>
+                <input type="text" id="address" name="address" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Телефон</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+            <button type="submit" class="submit-btn">Оформити замовлення</button>
+        </form>
+    </section>
+</main>
+<div th:replace="~{includes/footer.html}"></div>
+</body>
+</html>

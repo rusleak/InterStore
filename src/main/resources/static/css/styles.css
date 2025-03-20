@@ -680,6 +680,6 @@ button[type="submit"]:hover {
 
 @media (max-width: 600px) {
     .products {
-        grid-template-columns: 1fr; /* 1 колонка на экранах с шириной до 600px */
+        grid-template-columns: 1fr; /* 1 колонка на эранах с шириной до 600px */
     }
 }

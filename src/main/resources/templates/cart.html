@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Корзина</title>
+    <link rel="stylesheet" th:href="@{/css/cart.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+
+<body>
+<div th:replace="~{includes/header :: header}"></div>
+<h1>Кошик</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>Товар</th>
+        <th>Цвет</th>
+        <th>Размер</th>
+        <th>Количество</th>
+        <th>Цена</th>
+        <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="entry : ${cart.items}">
+        <td>
+            <img th:src="'/images/' + ${entry.value.product.productImages[0]}" alt="Product Image" class="product-image">
+            <span th:text="${entry.value.product.name}">Название товара</span>
+        </td>
+        <td>
+            <div class="color-container">
+                <img th:src="${'/colors_for_products/' + entry.value.selectedColor.imageUrl}" alt="Selected Color" class="color-image">
+                <span class="color-name" th:text="${entry.value.selectedColor.name}">Цвет товара</span>
+            </div>
+        </td>
+        <td th:text="${entry.value.selectedSize.size}">Размер товара</td>
+        <td>
+            <form th:action="@{/update-quantity}" method="post">
+                <input type="hidden" name="productId" th:value="${entry.value.product.id}">
+                <input type="hidden" name="colorId" th:value="${entry.value.selectedColor.id}">
+                <input type="hidden" name="dimensionsId" th:value="${entry.value.selectedSize.id}">
+                <input type="number" name="quantity" th:value="${entry.value.quantity}" min="1" required>
+                <button type="submit">Изменить</button>
+            </form>
+        </td>
+        <td th:text="${entry.value.totalPrice}">Цена товара</td>
+        <td>
+            <form th:action="@{/remove}" method="post">
+                <input type="hidden" name="productId" th:value="${entry.value.product.id}">
+                <input type="hidden" name="colorId" th:value="${entry.value.selectedColor.id}">
+                <input type="hidden" name="dimensionsId" th:value="${entry.value.selectedSize.id}">
+                <button type="submit">Удалить</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<h2>Общая сумма: <span th:text="${totalAmount}">0</span></h2>
+
+<a class="checkout-button" th:href="@{/order}">Перейти к оформлению заказа</a>
+<div th:replace="~{includes/footer.html}"></div>
+</body>
+
+</html>

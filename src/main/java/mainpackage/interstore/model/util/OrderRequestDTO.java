@@ -1,54 +1,34 @@
-package mainpackage.interstore.model;
+package mainpackage.interstore.model.util;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import mainpackage.interstore.model.OrderItem;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-
-@Entity
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-@Table(name = "orders")
-public class Order {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@NoArgsConstructor
+@AllArgsConstructor
+public class OrderRequestDTO {
 
-    @Column(name = "full_name", nullable = false)
     private String fullName;
 
-    @Column(name = "phone", nullable = false)
     private String phone;
 
     @Email(message = "Email should be valid")
     @NotBlank(message = "Email should not be blank")
-    @Column(name = "email")
     private String email;
 
     @NotBlank(message = "Address should not be blank")
-    @Column(name = "address")
     private String address;
-
-    @Column(name = "order_date")
     private Timestamp orderDate;
-
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getFullName() {
         return fullName;

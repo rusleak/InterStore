@@ -75,4 +75,7 @@ public class Color implements Comparable<Color>{
         return this.id.compareTo(o.id);
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

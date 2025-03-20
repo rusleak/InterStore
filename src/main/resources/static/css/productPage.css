@@ -1,0 +1,233 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+:root {
+    --thumbnail-size: 60px; /* Adjusted size for thumbnails */
+    --thumbnail-border-color: #ccc; /* Border color for all thumbnails */
+    --thumbnail-selected-border-color: #000; /* Border color for selected thumbnail */
+    --thumbnail-border-width: 4px; /* Adjusted border width */
+}
+
+.product-details {
+    display: flex;
+    justify-content: center;
+    padding: 20px; /* Added padding for free space */
+    position: relative;
+}
+
+.product-id {
+    color: #ccc; /* Light grey color */
+    font-size: 1em; /* Increased font size */
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.5); /* Background color with transparency */
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.product-images {
+    width: 40%; /* Percentage coverage */
+    margin-right: 40px; /* Increased margin */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px; /* Added padding */
+    box-sizing: border-box; /* Include padding in the element's total width and height */
+}
+
+.product-main-image {
+    width: 90%; /* Adjusted width */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding-bottom: calc(100% / 2 * 1.7); /* Maintain aspect ratio 2 / 1.7 */
+    margin-bottom: 40px; /* Increased margin */
+}
+
+.product-main-image img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-thumbnail-list {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px; /* Increased margin */
+    padding: 10px;
+    width: 90%; /* Adjusted width */
+    overflow-x: auto;
+}
+
+.product-thumbnail {
+    margin: 0 10px; /* Increased margin */
+    cursor: pointer;
+}
+
+.product-thumbnail img {
+    width: calc(var(--thumbnail-size) * 1.7); /* Use the custom property for width */
+    height: var(--thumbnail-size); /* Use the custom property for height */
+    object-fit: cover;
+    border: var(--thumbnail-border-width) solid var(--thumbnail-border-color); /* Border for all thumbnails */
+}
+
+.product-thumbnail.selected img {
+    border-color: var(--thumbnail-selected-border-color); /* Border color for selected thumbnail */
+}
+
+.product-info {
+    flex: 2;
+    padding: 20px; /* Added padding */
+    box-sizing: border-box; /* Include padding in the element's total width and height */
+    position: relative;
+    font-size: 1.2em; /* Increase font size */
+}
+
+.product-description-container {
+    background-color: #f0f0f0;
+    padding: 20px; /* Increased padding */
+    margin-top: 40px; /* Increased margin */
+    border-radius: 4px;
+    max-width: 90%; /* Adjusted width */
+    box-sizing: border-box; /* Include padding in the element's total width and height */
+    margin: 0 auto; /* Center the description box */
+}
+
+/* Product color filters */
+.product-color-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Increased gap between radio buttons */
+    margin-top: 20px; /* Increased margin */
+}
+
+.product-color-radio {
+    flex: 0 1 45px; /* Fix width of the color radio container */
+}
+
+.product-color-radio input[type="radio"] {
+    display: none; /* Hide the standard radio button */
+}
+
+.product-color-radio label {
+    width: 45px; /* Set size */
+    height: 45px; /* Set size */
+    display: inline-block;
+    border: 1px solid #000;
+    cursor: pointer;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%; /* Make the radio buttons round */
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-color-radio input[type="radio"]:checked + label {
+    border: 3px solid #007bff; /* Blue border when selected */
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5); /* Shadow when selected */
+}
+
+.product-color-radio label:hover {
+    opacity: 0.8; /* Slight transparency change on hover */
+}
+
+/* Product dimension filters */
+.product-dimension-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Increased gap between radio buttons */
+    margin-top: 20px; /* Increased margin */
+}
+
+.product-dimension-radio input[type="radio"] {
+    display: none; /* Hide the standard radio button */
+}
+
+.product-dimension-radio label {
+    padding: 10px 20px;
+    border: 1px solid #000;
+    cursor: pointer;
+    border-radius: 20px; /* Make the radio buttons round */
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-dimension-radio input[type="radio"]:checked + label {
+    border: 3px solid #007bff; /* Blue border when selected */
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5); /* Shadow when selected */
+}
+
+.product-dimension-radio label:hover {
+    opacity: 0.8; /* Slight transparency change on hover */
+}
+
+/* Style for the productId */
+.product-id {
+    color: #ccc; /* Light grey color */
+    font-size: 1em; /* Increased font size */
+}
+
+/* Style for the price */
+.price-container,
+.discounted-price-container {
+    display: flex;
+    align-items: center;
+}
+
+.price-label,
+.discounted-price-label {
+    font-size: 2em; /* Increased font size */
+    margin-right: 10px;
+}
+
+.price {
+    font-size: 1.7em; /* Increased font size */
+    color: #000;
+}
+
+.original-price {
+    font-size: 1.7em; /* Increased font size */
+    color: #999;
+    text-decoration: line-through;
+}
+
+.discounted-price {
+    font-size: 2em; /* Increased font size */
+    color: #e60000;
+    font-weight: bold;
+}
+
+/* Align meta information */
+.product-meta {
+    margin-top: 80px; /* Doubled the margin for tags */
+}
+
+/* Style for the Add to Cart button */
+#addToCartButton {
+    width: 200px; /* Increased width */
+    height: 50px; /* Increased height */
+    background-color: #007bff; /* Button background color */
+    color: white; /* Button text color */
+    border: none; /* Remove border */
+    border-radius: 25px; /* Rounded corners */
+    font-size: 1.2em; /* Increased font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Transition effects */
+    margin-top: 30px; /* Increased top margin */
+}
+
+#addToCartButton:disabled {
+    background-color: #ccc; /* Disabled button background color */
+    cursor: not-allowed; /* Change cursor for disabled button */
+}
+
+#addToCartButton:hover:not(:disabled) {
+    background-color: #0056b3; /* Darker blue on hover */
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5); /* Shadow effect on hover */
+
+}
