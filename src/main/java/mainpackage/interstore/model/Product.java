@@ -71,7 +71,7 @@ public class Product {
     private List<Tag> tagList;
 
     @Column(name = "oneC_id", nullable = false, unique = true)
-    private Long oneC_id;
+    private Long oneCId;
 
     public Long getId() {
         return id;
@@ -177,11 +177,11 @@ public class Product {
         this.tagList = tagList;
     }
 
-    public Long getOneC_id() {
-        return oneC_id;
+    public Long getOneCId() {
+        return oneCId;
     }
 
-    public void setOneC_id(Long oneC_id) {
-        this.oneC_id = oneC_id;
+    public void setOneCId(Long oneCId) {
+        this.oneCId = oneCId;
     }
 }

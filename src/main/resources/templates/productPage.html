@@ -102,14 +102,14 @@
     <p class="product-id"><strong>ID:</strong> <span th:text="${productId}">Product ID</span></p> <!-- Moved to top -->
     <div class="product-images">
         <div class="product-main-image">
-            <img id="mainImage" th:src="@{'/images/' + ${productImages[0]}}" alt="Product Image"/>
+            <img id="mainImage" th:src="@{'/product_images/' + ${productImages[0]}}" alt="Product Image"/>
         </div>
         <div class="product-thumbnail-list">
             <div th:each="image, iterStat : ${productImages}" class="product-thumbnail" th:classappend="${iterStat.index == 0} ? 'selected' : ''">
-                <img th:src="@{'/images/' + ${image}}"
+                <img th:src="@{'/product_images/' + ${image}}"
                      alt="Product Thumbnail"
                      th:data-image="${image}"
-                     th:onclick="|document.getElementById('mainImage').src = '/images/' + this.dataset.image; highlightThumbnail(this.parentElement);|"/>
+                     th:onclick="|document.getElementById('mainImage').src = '/product_images/' + this.dataset.image; highlightThumbnail(this.parentElement);|"/>
             </div>
         </div>
         <div class="product-description-container">
@@ -274,7 +274,7 @@
 
     function updateMainImage() {
         const mainImage = document.getElementById('mainImage');
-        mainImage.src = '/images/' + images[currentIndex];
+        mainImage.src = '/product_images/' + images[currentIndex];
         highlightThumbnail(document.querySelector(`.product-thumbnail img[data-image="${images[currentIndex]}"]`).parentElement);
     }
 </script>

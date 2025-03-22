@@ -29,4 +29,8 @@ public class ColorService {
     public Optional<Color> findColorById(Long colorId) {
         return colorRepository.findById(colorId);
     }
+
+    public List<Color> findByNameIn(Set<String> colorNames) {
+        return colorRepository.findByNameIn(colorNames);
+    }
 }

@@ -1,5 +1,8 @@
 package mainpackage.interstore.model.util;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import mainpackage.interstore.model.*;
@@ -7,21 +10,44 @@ import mainpackage.interstore.model.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-@Getter
-@Setter
+
 public class ProductReceiverDTO {
+
+    @NotBlank(message = "Product name cannot be blank")
     private String name;
+
     private String description;
+
+    @NotNull(message = "Price cannot be null")
     private BigDecimal price;
+
     private BigDecimal discountedPrice;
+
+    @NotNull(message = "Product images list cannot be null")
     private List<String> productImages = new ArrayList<>();
+
+    @NotNull(message = "Stock quantity cannot be null")
     private Integer stockQuantity;
+
     private String brand;
+
+    @NotNull(message = "Dimensions list cannot be null")
+    @NotEmpty(message = "Dimensions list cannot be empty")
     private List<String> dimensions;
+
+    @NotBlank(message = "Nested category cannot be blank")
     private String nestedCategory;
+
+    @NotNull(message = "Colors list cannot be null")
+    @NotEmpty(message = "Colors list cannot be empty")
     private List<String> colors;
+
+    @NotNull(message = "Tag list cannot be null")
+    @NotEmpty(message = "Tag list cannot be empty")
     private List<String> tagList;
-    private Long oneC_id;
+
+    @NotNull(message = "1C ID cannot be null")
+    private Long oneCId;
 
     public String getName() {
         return name;
@@ -111,11 +137,11 @@ public class ProductReceiverDTO {
         this.tagList = tagList;
     }
 
-    public Long getOneC_id() {
-        return oneC_id;
+    public Long getOneCId() {
+        return oneCId;
     }
 
-    public void setOneC_id(Long oneC_id) {
-        this.oneC_id = oneC_id;
+    public void setOneCId(Long oneCId) {
+        this.oneCId = oneCId;
     }
 }

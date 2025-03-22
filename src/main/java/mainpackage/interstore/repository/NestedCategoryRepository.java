@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface NestedCategoryRepository extends JpaRepository<NestedCategory, Long> {
     Optional<NestedCategory> findById(Long id);
+    Optional<NestedCategory> findByName(String nestedCategoryName);
 }

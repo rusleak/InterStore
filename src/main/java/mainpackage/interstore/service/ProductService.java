@@ -1,24 +1,40 @@
 package mainpackage.interstore.service;
 
 import mainpackage.interstore.model.*;
+import mainpackage.interstore.model.Color;
+import mainpackage.interstore.model.util.ProductReceiverDTO;
 import mainpackage.interstore.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
     private final MainCategoryService mainCategoryService;
+    private final NestedCategoryService nestedCategoryService;
     private final ProductRepository productRepository;
     private final SubcategoryService subcategoryService;
+    private final DimensionsService dimensionsService;
+    private final ColorService colorService;
+    private final TagService tagService;
 
-    public ProductService(MainCategoryService mainCategoryService, ProductRepository productRepository, SubcategoryService subcategoryService) {
+
+
+    public ProductService(MainCategoryService mainCategoryService, NestedCategoryService nestedCategoryService, ProductRepository productRepository, SubcategoryService subcategoryService, DimensionsService dimensionsService, ColorService colorService, TagService tagService) {
         this.mainCategoryService = mainCategoryService;
+        this.nestedCategoryService = nestedCategoryService;
         this.productRepository = productRepository;
         this.subcategoryService = subcategoryService;
+        this.dimensionsService = dimensionsService;
+        this.colorService = colorService;
+        this.tagService = tagService;
     }
 
     public List<Product> getProductsByMainCategoryId(long id) {
@@ -231,7 +247,7 @@ public class ProductService {
         model.addAttribute("productDescription",product.getDescription());
         model.addAttribute("productColors",product.getColors());
         model.addAttribute("productDimensions",product.getDimensions());
-        model.addAttribute("productId",product.getId().toString());
+        model.addAttribute("productId",product.getOneCId().toString());
         try {
 
             model.addAttribute("productDiscountedPrice",product.getDiscountedPrice().toString() + " грн");
@@ -245,7 +261,89 @@ public class ProductService {
         }
     }
 
-    //CART
+    private void enrichProductWithRelations(Product product, List<Color> colors, List<Tag> tags, List<Dimensions> dimensions, NestedCategory nestedCategory) {
+        product.setColors(colors);
+        product.setTagList(tags);
+        product.setDimensions(dimensions);
+        product.setNestedCategory(nestedCategory);
+    }
+
+    public Product fillStaticFieldsOfProductFromDTO(ProductReceiverDTO productReceiverDTO, Product product) {
+        product.setPrice(productReceiverDTO.getPrice());
+        product.setName(productReceiverDTO.getName());
+        product.setDescription(productReceiverDTO.getDescription());
+        product.setDiscountedPrice(productReceiverDTO.getDiscountedPrice());
+        product.setStockQuantity(productReceiverDTO.getStockQuantity());
+        product.setProductImages(productReceiverDTO.getProductImages());
+        product.setBrand(productReceiverDTO.getBrand());
+        return product;
+    }
+    //TODO
+    private void validateProductDTOCollections(ProductReceiverDTO dto) throws Exception {
+        if (dto.getColors() == null || dto.getColors().isEmpty()) {
+            throw new Exception("Colors list is empty");
+        }
+        if (dto.getTagList() == null || dto.getTagList().isEmpty()) {
+            throw new Exception("Tag list is empty");
+        }
+        if (dto.getDimensions() == null || dto.getDimensions().isEmpty()) {
+            throw new Exception("Dimensions list is empty");
+        }
+        if (dto.getNestedCategory() == null || dto.getNestedCategory().isBlank()) {
+            throw new Exception("Nested category is missing");
+        }
+    }
+
+    public void handleReceivedProduct(ProductReceiverDTO dto) throws Exception {
+
+        Set<String> colorNames = new HashSet<>(dto.getColors());
+        Set<String> tagNames = new HashSet<>(dto.getTagList());
+        Set<String> dimensionNames = new HashSet<>(dto.getDimensions());
+
+        validateProductDTOCollections(dto);
 
 
+        List<Color> colorsFromDb = colorService.findByNameIn(colorNames);
+        List<Tag> tagsFromDb = tagService.findByNameIn(tagNames);
+        List<Dimensions> dimensionsFromDb = dimensionsService.findByNameIn(dimensionNames);
+
+        NestedCategory nestedCategory = nestedCategoryService.findByName(dto.getNestedCategory())
+                .orElseThrow(() -> new Exception("Nested category not passed but obligatory"));
+
+        Product product = productRepository.findByOneCId(dto.getOneCId())
+                .orElseGet(() -> {
+                    Product newProduct = new Product();
+                    newProduct.setOneCId(dto.getOneCId());  // Устанавливаем oneCId
+                    return newProduct;
+                });
+
+
+
+        // Логика с удалением старых картинок, если они не присутствуют в новом списке
+        if (product.getId() != null) {
+            List<String> existingImages = new ArrayList<>(product.getProductImages());
+            List<String> newImages = dto.getProductImages();
+
+            // Находим картинки, которых нет в новых данных и удаляем их
+            for (String oldImage : existingImages) {
+                if(newImages.contains(oldImage)) {
+
+                } else  {
+                    // Удаляем файл с диска
+                    Path pathToDelete = Paths.get(oldImage);
+                    Files.deleteIfExists(pathToDelete);
+                }
+            }
+        }
+
+
+        fillStaticFieldsOfProductFromDTO(dto, product);
+        enrichProductWithRelations(product, colorsFromDb, tagsFromDb, dimensionsFromDb, nestedCategory);
+
+        if (product.getOneCId() == null) {
+            throw new IllegalArgumentException("oneCId cannot be null");
+        }
+
+        productRepository.save(product);
+    }
 }

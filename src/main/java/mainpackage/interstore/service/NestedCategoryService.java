@@ -18,4 +18,8 @@ public class NestedCategoryService {
     Optional<NestedCategory> findById(Long id) {
         return nestedCategoryRepository.findById(id);
     }
+
+    public Optional<NestedCategory> findByName(String nestedCategoryName) {
+        return nestedCategoryRepository.findByName(nestedCategoryName);
+    }
 }
