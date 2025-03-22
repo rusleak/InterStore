@@ -1,48 +1,29 @@
 package mainpackage.interstore.controllers;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import mainpackage.interstore.model.*;
-import mainpackage.interstore.model.util.MainCategoryDTO;
-import mainpackage.interstore.model.util.NestedCategoryDTO;
 import mainpackage.interstore.model.util.ProductReceiverDTO;
-import mainpackage.interstore.model.util.SubCategoryDTO;
-import mainpackage.interstore.service.MainCategoryService;
-import mainpackage.interstore.service.NestedCategoryService;
 import mainpackage.interstore.service.ProductService;
-import mainpackage.interstore.service.SubcategoryService;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
-import java.util.logging.Logger;
+
 @Slf4j
 @RestController
 @RequestMapping("/receiver")
-public class ReceiverController {
-    @Value("${pictures.mainCategory}")
-    private String mainCategoryUploadDir;
+public class ProductRestController {
+
     private final ProductService productService;
-    private final NestedCategoryService nestedCategoryService;
-    private final MainCategoryService mainCategoryService;
-    private final SubcategoryService subcategoryService;
+
+
     @Autowired
-    public ReceiverController(ProductService productService, NestedCategoryService nestedCategoryService, MainCategoryService mainCategoryService, SubcategoryService subcategoryService) {
+    public ProductRestController(ProductService productService) {
         this.productService = productService;
-        this.nestedCategoryService = nestedCategoryService;
-        this.mainCategoryService = mainCategoryService;
-        this.subcategoryService = subcategoryService;
     }
-    //TODO Сделать методы для добавления всех сущностей в других контроллерах такиз как nested/main etc
+
     @GetMapping("/{productId}")
     public ResponseEntity<?> getProdById(@PathVariable("productId") long prodId) {
         Product product = productService.findById(prodId);
@@ -110,24 +91,13 @@ public class ReceiverController {
         return ResponseEntity.ok("Product saved successfully");
     }
 
-    @PostMapping("/main-category")
-    public ResponseEntity<?> receiveMainCategory(@RequestPart("category") MainCategoryDTO mainCategoryDTO,
-                                                 @RequestPart("image") MultipartFile multipartFile) throws IOException {
-        mainCategoryService.receiveMainCategory(mainCategoryDTO,multipartFile,mainCategoryUploadDir);
-        return ResponseEntity.ok("Main category received successfully");
-    }
 
-    @PostMapping("/sub-category")
-    public ResponseEntity<?> receiveSubCategory(@RequestBody SubCategoryDTO subCategoryDTO){
-        subcategoryService.receiveSubCategory(subCategoryDTO);
-        return ResponseEntity.ok("Subcategory received successfully");
-    }
 
-    @PostMapping("/nested-category")
-    public ResponseEntity<?> receiveNestedCategory(@RequestBody NestedCategoryDTO nestedCategoryDTO){
-        nestedCategoryService.receiveNestedCategory(nestedCategoryDTO);
-        return ResponseEntity.ok("Nested-category received successfully");
-    }
+
+
+
+
+
 
 
 
