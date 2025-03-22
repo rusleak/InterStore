@@ -31,7 +31,8 @@ public class ReceiverController {
     public ReceiverController(ProductService productService) {
         this.productService = productService;
     }
-
+    //TODO Сделать метод для принятия массива/листа продуктов на основе сущестсубщего
+    //TODO Сделать методы для добавления всех сущностей в других контроллерах такиз как nested/main etc
     @GetMapping("/{productId}")
     public ResponseEntity<?> getProdById(@PathVariable("productId") long prodId) {
         Product product = productService.findById(prodId);

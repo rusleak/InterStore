@@ -278,7 +278,7 @@ public class ProductService {
         product.setBrand(productReceiverDTO.getBrand());
         return product;
     }
-    //TODO
+
     private void validateProductDTOCollections(ProductReceiverDTO dto) throws Exception {
         if (dto.getColors() == null || dto.getColors().isEmpty()) {
             throw new Exception("Colors list is empty");

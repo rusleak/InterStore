@@ -31,7 +31,7 @@ public class OrderController {
         this.orderService = orderService;
         this.orderItemService = orderItemService;
     }
-//TODO Get для формы ордер
+
     @GetMapping
     public String createOrder() {
         return "createOrder";
