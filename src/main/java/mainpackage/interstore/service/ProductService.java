@@ -6,6 +6,7 @@ import mainpackage.interstore.model.util.ProductReceiverDTO;
 import mainpackage.interstore.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -345,5 +346,24 @@ public class ProductService {
         }
 
         productRepository.save(product);
+    }
+    public void processProduct(ProductReceiverDTO productReceiverDTO, List<MultipartFile> images, boolean checkRequiredImages) throws Exception {
+        Set<String> requiredImages = new HashSet<>();
+        if (checkRequiredImages && productReceiverDTO.getProductImages() != null) {
+            requiredImages.addAll(productReceiverDTO.getProductImages());
+        }
+
+        List<String> imagePaths = new ArrayList<>();
+        for (MultipartFile file : images) {
+            String fileName = file.getOriginalFilename();
+            if (!checkRequiredImages || requiredImages.contains(fileName)) {
+                String filePath = "src/main/resources/static/product_images/" + fileName;
+                file.transferTo(Path.of(filePath));
+                imagePaths.add(fileName);
+            }
+        }
+
+        productReceiverDTO.setProductImages(imagePaths);
+        handleReceivedProduct(productReceiverDTO);
     }
 }

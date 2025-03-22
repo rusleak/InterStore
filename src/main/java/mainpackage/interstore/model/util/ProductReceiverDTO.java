@@ -144,4 +144,5 @@ public class ProductReceiverDTO {
     public void setOneCId(Long oneCId) {
         this.oneCId = oneCId;
     }
+
 }

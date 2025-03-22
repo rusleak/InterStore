@@ -15,12 +15,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Logger;
 @Slf4j
 @RestController
@@ -31,12 +30,10 @@ public class ReceiverController {
     public ReceiverController(ProductService productService) {
         this.productService = productService;
     }
-    //TODO Сделать метод для принятия массива/листа продуктов на основе сущестсубщего
     //TODO Сделать методы для добавления всех сущностей в других контроллерах такиз как nested/main etc
     @GetMapping("/{productId}")
     public ResponseEntity<?> getProdById(@PathVariable("productId") long prodId) {
         Product product = productService.findById(prodId);
-
         ProductReceiverDTO dto = new ProductReceiverDTO();
         dto.setName(product.getName());
         dto.setDescription(product.getDescription());
@@ -86,24 +83,23 @@ public class ReceiverController {
             @RequestPart("product") ProductReceiverDTO productReceiverDTO,
             @RequestPart("images") List<MultipartFile> images
     ) throws Exception {
-
-        // 1. Сохраняем изображения на диск / в облако
-        List<String> imagePaths = new ArrayList<>();
-        for (MultipartFile file : images) {
-            String fileName = file.getOriginalFilename();
-            String filePath = "src/main/resources/static/product_images/" + fileName;
-            file.transferTo(Path.of(filePath)); // Теперь путь включает имя файла
-            imagePaths.add(fileName); // путь для сохранения в БД
-        }
-
-        // 2. Заполняем productReceiverDTO путями
-        productReceiverDTO.setProductImages(imagePaths);
-
-        // 3. Обрабатываем DTO как обычно
-        productService.handleReceivedProduct(productReceiverDTO);
-
+        productService.processProduct(productReceiverDTO, images, false);
         return ResponseEntity.ok("Product saved successfully");
     }
+
+    @PostMapping(value = "/products", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> handleProducts(
+            @RequestPart("products") List<ProductReceiverDTO> productReceiverDTOs,
+            @RequestPart("images") List<MultipartFile> images
+    ) throws Exception {
+        for (ProductReceiverDTO productReceiverDTO : productReceiverDTOs){
+            productService.processProduct(productReceiverDTO, images, true);
+        }
+        return ResponseEntity.ok("Product saved successfully");
+    }
+
+
+
 
 
 
