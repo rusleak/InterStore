@@ -1,14 +1,13 @@
 package mainpackage.interstore.controllers;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import mainpackage.interstore.model.Color;
-import mainpackage.interstore.model.Dimensions;
-import mainpackage.interstore.model.Product;
-import mainpackage.interstore.model.Tag;
+import mainpackage.interstore.model.*;
 import mainpackage.interstore.model.util.MainCategoryDTO;
+import mainpackage.interstore.model.util.NestedCategoryDTO;
 import mainpackage.interstore.model.util.ProductReceiverDTO;
 import mainpackage.interstore.model.util.SubCategoryDTO;
 import mainpackage.interstore.service.MainCategoryService;
+import mainpackage.interstore.service.NestedCategoryService;
 import mainpackage.interstore.service.ProductService;
 import mainpackage.interstore.service.SubcategoryService;
 import org.slf4j.LoggerFactory;
@@ -33,11 +32,13 @@ public class ReceiverController {
     @Value("${pictures.mainCategory}")
     private String mainCategoryUploadDir;
     private final ProductService productService;
+    private final NestedCategoryService nestedCategoryService;
     private final MainCategoryService mainCategoryService;
     private final SubcategoryService subcategoryService;
     @Autowired
-    public ReceiverController(ProductService productService, MainCategoryService mainCategoryService, SubcategoryService subcategoryService) {
+    public ReceiverController(ProductService productService, NestedCategoryService nestedCategoryService, MainCategoryService mainCategoryService, SubcategoryService subcategoryService) {
         this.productService = productService;
+        this.nestedCategoryService = nestedCategoryService;
         this.mainCategoryService = mainCategoryService;
         this.subcategoryService = subcategoryService;
     }
@@ -120,6 +121,12 @@ public class ReceiverController {
     public ResponseEntity<?> receiveSubCategory(@RequestBody SubCategoryDTO subCategoryDTO){
         subcategoryService.receiveSubCategory(subCategoryDTO);
         return ResponseEntity.ok("Subcategory received successfully");
+    }
+
+    @PostMapping("/nested-category")
+    public ResponseEntity<?> receiveNestedCategory(@RequestBody NestedCategoryDTO nestedCategoryDTO){
+        nestedCategoryService.receiveNestedCategory(nestedCategoryDTO);
+        return ResponseEntity.ok("Nested-category received successfully");
     }
 
 
