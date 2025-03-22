@@ -29,6 +29,13 @@ public class MainCategory {
     @OneToMany(mappedBy = "mainCategory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Subcategory> subCategories = new ArrayList<>();
 
+    @Override
+    public String toString() {
+        return "MainCategory{" +
+                "name='" + name + '\'' +
+                '}';
+    }
+
     public Long getId() {
         return id;
     }

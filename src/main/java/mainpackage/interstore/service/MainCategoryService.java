@@ -1,17 +1,25 @@
 package mainpackage.interstore.service;
 
+import jakarta.persistence.EntityExistsException;
 import mainpackage.interstore.model.MainCategory;
 import mainpackage.interstore.model.NestedCategory;
 import mainpackage.interstore.model.Product;
+import mainpackage.interstore.model.util.MainCategoryDTO;
+import mainpackage.interstore.model.util.MultipartProcesses;
 import mainpackage.interstore.repository.MainCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class MainCategoryService {
+
     private final SubcategoryService subcategoryService;
     private final MainCategoryRepository mainCategoryRepository;
     private final NestedCategoryService nestedCategoryService;
@@ -49,5 +57,28 @@ public class MainCategoryService {
 
         return currentActiveCategory;
     }
+
+    public void receiveMainCategory(MainCategoryDTO mainCategoryDTO, MultipartFile multipartFile, String pathToSavePict) throws IOException {
+        Optional<MainCategory> mainCategory = mainCategoryRepository.findByName(mainCategoryDTO.getName());
+        Optional<MainCategory> mainCategoryNewName = mainCategoryRepository.findByName(mainCategoryDTO.getNewName());
+        if(mainCategoryNewName.isPresent()) {
+            throw new EntityExistsException("Main category with provided new name already exists");
+        }
+        MainCategory foundMainCategory;
+        if(mainCategory.isPresent()){
+            foundMainCategory = mainCategory.get();
+        } else {
+            foundMainCategory = new MainCategory();
+        }
+        MultipartProcesses.processMultipartFile(multipartFile,pathToSavePict);
+        if(mainCategoryDTO.getNewName() != null) {
+            foundMainCategory.setName(mainCategoryDTO.getNewName());
+        } else {
+            foundMainCategory.setName(mainCategoryDTO.getName());
+        }
+        foundMainCategory.setImageUrl(mainCategoryDTO.getImageUrl());
+        mainCategoryRepository.save(foundMainCategory);
+    }
+
 }
 

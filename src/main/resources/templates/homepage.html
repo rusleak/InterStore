@@ -17,7 +17,7 @@
         <div class="category" th:each="mainCategory : ${mainCategoryList}">
             <!-- Ссылка оборачивает изображение -->
             <a th:href="@{/main-category/{id}(id=${mainCategory.getId()})}">
-                <img th:src="${mainCategory.getImageUrl()}" alt="Category Image">
+                <img th:src="${'/main_category_images/'+mainCategory.getImageUrl()}" alt="Category Image">
             </a>
             <!-- Ссылка для текста -->
             <a th:href="@{/main-category/{id}(id=${mainCategory.getId()})}">

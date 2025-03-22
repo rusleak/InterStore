@@ -5,10 +5,15 @@ import mainpackage.interstore.model.Color;
 import mainpackage.interstore.model.Dimensions;
 import mainpackage.interstore.model.Product;
 import mainpackage.interstore.model.Tag;
+import mainpackage.interstore.model.util.MainCategoryDTO;
 import mainpackage.interstore.model.util.ProductReceiverDTO;
+import mainpackage.interstore.model.util.SubCategoryDTO;
+import mainpackage.interstore.service.MainCategoryService;
 import mainpackage.interstore.service.ProductService;
+import mainpackage.interstore.service.SubcategoryService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,10 +30,16 @@ import java.util.logging.Logger;
 @RestController
 @RequestMapping("/receiver")
 public class ReceiverController {
+    @Value("${pictures.mainCategory}")
+    private String mainCategoryUploadDir;
     private final ProductService productService;
+    private final MainCategoryService mainCategoryService;
+    private final SubcategoryService subcategoryService;
     @Autowired
-    public ReceiverController(ProductService productService) {
+    public ReceiverController(ProductService productService, MainCategoryService mainCategoryService, SubcategoryService subcategoryService) {
         this.productService = productService;
+        this.mainCategoryService = mainCategoryService;
+        this.subcategoryService = subcategoryService;
     }
     //TODO Сделать методы для добавления всех сущностей в других контроллерах такиз как nested/main etc
     @GetMapping("/{productId}")
@@ -96,6 +107,19 @@ public class ReceiverController {
             productService.processProduct(productReceiverDTO, images, true);
         }
         return ResponseEntity.ok("Product saved successfully");
+    }
+
+    @PostMapping("/main-category")
+    public ResponseEntity<?> receiveMainCategory(@RequestPart("category") MainCategoryDTO mainCategoryDTO,
+                                                 @RequestPart("image") MultipartFile multipartFile) throws IOException {
+        mainCategoryService.receiveMainCategory(mainCategoryDTO,multipartFile,mainCategoryUploadDir);
+        return ResponseEntity.ok("Main category received successfully");
+    }
+
+    @PostMapping("/sub-category")
+    public ResponseEntity<?> receiveSubCategory(@RequestBody SubCategoryDTO subCategoryDTO){
+        subcategoryService.receiveSubCategory(subCategoryDTO);
+        return ResponseEntity.ok("Subcategory received successfully");
     }
 
 
