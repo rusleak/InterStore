@@ -1,18 +1,27 @@
 package mainpackage.interstore.controllers;
 
+import jakarta.persistence.EntityNotFoundException;
+import mainpackage.interstore.model.MainCategory;
 import mainpackage.interstore.model.util.MainCategoryDTO;
+import mainpackage.interstore.model.util.MainCategoryUpdateDTO;
+import mainpackage.interstore.model.util.TransformerDTO;
 import mainpackage.interstore.service.MainCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.management.relation.RelationException;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
+@RequestMapping("/api/main-category")
 public class MainCategoryRestController {
     @Value("${pictures.mainCategory}")
     private String mainCategoryUploadDir;
@@ -22,10 +31,39 @@ public class MainCategoryRestController {
         this.mainCategoryService = mainCategoryService;
     }
 
-    @PostMapping("/main-category")
+    //CREATE
+    @PostMapping
     public ResponseEntity<?> receiveMainCategory(@RequestPart("category") MainCategoryDTO mainCategoryDTO,
                                                  @RequestPart("image") MultipartFile multipartFile) throws IOException {
-        mainCategoryService.receiveMainCategory(mainCategoryDTO,multipartFile,mainCategoryUploadDir);
+        MainCategory mainCategory = TransformerDTO.dtoToMainCategory(mainCategoryDTO);
+        mainCategoryService.create(mainCategory,multipartFile, Path.of(mainCategoryUploadDir));
         return ResponseEntity.ok("Main category received successfully");
+    }
+    //READ
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllMainCat() {
+        return ResponseEntity.ok(TransformerDTO.listOfMainCatToDTO(mainCategoryService.findAll()));
+    }
+    //READ
+    @GetMapping("/{mainCategoryId}")
+    public ResponseEntity<?> getMainCatById(@PathVariable("mainCategoryId") Long mainCatId) {
+        MainCategory mainCategory = mainCategoryService.getByIdForController(mainCatId);
+        MainCategoryDTO mainCategoryDTO = TransformerDTO.mainCategoryToDto(mainCategory);
+        return ResponseEntity.ok(mainCategoryDTO);
+    }
+    //UPDATE
+    @PutMapping("/{mainCategoryId}")
+    public ResponseEntity<?> updateMainCatById(@PathVariable("mainCategoryId") Long mainCatId,
+                                               @RequestPart("category") MainCategoryUpdateDTO mainCategoryUpdateDTO,
+                                               @RequestPart("image") MultipartFile multipartFile) throws IOException {
+        mainCategoryService.update(mainCatId,mainCategoryUpdateDTO, multipartFile, Path.of(mainCategoryUploadDir));
+        return ResponseEntity.ok("Main category with id " + mainCatId + " was successfully updated");
+    }
+
+    //DELETE
+    @DeleteMapping("/{mainCategoryId}")
+    public ResponseEntity<?> deleteMainCategory(@PathVariable("mainCategoryId") Long mainCatId) throws RelationException {
+        mainCategoryService.delete(mainCatId);
+        return ResponseEntity.ok("Deleted successfully");
     }
 }

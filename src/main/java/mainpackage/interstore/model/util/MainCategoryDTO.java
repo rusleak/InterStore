@@ -6,23 +6,19 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import mainpackage.interstore.model.Subcategory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainCategoryDTO {
-    @Pattern(regexp = "[A-Z][a-z]+", message = "Must start from capital letter")
+
+    private Long id;
+//    @Pattern(regexp = "[A-Z][a-z]+", message = "Must start from capital letter")
     private String name;
 
-    @NotBlank
+//    @NotBlank
     private String imageUrl;
-
-    private String newName;
-
-    public String getNewName() {
-        return newName;
-    }
-
-    public void setNewName(String newName) {
-        this.newName = newName;
-    }
 
     public String getName() {
         return name;
@@ -39,4 +35,13 @@ public class MainCategoryDTO {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
 }
