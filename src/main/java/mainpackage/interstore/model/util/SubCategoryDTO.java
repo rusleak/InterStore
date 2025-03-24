@@ -4,10 +4,10 @@ import jakarta.persistence.Column;
 import mainpackage.interstore.model.MainCategory;
 
 public class SubCategoryDTO {
+    private Long id;
     private Long mainCategoryId;
 
     private String name;
-    private String newName;
 
     public Long getMainCategoryId() {
         return mainCategoryId;
@@ -25,11 +25,11 @@ public class SubCategoryDTO {
         this.name = name;
     }
 
-    public String getNewName() {
-        return newName;
+    public Long getId() {
+        return id;
     }
 
-    public void setNewName(String newName) {
-        this.newName = newName;
+    public void setId(Long id) {
+        this.id = id;
     }
 }

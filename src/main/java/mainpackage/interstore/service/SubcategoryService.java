@@ -6,6 +6,8 @@ import mainpackage.interstore.model.MainCategory;
 import mainpackage.interstore.model.NestedCategory;
 import mainpackage.interstore.model.Subcategory;
 import mainpackage.interstore.model.util.SubCategoryDTO;
+import mainpackage.interstore.model.util.SubCategoryUpdateDTO;
+import mainpackage.interstore.model.util.TransformerDTO;
 import mainpackage.interstore.repository.MainCategoryRepository;
 import mainpackage.interstore.repository.SubcategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +19,13 @@ import java.util.*;
 public class SubcategoryService {
     private final SubcategoryRepository subcategoryRepository;
     private final MainCategoryRepository mainCategoryRepository;
+    private final TransformerDTO transformerDTO;
     @Autowired
-    public SubcategoryService(SubcategoryRepository subcategoryRepository, MainCategoryRepository mainCategoryRepository) {
+    public SubcategoryService(SubcategoryRepository subcategoryRepository, MainCategoryRepository mainCategoryRepository, TransformerDTO transformerDTO) {
         this.subcategoryRepository = subcategoryRepository;
 
         this.mainCategoryRepository = mainCategoryRepository;
+        this.transformerDTO = transformerDTO;
     }
     public Optional<Subcategory> findById(long id) {
         return subcategoryRepository.findById(id);
@@ -30,6 +34,7 @@ public class SubcategoryService {
         return subcategoryRepository.findAll();
     }
     public List<Subcategory> findAllByMainCategoryId(long id) {
+        mainCategoryIsNotFound(id);
         return subcategoryRepository.findAllByMainCategoryId(id);
     }
     public TreeMap<Subcategory, List<NestedCategory>> getCategoriesFilter(long id) {
@@ -42,26 +47,52 @@ public class SubcategoryService {
     }
 
 
-    public void receiveSubCategory(SubCategoryDTO subCategoryDTO) {
-        Optional<Subcategory> optSubcategory = subcategoryRepository.findByName(subCategoryDTO.getName());
-        Optional<Subcategory> optSubcategoryNewName = subcategoryRepository.findByName(subCategoryDTO.getNewName());
-        Optional<MainCategory> optMainCategory = mainCategoryRepository.findById(subCategoryDTO.getMainCategoryId());
-        Subcategory foundSubcategory = new Subcategory();
-        if(optSubcategoryNewName.isPresent()) {
-            throw new EntityExistsException("Subcategory with provided new name already exists");
+    public Subcategory subCategoryIsNotFound(Long subCatId) {
+        Optional<Subcategory> optionalSubCategory = findById(subCatId);
+        if(optionalSubCategory.isEmpty()) {
+            throw new EntityNotFoundException("Subcategory with id " + subCatId + "not found");
         }
-        if (optMainCategory.isEmpty()) {
-            throw new EntityNotFoundException("main category with such id not found");
+        return optionalSubCategory.get();
+    }
+    public boolean subCategoryExists(String name) {
+        Optional<Subcategory> optionalSubCategory = subcategoryRepository.findByName(name);
+        if(optionalSubCategory.isPresent()) {
+            throw new EntityExistsException("Sub Category with name "+ name + " already exists");
         }
+        return false;
+    }
+    public MainCategory mainCategoryIsNotFound(Long mainCatId) {
+        Optional<MainCategory> optionalMainCategory = mainCategoryRepository.findById(mainCatId);
+        if(optionalMainCategory.isEmpty()) {
+            throw new EntityNotFoundException("Main category with id " + mainCatId + " not found");
+        }
+        return optionalMainCategory.get();
+    }
+    public void create(SubCategoryDTO subCategoryDTO) {
+        subCategoryExists(subCategoryDTO.getName());
+        MainCategory mainCategory = mainCategoryIsNotFound(subCategoryDTO.getMainCategoryId());
 
-        if (optSubcategory.isPresent()) {
-            foundSubcategory = optSubcategory.get();
-        }
-        if(subCategoryDTO.getNewName() != null) {
-            foundSubcategory.setName(subCategoryDTO.getNewName());
-        }
+        Subcategory subcategory = TransformerDTO.dtoToSubCategory(subCategoryDTO,mainCategory);
+        subcategoryRepository.save(subcategory);
 
-        foundSubcategory.setMainCategory(optMainCategory.get());
-        subcategoryRepository.save(foundSubcategory);
+    }
+
+    public void update(Long subCatId, SubCategoryUpdateDTO subCategoryUpdateDTO) {
+        MainCategory mainCategory = mainCategoryIsNotFound(subCategoryUpdateDTO.getNewMainCategoryId());
+        subCategoryExists(subCategoryUpdateDTO.getNewName());
+        Subcategory subcategory = subCategoryIsNotFound(subCatId);
+
+
+        subcategory.setName(subCategoryUpdateDTO.getNewName());
+        subcategory.setMainCategory(mainCategory);
+        subcategoryRepository.save(subcategory);
+    }
+
+    public void delete(Long subCatId) {
+        Subcategory subcategory = subCategoryIsNotFound(subCatId);
+        if(subcategory.getNestedCategories().size() > 0) {
+            throw new EntityExistsException("Can't delete subcategory when it have nested categories inside");
+        }
+        subcategoryRepository.delete(subcategory);
     }
 }

@@ -61,54 +61,56 @@ public class MainCategoryService {
     }
 
     public void delete(Long id) throws RelationException {
-        Optional<MainCategory> mainCategory = mainCategoryRepository.findById(id);
-        if(mainCategory.isEmpty()) {
-            throw new EntityNotFoundException("Main category with provided name not found");
-        } else {
-            MainCategory foundMainCategory = mainCategory.get();
-            if (foundMainCategory.getSubCategories().size() > 0) {
+        MainCategory mainCategory = mainCategoryIsNotFound(id);
+            if (mainCategory.getSubCategories().size() > 0) {
                 throw new RelationException("Can't delete main category which have subcategories in it");
             }
-            mainCategoryRepository.delete(foundMainCategory);
-        }
+            mainCategoryRepository.delete(mainCategory);
     }
-
-    public void attachPictureToMainCat(MainCategory mainCategory, MultipartFile multipartFile,Path path) throws IOException {
-        mainCategory.setImageUrl(multipartFile.getOriginalFilename());
-        multipartFile.transferTo(Path.of(path + "/" + multipartFile.getOriginalFilename()));
-    }
-    public void create(MainCategory mainCategory, MultipartFile multipartFile, Path path) throws IOException {
-        Optional<MainCategory> optionalMainCategory = mainCategoryRepository.findByName(mainCategory.getName());
-        if(optionalMainCategory.isPresent()) {
-            throw new EntityExistsException("Main Category with this id already exists");
-        }
-        attachPictureToMainCat(mainCategory,multipartFile,path);
-        mainCategoryRepository.save(mainCategory);
-    }
-
-    public MainCategory getByIdForController(Long mainCatId) {
+    public MainCategory mainCategoryIsNotFound(Long mainCatId) {
         Optional<MainCategory> optionalMainCategory = findById(mainCatId);
         if(optionalMainCategory.isEmpty()) {
             throw new EntityNotFoundException("Main category with id " + mainCatId + "not found");
         }
         return optionalMainCategory.get();
     }
+    public boolean mainCategoryExists(String name) {
+        Optional<MainCategory> optionalMainCategory = mainCategoryRepository.findByName(name);
+        if(optionalMainCategory.isPresent()) {
+            throw new EntityExistsException("Main Category with name "+ name + " already exists");
+        }
+        return false;
+    }
+
+    public void attachPictureToMainCat(MainCategory mainCategory, MultipartFile multipartFile,Path path) throws IOException {
+        mainCategory.setImageUrl(multipartFile.getOriginalFilename());
+        multipartFile.transferTo(Path.of(path + "/" + multipartFile.getOriginalFilename()));
+        FileManager.transferMultipartFile(multipartFile,path);
+    }
+    public void create(MainCategory mainCategory, MultipartFile multipartFile, Path path) throws IOException {
+        mainCategoryExists(mainCategory.getName());
+        attachPictureToMainCat(mainCategory,multipartFile,path);
+        mainCategoryRepository.save(mainCategory);
+        mainCategoryRepository.flush();
+    }
+
+    public MainCategory getByIdForController(Long mainCatId) {
+        Optional<MainCategory> optionalMainCategory = findById(mainCatId);
+        mainCategoryIsNotFound(mainCatId);
+        return optionalMainCategory.get();
+    }
 
     public void update(Long mainCatId, MainCategoryUpdateDTO mainCategoryUpdateDTO,MultipartFile multipartFile,Path path) throws IOException {
         Optional<MainCategory> optionalMainCategory = mainCategoryRepository.findById(mainCatId);
-        Optional<MainCategory> optionalMainCategoryNewName = mainCategoryRepository.findByName(mainCategoryUpdateDTO.getNewName());
-        if(optionalMainCategoryNewName.isPresent()) {
-            throw new EntityExistsException("Main category with name " + mainCategoryUpdateDTO.getNewName() + "already exists");
-        }
-        if(optionalMainCategory.isEmpty()) {
-            throw new EntityNotFoundException("Main category with id " + mainCatId + "not found");
-        } else {
-            MainCategory mainCategory = optionalMainCategory.get();
-            mainCategory.setName(mainCategoryUpdateDTO.getNewName());
-            FileManager.deleteFile(path + "/" + mainCategory.getImageUrl());
-            attachPictureToMainCat(mainCategory,multipartFile,path);
-            mainCategoryRepository.save(mainCategory);
-        }
+        mainCategoryIsNotFound(mainCatId);
+        mainCategoryExists(mainCategoryUpdateDTO.getNewName());
+
+        MainCategory mainCategory = optionalMainCategory.get();
+        mainCategory.setName(mainCategoryUpdateDTO.getNewName());
+        FileManager.deleteFile(path + "/" + mainCategory.getImageUrl());
+        attachPictureToMainCat(mainCategory,multipartFile,path);
+        mainCategoryRepository.save(mainCategory);
+        mainCategoryRepository.flush();
     }
 }
 
