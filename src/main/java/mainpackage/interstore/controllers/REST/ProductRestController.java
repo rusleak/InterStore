@@ -1,7 +1,7 @@
 package mainpackage.interstore.controllers.REST;
 import lombok.extern.slf4j.Slf4j;
 import mainpackage.interstore.model.*;
-import mainpackage.interstore.model.util.ProductReceiverDTO;
+import mainpackage.interstore.model.DTOs.ProductReceiverDTO;
 import mainpackage.interstore.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

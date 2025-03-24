@@ -1,8 +1,8 @@
 package mainpackage.interstore.controllers.REST;
 
 import mainpackage.interstore.model.NestedCategory;
-import mainpackage.interstore.model.util.NestedCategoryDTO;
-import mainpackage.interstore.model.util.TransformerDTO;
+import mainpackage.interstore.model.DTOs.NestedCategoryDTO;
+import mainpackage.interstore.model.DTOs.TransformerDTO;
 import mainpackage.interstore.service.NestedCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

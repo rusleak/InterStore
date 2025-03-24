@@ -1,4 +1,4 @@
-package mainpackage.interstore.model.util;
+package mainpackage.interstore.model.DTOs;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;

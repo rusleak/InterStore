@@ -6,12 +6,11 @@ import mainpackage.interstore.model.MainCategory;
 import mainpackage.interstore.model.NestedCategory;
 import mainpackage.interstore.model.Product;
 import mainpackage.interstore.model.util.FileManager;
-import mainpackage.interstore.model.util.MainCategoryUpdateDTO;
+import mainpackage.interstore.model.DTOs.MainCategoryUpdateDTO;
 import mainpackage.interstore.repository.MainCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.CoWebFilter;
 
 import javax.management.relation.RelationException;
 import java.io.IOException;

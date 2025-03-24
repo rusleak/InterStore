@@ -1,14 +1,12 @@
 package mainpackage.interstore.controllers.REST;
 
-import jakarta.persistence.EntityNotFoundException;
 import mainpackage.interstore.model.MainCategory;
-import mainpackage.interstore.model.util.MainCategoryDTO;
-import mainpackage.interstore.model.util.MainCategoryUpdateDTO;
-import mainpackage.interstore.model.util.TransformerDTO;
+import mainpackage.interstore.model.DTOs.MainCategoryDTO;
+import mainpackage.interstore.model.DTOs.MainCategoryUpdateDTO;
+import mainpackage.interstore.model.DTOs.TransformerDTO;
 import mainpackage.interstore.service.MainCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,9 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.management.relation.RelationException;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/main-category")

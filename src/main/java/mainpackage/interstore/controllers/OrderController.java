@@ -5,7 +5,7 @@ import mainpackage.interstore.model.Cart;
 import mainpackage.interstore.model.CartItem;
 import mainpackage.interstore.model.Order;
 import mainpackage.interstore.model.OrderItem;
-import mainpackage.interstore.model.util.OrderRequestDTO;
+import mainpackage.interstore.model.DTOs.OrderRequestDTO;
 import mainpackage.interstore.service.OrderItemService;
 import mainpackage.interstore.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +13,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
 @Controller
 @RequestMapping("/order")
 public class OrderController {

@@ -2,7 +2,7 @@ package mainpackage.interstore.service;
 
 import mainpackage.interstore.model.*;
 import mainpackage.interstore.model.Color;
-import mainpackage.interstore.model.util.ProductReceiverDTO;
+import mainpackage.interstore.model.DTOs.ProductReceiverDTO;
 import mainpackage.interstore.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;

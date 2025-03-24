@@ -1,4 +1,4 @@
-package mainpackage.interstore.model.util;
+package mainpackage.interstore.model.DTOs;
 
 import jakarta.persistence.Column;
 import mainpackage.interstore.model.MainCategory;

@@ -1,4 +1,4 @@
-package mainpackage.interstore.model.util;
+package mainpackage.interstore.model.DTOs;
 
 public class SubCategoryUpdateDTO {
     String newName;

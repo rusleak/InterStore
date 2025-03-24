@@ -1,9 +1,9 @@
 package mainpackage.interstore.controllers.REST;
 
 import mainpackage.interstore.model.Subcategory;
-import mainpackage.interstore.model.util.SubCategoryDTO;
-import mainpackage.interstore.model.util.SubCategoryUpdateDTO;
-import mainpackage.interstore.model.util.TransformerDTO;
+import mainpackage.interstore.model.DTOs.SubCategoryDTO;
+import mainpackage.interstore.model.DTOs.SubCategoryUpdateDTO;
+import mainpackage.interstore.model.DTOs.TransformerDTO;
 import mainpackage.interstore.service.SubcategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
