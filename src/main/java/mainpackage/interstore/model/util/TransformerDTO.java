@@ -2,9 +2,8 @@ package mainpackage.interstore.model.util;
 
 import jakarta.persistence.EntityNotFoundException;
 import mainpackage.interstore.model.MainCategory;
+import mainpackage.interstore.model.NestedCategory;
 import mainpackage.interstore.model.Subcategory;
-import mainpackage.interstore.service.MainCategoryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -59,8 +58,33 @@ public class TransformerDTO {
             subCategoryDTOS.add(subCategoryToDto(subcategory));
         }
         if(subCategoryDTOS.isEmpty()) {
-            throw new EntityNotFoundException("List of MainCategories is empty");
+            throw new EntityNotFoundException("List of SubCategories is empty");
         }
         return subCategoryDTOS;
+    }
+
+    public static NestedCategory dtoToNestedCategory(NestedCategoryDTO nestedCategoryDTO, Subcategory subcategory) {
+        NestedCategory nestedCategory = new NestedCategory();
+        nestedCategory.setName(nestedCategoryDTO.getName());
+        nestedCategory.setSubcategory(subcategory);
+        return nestedCategory;
+    }
+
+    public static NestedCategoryDTO nestedCategoryToDTO(NestedCategory nestedCategory) {
+        NestedCategoryDTO nestedCategoryDTO = new NestedCategoryDTO();
+        nestedCategoryDTO.setId(nestedCategory.getId());
+        nestedCategoryDTO.setName(nestedCategory.getName());
+        nestedCategoryDTO.setSubCategoryId(nestedCategory.getSubcategory().getId());
+        return nestedCategoryDTO;
+    }
+    public static List<NestedCategoryDTO> listOfNestedCatToDTO(List<NestedCategory> nestedCategoryList) {
+        List<NestedCategoryDTO> nestedCategories = new ArrayList<>();
+        for (NestedCategory nestedCategory : nestedCategoryList) {
+            nestedCategories.add(nestedCategoryToDTO(nestedCategory));
+        }
+        if(nestedCategories.isEmpty()) {
+            throw new EntityNotFoundException("List of Nested Categories is empty");
+        }
+        return nestedCategories;
     }
 }

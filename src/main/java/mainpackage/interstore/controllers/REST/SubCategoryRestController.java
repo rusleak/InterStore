@@ -1,4 +1,4 @@
-package mainpackage.interstore.controllers;
+package mainpackage.interstore.controllers.REST;
 
 import mainpackage.interstore.model.Subcategory;
 import mainpackage.interstore.model.util.SubCategoryDTO;

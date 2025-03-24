@@ -1,4 +1,4 @@
-package mainpackage.interstore.controllers;
+package mainpackage.interstore.controllers.REST;
 
 import jakarta.persistence.EntityNotFoundException;
 import mainpackage.interstore.model.MainCategory;

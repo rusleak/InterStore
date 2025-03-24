@@ -1,23 +1,16 @@
 package mainpackage.interstore.model.util;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Pattern;
-import mainpackage.interstore.model.Subcategory;
-import org.springframework.lang.Nullable;
-
 public class NestedCategoryDTO {
-    private Long subcategoryId;
-    @Pattern(regexp = "[A-Z][a-z]+", message = "Must start from capital letter")
+    private Long id;
     private String name;
-    @Pattern(regexp = "[A-Z][a-z]+", message = "Must start from capital letter")
-    private String newName;
+    private Long subCategoryId;
 
-    public Long getSubcategoryId() {
-        return subcategoryId;
+    public Long getSubCategoryId() {
+        return subCategoryId;
     }
 
-    public void setSubcategoryId(Long subcategoryId) {
-        this.subcategoryId = subcategoryId;
+    public void setSubCategoryId(Long subCategoryId) {
+        this.subCategoryId = subCategoryId;
     }
 
     public String getName() {
@@ -28,11 +21,11 @@ public class NestedCategoryDTO {
         this.name = name;
     }
 
-    public String getNewName() {
-        return newName;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setNewName(String newName) {
-        this.newName = newName;
+    public Long getId() {
+        return id;
     }
 }

@@ -1,4 +1,4 @@
-package mainpackage.interstore.controllers;
+package mainpackage.interstore.controllers.REST;
 import lombok.extern.slf4j.Slf4j;
 import mainpackage.interstore.model.*;
 import mainpackage.interstore.model.util.ProductReceiverDTO;
