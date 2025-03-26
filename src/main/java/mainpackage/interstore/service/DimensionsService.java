@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -25,4 +26,14 @@ public class DimensionsService {
     public List<Dimensions> findByNameIn(Set<String> dimensionNames) {
         return dimensionsRepository.findBySizeIn(dimensionNames);
     }
+
+    public List<Dimensions> loadDimensions(List<Long> dimensionsIds) {
+        List<Dimensions> dimensions = new ArrayList<>();
+        for (Long dimensionsId : dimensionsIds) {
+            Optional<Dimensions> optionalDimensions = dimensionsRepository.findById(dimensionsId);
+            optionalDimensions.ifPresent(dimensions::add);
+        }
+        return dimensions;
+    }
+
 }

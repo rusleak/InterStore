@@ -19,13 +19,11 @@ import java.util.*;
 public class SubcategoryService {
     private final SubcategoryRepository subcategoryRepository;
     private final MainCategoryRepository mainCategoryRepository;
-    private final TransformerDTO transformerDTO;
     @Autowired
-    public SubcategoryService(SubcategoryRepository subcategoryRepository, MainCategoryRepository mainCategoryRepository, TransformerDTO transformerDTO) {
+    public SubcategoryService(SubcategoryRepository subcategoryRepository, MainCategoryRepository mainCategoryRepository) {
         this.subcategoryRepository = subcategoryRepository;
 
         this.mainCategoryRepository = mainCategoryRepository;
-        this.transformerDTO = transformerDTO;
     }
     public Optional<Subcategory> findById(long id) {
         return subcategoryRepository.findById(id);

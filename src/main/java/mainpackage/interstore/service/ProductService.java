@@ -1,8 +1,11 @@
 package mainpackage.interstore.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import mainpackage.interstore.model.*;
 import mainpackage.interstore.model.Color;
-import mainpackage.interstore.model.DTOs.ProductReceiverDTO;
+import mainpackage.interstore.model.DTOs.ProductDTO;
+import mainpackage.interstore.model.DTOs.TransformerDTO;
+import mainpackage.interstore.model.util.FileManager;
 import mainpackage.interstore.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -25,10 +28,11 @@ public class ProductService {
     private final DimensionsService dimensionsService;
     private final ColorService colorService;
     private final TagService tagService;
+    private final BrandService brandService;
 
 
 
-    public ProductService(MainCategoryService mainCategoryService, NestedCategoryService nestedCategoryService, ProductRepository productRepository, SubcategoryService subcategoryService, DimensionsService dimensionsService, ColorService colorService, TagService tagService) {
+    public ProductService(MainCategoryService mainCategoryService, NestedCategoryService nestedCategoryService, ProductRepository productRepository, SubcategoryService subcategoryService, DimensionsService dimensionsService, ColorService colorService, TagService tagService, BrandService brandService) {
         this.mainCategoryService = mainCategoryService;
         this.nestedCategoryService = nestedCategoryService;
         this.productRepository = productRepository;
@@ -36,6 +40,7 @@ public class ProductService {
         this.dimensionsService = dimensionsService;
         this.colorService = colorService;
         this.tagService = tagService;
+        this.brandService = brandService;
     }
 
     public List<Product> getProductsByMainCategoryId(long id) {
@@ -218,23 +223,26 @@ public class ProductService {
 
     public TreeSet<String> getAllBrandsFromProducts(List<Product> productList) {
         return productList.stream()
-                .map(Product::getBrand)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toCollection(TreeSet::new));
+                .map(Product::getBrand)          // Получаем объект Brand
+                .filter(Objects::nonNull)        // Фильтруем, чтобы не было null
+                .map(Brand::getName)             // Получаем название бренда
+                .filter(Objects::nonNull)        // Фильтруем, если имя бренда вдруг null
+                .collect(Collectors.toCollection(TreeSet::new)); // Собираем в TreeSet
     }
+
 
     public List<Product> filterProductsByBrands(List<Product> productList, List<String> brands) {
         if (productList == null || brands == null || brands.isEmpty()) {
             return productList;
         }
         return productList.stream()
-                .filter(product -> brands.contains(product.getBrand()))  // Проверяем, есть ли бренд в списке брендов
+                .filter(product -> brands.contains(product.getBrand().getName()))  // Проверяем, есть ли бренд в списке брендов
                 .collect(Collectors.toList());  // Собираем отфильтрованные продукты в список
     }
 
    ////////////////////PRODUCT PAGE///////////////
    public Product findById(Long productId) {
-       return productRepository.findById(productId).orElseThrow(() -> new NoSuchElementException("No product found with ID: " + productId));
+       return productRepository.findById(productId).orElseThrow(() -> new EntityNotFoundException("No product found with ID: " + productId));
    }
 
 
@@ -262,108 +270,93 @@ public class ProductService {
         }
     }
 
-    private void enrichProductWithRelations(Product product, List<Color> colors, List<Tag> tags, List<Dimensions> dimensions, NestedCategory nestedCategory) {
+    private void enrichProductWithRelations(Product product, List<Color> colors, List<Tag> tags, List<Dimensions> dimensions, NestedCategory nestedCategory, Brand brand) {
         product.setColors(colors);
         product.setTagList(tags);
         product.setDimensions(dimensions);
         product.setNestedCategory(nestedCategory);
+        product.setBrand(brand);
     }
 
-    public Product fillStaticFieldsOfProductFromDTO(ProductReceiverDTO productReceiverDTO, Product product) {
-        product.setPrice(productReceiverDTO.getPrice());
-        product.setName(productReceiverDTO.getName());
-        product.setDescription(productReceiverDTO.getDescription());
-        product.setDiscountedPrice(productReceiverDTO.getDiscountedPrice());
-        product.setStockQuantity(productReceiverDTO.getStockQuantity());
-        product.setProductImages(productReceiverDTO.getProductImages());
-        product.setBrand(productReceiverDTO.getBrand());
-        return product;
-    }
-
-    private void validateProductDTOCollections(ProductReceiverDTO dto) throws Exception {
-        if (dto.getColors() == null || dto.getColors().isEmpty()) {
+    private void validateProductDTOCollections(ProductDTO dto) throws Exception {
+        if (dto.getColorIds() == null || dto.getColorIds().isEmpty()) {
             throw new Exception("Colors list is empty");
         }
-        if (dto.getTagList() == null || dto.getTagList().isEmpty()) {
+        if (dto.getTagIds() == null || dto.getTagIds().isEmpty()) {
             throw new Exception("Tag list is empty");
         }
-        if (dto.getDimensions() == null || dto.getDimensions().isEmpty()) {
+        if (dto.getDimensionsIds() == null || dto.getDimensionsIds().isEmpty()) {
             throw new Exception("Dimensions list is empty");
         }
-        if (dto.getNestedCategory() == null || dto.getNestedCategory().isBlank()) {
+        if (dto.getNestedCategoryId() == null) {
             throw new Exception("Nested category is missing");
         }
+        if(dto.getBrandId() == null) {
+            throw new Exception("Brand is missing");
+        }
+        if(dto.getName() == null) {
+            throw new Exception("Name is missing");
+        }
+        if (dto.getPrice() == null) {
+            throw new Exception("Price is missing");
+        }
+        if (dto.getDiscountedPrice() == null) {
+            throw new Exception("Discounted price is missing");
+        }
+        if(dto.getOneCId() == null) {
+            throw new Exception("OneC id is missing");
+        }
+        if(dto.getIsActive() == null) {
+            throw new Exception("Active status is missing");
+        }
     }
-
-    public void handleReceivedProduct(ProductReceiverDTO dto) throws Exception {
-
-        Set<String> colorNames = new HashSet<>(dto.getColors());
-        Set<String> tagNames = new HashSet<>(dto.getTagList());
-        Set<String> dimensionNames = new HashSet<>(dto.getDimensions());
-
-        validateProductDTOCollections(dto);
-
-
-        List<Color> colorsFromDb = colorService.findByNameIn(colorNames);
-        List<Tag> tagsFromDb = tagService.findByNameIn(tagNames);
-        List<Dimensions> dimensionsFromDb = dimensionsService.findByNameIn(dimensionNames);
-
-        NestedCategory nestedCategory = nestedCategoryService.findByName(dto.getNestedCategory())
-                .orElseThrow(() -> new Exception("Nested category not passed but obligatory"));
-
-        Product product = productRepository.findByOneCId(dto.getOneCId())
-                .orElseGet(() -> {
-                    Product newProduct = new Product();
-                    newProduct.setOneCId(dto.getOneCId());  // Устанавливаем oneCId
-                    return newProduct;
-                });
-
-
-
-        // Логика с удалением старых картинок, если они не присутствуют в новом списке
-        if (product.getId() != null) {
-            List<String> existingImages = new ArrayList<>(product.getProductImages());
-            List<String> newImages = dto.getProductImages();
-
-            // Находим картинки, которых нет в новых данных и удаляем их
-            for (String oldImage : existingImages) {
-                if(newImages.contains(oldImage)) {
-
-                } else  {
-                    // Удаляем файл с диска
-                    Path pathToDelete = Paths.get(oldImage);
-                    Files.deleteIfExists(pathToDelete);
-                }
-            }
+    private void validateProductCollectionsBeforeSave(Product product) throws Exception {
+        if (product.getColors() == null || product.getColors().isEmpty()) {
+            throw new Exception("Colors list is empty");
         }
-
-
-        fillStaticFieldsOfProductFromDTO(dto, product);
-        enrichProductWithRelations(product, colorsFromDb, tagsFromDb, dimensionsFromDb, nestedCategory);
-
-        if (product.getOneCId() == null) {
-            throw new IllegalArgumentException("oneCId cannot be null");
+        if (product.getTagList() == null || product.getTagList().isEmpty()) {
+            throw new Exception("Tag list is empty");
         }
+        if (product.getDimensions() == null || product.getDimensions().isEmpty()) {
+            throw new Exception("Dimensions list is empty");
+        }
+        if (product.getNestedCategory() == null) {
+            throw new Exception("Nested category is missing");
+        }
+        if(product.getBrand() == null) {
+            throw new Exception("Brand is missing");
+        }
+        if(product.getName() == null) {
+            throw new Exception("Name is missing");
+        }
+        if (product.getPrice() == null) {
+            throw new Exception("Price is missing");
+        }
+        if (product.getDiscountedPrice() == null) {
+            throw new Exception("Discounted price is missing");
+        }
+        if(product.getOneCId() == null) {
+            throw new Exception("OneC id is missing");
+        }
+        if(product.getIsActive() == null) {
+            throw new Exception("Active status is missing");
+        }
+    }
+    public void createProduct(ProductDTO productDTO, List<MultipartFile> images) throws Exception {
+        validateProductDTOCollections(productDTO);
+        Product product = new Product();
+        TransformerDTO.dtoToProductWithoutRelations(productDTO,product);
 
+        List<Color> colors = colorService.loadColors(productDTO.getColorIds());
+        List<Tag> tags = tagService.loadTags(productDTO.getTagIds());
+        List<Dimensions> dimensions = dimensionsService.loadDimensions(productDTO.getDimensionsIds());
+        NestedCategory nestedCategory = nestedCategoryService.loadNestedCategory(productDTO.getNestedCategoryId());
+        Brand brand = brandService.loadBrand(productDTO.getBrandId());
+
+        enrichProductWithRelations(product, colors, tags, dimensions, nestedCategory, brand);
+        validateProductCollectionsBeforeSave(product);
+
+        FileManager.saveProductImages(product,images);
         productRepository.save(product);
-    }
-    public void processProduct(ProductReceiverDTO productReceiverDTO, List<MultipartFile> images, boolean checkRequiredImages) throws Exception {
-        Set<String> requiredImages = new HashSet<>();
-        if (checkRequiredImages && productReceiverDTO.getProductImages() != null) {
-            requiredImages.addAll(productReceiverDTO.getProductImages());
-        }
-
-        List<String> imagePaths = new ArrayList<>();
-        for (MultipartFile file : images) {
-            String fileName = file.getOriginalFilename();
-            if (!checkRequiredImages || requiredImages.contains(fileName)) {
-                String filePath = "src/main/resources/static/product_images/" + fileName;
-                file.transferTo(Path.of(filePath));
-                imagePaths.add(fileName);
-            }
-        }
-
-        productReceiverDTO.setProductImages(imagePaths);
-        handleReceivedProduct(productReceiverDTO);
     }
 }

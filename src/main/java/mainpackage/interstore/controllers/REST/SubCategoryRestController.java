@@ -52,6 +52,6 @@ public class SubCategoryRestController {
     @DeleteMapping("/{subCatId}")
     public ResponseEntity<?> deleteSubCatById(@PathVariable("subCatId") Long subCatId){
         subcategoryService.delete(subCatId);
-        return ResponseEntity.ok("Updated successfully");
+        return ResponseEntity.ok("Deleted successfully");
     }
 }

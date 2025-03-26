@@ -42,8 +42,10 @@ public class Product {
     @Column(name = "stock_quantity", nullable = false)
     private Integer stockQuantity;
 
-    @Column(name = "brand")
-    private String brand;
+    @ManyToOne
+    @JoinColumn(name = "brand_id", nullable = false)
+    private Brand brand;
+
 
     @ManyToMany
     @JoinTable(name = "product_dimension",
@@ -72,6 +74,8 @@ public class Product {
 
     @Column(name = "oneC_id", nullable = false, unique = true)
     private Long oneCId;
+    @Column(name = "is_active")
+    private Integer isActive;
 
     public Long getId() {
         return id;
@@ -129,11 +133,11 @@ public class Product {
         this.stockQuantity = stockQuantity;
     }
 
-    public String getBrand() {
+    public Brand getBrand() {
         return brand;
     }
 
-    public void setBrand(String brand) {
+    public void setBrand(Brand brand) {
         this.brand = brand;
     }
 
@@ -183,5 +187,13 @@ public class Product {
 
     public void setOneCId(Long oneCId) {
         this.oneCId = oneCId;
+    }
+
+    public Integer getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Integer isActive) {
+        this.isActive = isActive;
     }
 }

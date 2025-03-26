@@ -72,4 +72,8 @@ public class NestedCategoryService {
             }
             nestedCategoryRepository.delete(nestedCategory);
     }
+    public NestedCategory loadNestedCategory(Long nestedCategoryId) {
+        Optional<NestedCategory> optionalNestedCategory = nestedCategoryRepository.findById(nestedCategoryId);
+        return optionalNestedCategory.orElse(new NestedCategory());  // Если не найдено, возвращаем новый объект
+    }
 }

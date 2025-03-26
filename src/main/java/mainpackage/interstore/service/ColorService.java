@@ -33,4 +33,13 @@ public class ColorService {
     public List<Color> findByNameIn(Set<String> colorNames) {
         return colorRepository.findByNameIn(colorNames);
     }
+
+    public List<Color> loadColors(List<Long> colorIds) {
+        List<Color> colors = new ArrayList<>();
+        for (Long colorId : colorIds) {
+            Optional<Color> optionalColor = colorRepository.findById(colorId);
+            optionalColor.ifPresent(colors::add);  // Если Optional не пуст, добавляем в список
+        }
+        return colors;
+    }
 }

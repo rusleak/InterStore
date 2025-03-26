@@ -1,14 +1,11 @@
 package mainpackage.interstore.model.DTOs;
 
-import jakarta.persistence.EntityNotFoundException;
-import mainpackage.interstore.model.MainCategory;
-import mainpackage.interstore.model.NestedCategory;
-import mainpackage.interstore.model.Subcategory;
-import org.springframework.stereotype.Component;
+import mainpackage.interstore.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
-@Component
+import java.util.stream.Collectors;
+
 public class TransformerDTO {
 
     public static MainCategoryDTO mainCategoryToDto(MainCategory mainCategory) {
@@ -18,13 +15,11 @@ public class TransformerDTO {
         mainCategoryDTO.setImageUrl(mainCategory.getImageUrl());
         return mainCategoryDTO;
     }
+
     public static List<MainCategoryDTO> listOfMainCatToDTO(List<MainCategory> mainCategoryList) {
         List<MainCategoryDTO> mainCategoryDTOList = new ArrayList<>();
         for (MainCategory mainCategory : mainCategoryList) {
             mainCategoryDTOList.add(mainCategoryToDto(mainCategory));
-        }
-        if(mainCategoryDTOList.isEmpty()) {
-            throw new EntityNotFoundException("List of MainCategories is empty");
         }
         return mainCategoryDTOList;
     }
@@ -33,7 +28,7 @@ public class TransformerDTO {
         MainCategory mainCategory = new MainCategory();
 
         mainCategory.setName(mainCategoryDTO.getName());
-        if(mainCategoryDTO.getImageUrl() != null) {
+        if (mainCategoryDTO.getImageUrl() != null) {
             mainCategory.setImageUrl(mainCategoryDTO.getImageUrl());
         }
         return mainCategory;
@@ -45,6 +40,7 @@ public class TransformerDTO {
         subcategory.setMainCategory(mainCategory);
         return subcategory;
     }
+
     public static SubCategoryDTO subCategoryToDto(Subcategory subcategory) {
         SubCategoryDTO subcategoryDTO = new SubCategoryDTO();
         subcategoryDTO.setId(subcategory.getId());
@@ -52,13 +48,11 @@ public class TransformerDTO {
         subcategoryDTO.setMainCategoryId(subcategory.getMainCategory().getId());
         return subcategoryDTO;
     }
+
     public static List<SubCategoryDTO> listOfSubCatToDTO(List<Subcategory> subcategoryList) {
         List<SubCategoryDTO> subCategoryDTOS = new ArrayList<>();
         for (Subcategory subcategory : subcategoryList) {
             subCategoryDTOS.add(subCategoryToDto(subcategory));
-        }
-        if(subCategoryDTOS.isEmpty()) {
-            throw new EntityNotFoundException("List of SubCategories is empty");
         }
         return subCategoryDTOS;
     }
@@ -77,14 +71,73 @@ public class TransformerDTO {
         nestedCategoryDTO.setSubCategoryId(nestedCategory.getSubcategory().getId());
         return nestedCategoryDTO;
     }
+
     public static List<NestedCategoryDTO> listOfNestedCatToDTO(List<NestedCategory> nestedCategoryList) {
         List<NestedCategoryDTO> nestedCategories = new ArrayList<>();
         for (NestedCategory nestedCategory : nestedCategoryList) {
             nestedCategories.add(nestedCategoryToDTO(nestedCategory));
         }
-        if(nestedCategories.isEmpty()) {
-            throw new EntityNotFoundException("List of Nested Categories is empty");
-        }
         return nestedCategories;
     }
+
+    public static ProductDTO productToDTO(Product product) {
+        ProductDTO productDTO = new ProductDTO();
+
+        productDTO.setId(product.getId());
+        productDTO.setName(product.getName());
+        productDTO.setDescription(product.getDescription());
+        productDTO.setPrice(product.getPrice());
+        productDTO.setDiscountedPrice(product.getDiscountedPrice());
+        productDTO.setProductImages(product.getProductImages());
+        productDTO.setStockQuantity(product.getStockQuantity());
+        productDTO.setBrandId(product.getBrand().getId());
+        productDTO.setOneCId(product.getOneCId());
+        productDTO.setIsActive(product.getIsActive());
+        productDTO.setIsActive(product.getIsActive());
+        // Преобразуем список объектов Color в список строк с их именами
+        if (product.getColors() != null) {
+            productDTO.setColorIds(
+                    product.getColors().stream()
+                            .map(Color::getId)
+                            .collect(Collectors.toList())
+            );
+        }
+
+        // Преобразуем список объектов Tag в список строк с их именами
+        if (product.getTagList() != null) {
+            productDTO.setTagIds(
+                    product.getTagList().stream()
+                            .map(Tag::getId)
+                            .collect(Collectors.toList())
+            );
+        }
+        if (product.getDimensions() != null) {
+            productDTO.setDimensionsIds(
+                    product.getDimensions().stream()
+                            .map(Dimensions::getId)
+                            .collect(Collectors.toList())
+            );
+        }
+
+        return productDTO;
+    }
+    public static void dtoToProductWithoutRelations(ProductDTO productDTO, Product product) {
+        product.setId(productDTO.getId());
+        product.setName(productDTO.getName());
+        product.setDescription(productDTO.getDescription());
+        product.setPrice(productDTO.getPrice());
+        product.setStockQuantity(productDTO.getStockQuantity());
+        product.setDiscountedPrice(productDTO.getDiscountedPrice());
+        product.setOneCId(productDTO.getOneCId());
+        product.setIsActive(productDTO.getIsActive());
+    }
+
+    public static List<ProductDTO> listOfProductToDTO(List<Product> productList) {
+        List<ProductDTO> productDTOList = new ArrayList<>();
+        for (Product product : productList) {
+            productDTOList.add(productToDTO(product));
+        }
+        return productDTOList;
+    }
 }
+
