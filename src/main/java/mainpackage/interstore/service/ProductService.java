@@ -383,4 +383,12 @@ public class ProductService {
         FileManager.saveProductImages(product,images,productDTO.getProductImages());
         productRepository.save(product);
     }
+
+    public void updateIsActiveStatus(List<Long> productsIds, Integer status) {
+        List<Product> productList = productRepository.findAllById(productsIds);
+        for (Product product : productList) {
+            product.setIsActive(status);
+        }
+        productRepository.saveAll(productList);
+    }
 }

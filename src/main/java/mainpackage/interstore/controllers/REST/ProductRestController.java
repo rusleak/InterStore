@@ -114,5 +114,11 @@ public class ProductRestController {
         productService.updateProduct(productDTO, images);
         return ResponseEntity.ok("Product created successfully");
     }
+
+    @PutMapping("/{status}")
+    public ResponseEntity<?> updateIsActiveStatus(@RequestBody List<Long> productsIds, @PathVariable Integer status) {
+        productService.updateIsActiveStatus(productsIds, status);
+        return ResponseEntity.ok("Product created successfully");
+    }
 }
 
