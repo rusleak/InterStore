@@ -122,7 +122,7 @@ public class TransformerDTO {
         return productDTO;
     }
     public static void dtoToProductWithoutRelations(ProductDTO productDTO, Product product) {
-        product.setId(productDTO.getId());
+//        product.setId(productDTO.getId());
         product.setName(productDTO.getName());
         product.setDescription(productDTO.getDescription());
         product.setPrice(productDTO.getPrice());

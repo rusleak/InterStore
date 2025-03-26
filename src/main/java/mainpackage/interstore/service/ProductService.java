@@ -277,6 +277,9 @@ public class ProductService {
         product.setNestedCategory(nestedCategory);
         product.setBrand(brand);
     }
+    public Optional<Product> findByOne_CId(Long oneC_id){
+        return productRepository.findByOneCId(oneC_id);
+    }
 
     private void validateProductDTOCollections(ProductDTO dto) throws Exception {
         if (dto.getColorIds() == null || dto.getColorIds().isEmpty()) {
@@ -356,7 +359,28 @@ public class ProductService {
         enrichProductWithRelations(product, colors, tags, dimensions, nestedCategory, brand);
         validateProductCollectionsBeforeSave(product);
 
-        FileManager.saveProductImages(product,images);
+        FileManager.saveProductImages(product,images,productDTO.getProductImages());
+        productRepository.save(product);
+    }
+
+    public void updateProduct(ProductDTO productDTO, List<MultipartFile> images) throws Exception {
+        validateProductDTOCollections(productDTO);
+        Optional<Product> optionalProduct = findByOne_CId(productDTO.getOneCId());
+        Product product;
+        if(optionalProduct.isPresent()) {
+            product = optionalProduct.get();
+        } else {
+            throw new EntityNotFoundException("Product with such 1C id not found");
+        }
+        TransformerDTO.dtoToProductWithoutRelations(productDTO,product);
+        List<Color> colors = colorService.loadColors(productDTO.getColorIds());
+        List<Tag> tags = tagService.loadTags(productDTO.getTagIds());
+        List<Dimensions> dimensions = dimensionsService.loadDimensions(productDTO.getDimensionsIds());
+        NestedCategory nestedCategory = nestedCategoryService.loadNestedCategory(productDTO.getNestedCategoryId());
+        Brand brand = brandService.loadBrand(productDTO.getBrandId());
+        enrichProductWithRelations(product, colors, tags, dimensions, nestedCategory, brand);
+        validateProductCollectionsBeforeSave(product);
+        FileManager.saveProductImages(product,images,productDTO.getProductImages());
         productRepository.save(product);
     }
 }

@@ -61,7 +61,8 @@ public class FileManager {
             throw new Exception("ImageList is empty");
         }
     }
-    public static void saveProductImages(Product product, List<MultipartFile> multipartFileList) throws Exception {
+    //TODO на стороне романа обязательно файл нейм должен становится UUID
+    public static void saveProductImages(Product product, List<MultipartFile> multipartFileList, List<String> dtoImages) throws Exception {
         String mainCategory = product.getNestedCategory().getSubcategory().getMainCategory().getName();
         String subCategory = product.getNestedCategory().getSubcategory().getName();
         String nestedCategory = product.getNestedCategory().getName();
@@ -80,20 +81,37 @@ public class FileManager {
             throw new Exception("Cannot write to directory: " + categoryDir);
         }
 
+        List<String> currentImages = product.getProductImages() != null ? new ArrayList<>(product.getProductImages()) : new ArrayList<>();
+        for (String imagePath : currentImages) {
+            if (!dtoImages.contains(imagePath)) {
+                Path fileToDelete = Paths.get(PRODUCT_IMAGES,imagePath);
+                System.out.println("Path to delete = " + fileToDelete);
+                File file = fileToDelete.toFile();
+                if (file.exists() && file.isFile()) {
+                    if (file.delete()) {
+                        System.out.println("Deleted file: " + fileToDelete);
+                    } else {
+                        System.out.println("Failed to delete file: " + fileToDelete);
+                    }
+                }
+            }
+        }
+
         // Обрабатываем каждый файл
         for (MultipartFile file : multipartFileList) {
             String fileName = file.getOriginalFilename();
-
-            // Кодируем имя файла, чтобы избежать проблем с кириллицей или спецсимволами
             Path filePath = Paths.get(categoryDir.toString(), fileName);
             file.transferTo(filePath.toFile());
+
             // Добавляем путь к изображению
-            String imagePath = mainCategory + File.separator + subCategory + File.separator + nestedCategory + File.separator + filePath;
+            String imagePath = mainCategory + File.separator + subCategory + File.separator + nestedCategory + File.separator + fileName;
             images.add(imagePath);
         }
 
+
         // Проверка, что изображения были добавлены
         product.setProductImages(images);
+        System.out.println("new images : " + product.getProductImages());
         if (product.getProductImages() == null || product.getProductImages().isEmpty()) {
             throw new Exception("ImageList is empty");
         }

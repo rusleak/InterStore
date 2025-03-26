@@ -80,9 +80,11 @@ public class ProductRestController {
     @PostMapping
     public ResponseEntity<?> createProduct(@RequestPart("product") ProductDTO productDTO,
                                            @RequestPart("images") List<MultipartFile> images) throws Exception {
+        Product product = new Product();
         productService.createProduct(productDTO, images);
         return ResponseEntity.ok("Product created successfully");
     }
+
     //READ
     @GetMapping("/{productId}")
     public ResponseEntity<?> getProdById(@PathVariable("productId") long prodId) {
@@ -103,6 +105,14 @@ public class ProductRestController {
     public ResponseEntity<?> getProdByMainCat(@PathVariable("mainCatId") long mainCatId) {
         List<Product> productList = productService.getProductsByMainCategoryId(mainCatId);
         return ResponseEntity.ok(TransformerDTO.listOfProductToDTO(productList));
+    }
+
+    //UPDATE
+    @PutMapping
+    public ResponseEntity<?> updateProduct(@RequestPart("product") ProductDTO productDTO,
+                                           @RequestPart("images") List<MultipartFile> images) throws Exception {
+        productService.updateProduct(productDTO, images);
+        return ResponseEntity.ok("Product created successfully");
     }
 }
 
