@@ -28,6 +28,11 @@ public class BrandRestController {
     public ResponseEntity<?> getAll() {
         return ResponseEntity.ok(TransformerDTO.listOfBrandToDTO(brandService.findAll()));
     }
+    @GetMapping("/{brandId}")
+    public ResponseEntity<?> getBrandById(@PathVariable Long brandId) throws Exception {
+        return ResponseEntity.ok(brandService.findByIdController(brandId));
+    }
+
     //UPDATE
     @PutMapping("/{brandId}")
     public ResponseEntity<?> update(@RequestBody BrandUpdateDTO brandUpdateDTO, @PathVariable Long brandId) throws Exception {

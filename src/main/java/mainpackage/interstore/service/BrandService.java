@@ -3,8 +3,10 @@ package mainpackage.interstore.service;
 import mainpackage.interstore.model.Brand;
 import mainpackage.interstore.model.DTOs.BrandDTO;
 import mainpackage.interstore.model.DTOs.BrandUpdateDTO;
+import mainpackage.interstore.model.DTOs.TagDTO;
 import mainpackage.interstore.model.DTOs.TransformerDTO;
 import mainpackage.interstore.model.Product;
+import mainpackage.interstore.model.Tag;
 import mainpackage.interstore.repository.BrandRepository;
 import mainpackage.interstore.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,6 +97,14 @@ public class BrandService {
             return true;
         } else {
             return false;
+        }
+    }
+    public BrandDTO findByIdController(Long brandId) throws Exception {
+        Optional<Brand> optionalBrand = brandRepository.findById(brandId);
+        if(optionalBrand.isPresent()) {
+            return TransformerDTO.brandToDTO(optionalBrand.get());
+        } else {
+            throw new Exception("Brand with this id not found");
         }
     }
 }

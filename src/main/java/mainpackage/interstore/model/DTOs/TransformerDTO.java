@@ -152,11 +152,30 @@ public class TransformerDTO {
         return result;
     }
 
-    private static BrandDTO brandToDTO(Brand brand) {
+    public static BrandDTO brandToDTO(Brand brand) {
         BrandDTO brandDTO = new BrandDTO();
         brandDTO.setId(brand.getId());
         brandDTO.setName(brand.getName());
         return brandDTO;
+    }
+
+    public static void dtoToTag(TagDTO tagDTO, Tag tag) {
+        tag.setName(tagDTO.getName());
+    }
+
+    public static List<TagDTO> listOfTagToDTO(List<Tag> tagList) {
+        List<TagDTO> result = new ArrayList<>();
+        for (Tag tag : tagList) {
+            result.add(TransformerDTO.tagToDTO(tag));
+        }
+        return result;
+    }
+
+    public static TagDTO tagToDTO(Tag tag) {
+        TagDTO tagDTO = new TagDTO();
+        tagDTO.setId(tag.getId());
+        tagDTO.setName(tag.getName());
+        return tagDTO;
     }
 }
 
