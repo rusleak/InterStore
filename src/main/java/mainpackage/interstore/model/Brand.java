@@ -21,10 +21,10 @@ public class Brand {
     private Long id;
 
     @NotBlank(message = "Name cannot be blank")
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "brand")
+    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL)
     List<Product> productList;
 
     public Long getId() {

@@ -112,13 +112,13 @@ public class ProductRestController {
     public ResponseEntity<?> updateProduct(@RequestPart("product") ProductDTO productDTO,
                                            @RequestPart("images") List<MultipartFile> images) throws Exception {
         productService.updateProduct(productDTO, images);
-        return ResponseEntity.ok("Product created successfully");
+        return ResponseEntity.ok("Product updated successfully");
     }
 
     @PutMapping("/{status}")
     public ResponseEntity<?> updateIsActiveStatus(@RequestBody List<Long> productsIds, @PathVariable Integer status) {
         productService.updateIsActiveStatus(productsIds, status);
-        return ResponseEntity.ok("Product created successfully");
+        return ResponseEntity.ok("Status was successfully changed");
     }
 }
 

@@ -139,5 +139,24 @@ public class TransformerDTO {
         }
         return productDTOList;
     }
+
+    public static void dtoToBrand(BrandDTO brandDTO, Brand brand) {
+        brand.setName(brandDTO.getName());
+    }
+
+    public static List<BrandDTO> listOfBrandToDTO(List<Brand> brandList) {
+        List<BrandDTO> result = new ArrayList<>();
+        for (Brand brand : brandList) {
+            result.add(TransformerDTO.brandToDTO(brand));
+        }
+        return result;
+    }
+
+    private static BrandDTO brandToDTO(Brand brand) {
+        BrandDTO brandDTO = new BrandDTO();
+        brandDTO.setId(brand.getId());
+        brandDTO.setName(brand.getName());
+        return brandDTO;
+    }
 }
 
