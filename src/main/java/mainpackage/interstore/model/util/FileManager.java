@@ -34,33 +34,6 @@ public class FileManager {
         file.transferTo(Path.of(path + "/"+ file.getOriginalFilename()));
     }
 
-    public static void saveProductImages123(Product product, List<MultipartFile> multipartFileList) throws Exception {
-        String mainCategory = product.getNestedCategory().getSubcategory().getMainCategory().getName();
-        String subCategory = product.getNestedCategory().getSubcategory().getName();
-        String nestedCategory = product.getNestedCategory().getName();
-        List<String> images = new ArrayList<>();
-
-        String categoryPath = PRODUCT_IMAGES + File.separator + mainCategory + File.separator + subCategory + File.separator + nestedCategory;
-        System.out.println("Category path: " + categoryPath);
-        Path categoryDir = Paths.get(categoryPath);
-
-        if (Files.notExists(categoryDir)) {
-            Files.createDirectories(categoryDir);
-        }
-        for (MultipartFile file : multipartFileList) {
-            String fileName = file.getOriginalFilename();
-            //UUID на стороне 1C
-            Path filePath = Paths.get(categoryDir.toString(), fileName);
-            file.transferTo(filePath.toFile());
-            System.out.println(fileName);
-            String imagePath = mainCategory + File.separator + subCategory + File.separator + nestedCategory + File.separator + fileName;
-            images.add(imagePath);
-        }
-        product.setProductImages(images);
-        if (product.getProductImages() == null || product.getProductImages().isEmpty()) {
-            throw new Exception("ImageList is empty");
-        }
-    }
     //TODO на стороне романа обязательно файл нейм должен становится UUID
     public static void saveProductImages(Product product, List<MultipartFile> multipartFileList, List<String> dtoImages) throws Exception {
         String mainCategory = product.getNestedCategory().getSubcategory().getMainCategory().getName();

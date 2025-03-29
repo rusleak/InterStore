@@ -1,6 +1,7 @@
 package mainpackage.interstore.model.DTOs;
 
 import mainpackage.interstore.model.*;
+import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -176,6 +177,27 @@ public class TransformerDTO {
         tagDTO.setId(tag.getId());
         tagDTO.setName(tag.getName());
         return tagDTO;
+    }
+
+    public static Color dtoToColor(ColorDTO colorDTO, Color color) {
+        color.setName(colorDTO.getName());
+        return color;
+    }
+
+    public static List<ColorDTO> listOfColorsToDTO(List<Color> colorList) {
+        List<ColorDTO> result = new ArrayList<>();
+        for (Color color : colorList) {
+            result.add(TransformerDTO.colorToDTO(color));
+        }
+        return result;
+    }
+
+    public static ColorDTO colorToDTO(Color color) {
+        ColorDTO colorDTO = new ColorDTO();
+        colorDTO.setId(color.getId());
+        colorDTO.setName(color.getName());
+        colorDTO.setImageUrl(color.getImageUrl());
+        return colorDTO;
     }
 }
 
