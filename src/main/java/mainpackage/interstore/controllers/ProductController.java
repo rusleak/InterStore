@@ -1,6 +1,7 @@
 package mainpackage.interstore.controllers;
 
 import mainpackage.interstore.model.*;
+import mainpackage.interstore.model.DTOs.ProductFilterDTO;
 import mainpackage.interstore.repository.ProductRepository;
 import mainpackage.interstore.service.ColorService;
 import mainpackage.interstore.service.MainCategoryService;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-//TODO pagination
 @Controller
 @RequestMapping("")
 public class ProductController {
@@ -35,74 +35,63 @@ public class ProductController {
 
     @GetMapping("/main-category/{id}")
     public String getProducts(@PathVariable("id") Long id,
-                       @RequestParam(required = false) Long subcategoryId,
-                       @RequestParam(required = false) Long nestedCategoryId,
-                       @RequestParam(required = false) String filterMinPrice,
-                       @RequestParam(required = false) String filterMaxPrice,
-                       @RequestParam(required = false) List<Long> colors,
-                       @RequestParam(required = false) List<String> dimensions,
-                       @RequestParam(required = false) List<String> tagsFromClient,
-                       @RequestParam(required = false) List<String> brands,
-                       Model model) {
+                              @ModelAttribute ProductFilterDTO productFilterDTO,
+                              Model model) {
         model.addAttribute("mainCategoryId", id);
-        model.addAttribute("nestedCategoryId", nestedCategoryId);
-        model.addAttribute("subcategoryId", subcategoryId);
+        model.addAttribute("nestedCategoryId", productFilterDTO.getNestedCategoryId());
+        model.addAttribute("subcategoryId", productFilterDTO.getSubcategoryId());
 
         //Filtered products
-        List<Product> products = productService.getFilteredProducts(id, subcategoryId, nestedCategoryId);
+        List<Product> products = productService.getFilteredProducts(id, productFilterDTO.getSubcategoryId(), productFilterDTO.getNestedCategoryId());
         products = productService.excludeNullPictures(products);
 
         // Available colors for current product list
         List<Color> availableColors = colorService.getAvailableColors(products);
-        if(availableColors != null) {
+        if (availableColors != null) {
             Collections.sort(availableColors);
         }
-        // Available colors for current product list
         model.addAttribute("availableColors", availableColors);
 
-
         // Brand filtering
-        model.addAttribute("availableBrands",productService.getAllBrandsFromProducts(products));
-        model.addAttribute("selectedBrands",brands);
+        model.addAttribute("availableBrands", productService.getAllBrandsFromProducts(products));
+        model.addAttribute("selectedBrands", productFilterDTO.getBrands());
 
-
-        //Firstly get dimensions and tags from subcategory/nestedcategory product list to display them all
-        if (subcategoryId != null) {
+        // Firstly get dimensions and tags from subcategory/nestedcategory product list to display them all
+        if (productFilterDTO.getSubcategoryId() != null) {
             model.addAttribute("availableDimensions", productService.getAllDimensionsFromProducts(products));
-            model.addAttribute("availableTags",productService.getAllTagsFromProducts(products));
+            model.addAttribute("availableTags", productService.getAllTagsFromProducts(products));
         }
 
-        //Filtering by dimensions
-        products = productService.filterByDimensions(products, dimensions);
-        //Filtering by tags
-        products = productService.filterProductsByTags(products,tagsFromClient);
-        model.addAttribute("selectedTags", tagsFromClient);
-        model.addAttribute("selectedDimensions", dimensions);
+        // Filtering by dimensions
+        products = productService.filterByDimensions(products, productFilterDTO.getDimensions());
+        // Filtering by tags
+        products = productService.filterProductsByTags(products, productFilterDTO.getTagsFromClient());
+        model.addAttribute("selectedTags", productFilterDTO.getTagsFromClient());
+        model.addAttribute("selectedDimensions", productFilterDTO.getDimensions());
 
+        // Preserve price range filters
+        model.addAttribute("filterMinPrice", productFilterDTO.getFilterMinPrice());
+        model.addAttribute("filterMaxPrice", productFilterDTO.getFilterMaxPrice());
 
-        //1 Preserve price range filters
-        model.addAttribute("filterMinPrice", filterMinPrice);
-        model.addAttribute("filterMaxPrice", filterMaxPrice);
-
-        //2 Price placeholders
+        // Price placeholders
         double[] minAndMaxPrice = productService.getMinAndMaxPriceFromProductList(products);
         Integer minPrice = (int) Math.floor(minAndMaxPrice[0]);
         Integer maxPrice = (int) Math.floor(minAndMaxPrice[1]);
         model.addAttribute("placeholderFromPrice", minPrice);
         model.addAttribute("placeholderToPrice", maxPrice);
 
-        //3 Products in price range
-        products = productService.getProductsFromMinToMaxPrice(products,filterMinPrice,filterMaxPrice);
+        // Products in price range
+        products = productService.getProductsFromMinToMaxPrice(products, productFilterDTO.getFilterMinPrice(), productFilterDTO.getFilterMaxPrice());
 
         // Preserve color filters
-        model.addAttribute("selectedColors", colors);
+        model.addAttribute("selectedColors", productFilterDTO.getColors());
 
         // Color filtering
-        if (colors != null && !colors.isEmpty()) {
-            products = productService.filterProductsByColors(products, colors);
+        if (productFilterDTO.getColors() != null && !productFilterDTO.getColors().isEmpty()) {
+            products = productService.filterProductsByColors(products, productFilterDTO.getColors());
         }
 
-        products = productService.filterProductsByBrands(products,brands);
+        products = productService.filterProductsByBrands(products, productFilterDTO.getBrands());
 
         // Sorting by decreasing price
         products.sort(Comparator.comparing(Product::getPrice).reversed());
@@ -111,9 +100,8 @@ public class ProductController {
         // Category filters
         model.addAttribute("categoryFilters", subcategoryService.getCategoriesFilter(id));
 
-//Adding current active category
-        model.addAttribute("activeCategory",mainCategoryService.getActiveCategory(id,subcategoryId,nestedCategoryId, products));
-
+        // Adding current active category
+        model.addAttribute("activeCategory", mainCategoryService.getActiveCategory(id, productFilterDTO.getSubcategoryId(), productFilterDTO.getNestedCategoryId(), products));
 
         return "products";
     }
@@ -121,11 +109,7 @@ public class ProductController {
     @GetMapping("product/{id}")
     public String getProduct(@PathVariable("id") Long id,
                              Model model) {
-        productService.fillTheModelProductPage(model,id);
-
-
-
-
+        productService.fillTheModelProductPage(model, id);
         return "productPage";
     }
 }

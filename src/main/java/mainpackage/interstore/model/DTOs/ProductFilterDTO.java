@@ -1,0 +1,80 @@
+package mainpackage.interstore.model.DTOs;
+
+import java.util.List;
+
+public class ProductFilterDTO {
+    private Long subcategoryId;
+    private Long nestedCategoryId;
+
+    private String filterMinPrice;
+    private String filterMaxPrice;
+
+    private List<Long> colors;
+    private List<String> dimensions;
+    private List<String> tagsFromClient;
+    private List<String> brands;
+
+    public Long getSubcategoryId() {
+        return subcategoryId;
+    }
+
+    public void setSubcategoryId(Long subcategoryId) {
+        this.subcategoryId = subcategoryId;
+    }
+
+    public Long getNestedCategoryId() {
+        return nestedCategoryId;
+    }
+
+    public void setNestedCategoryId(Long nestedCategoryId) {
+        this.nestedCategoryId = nestedCategoryId;
+    }
+
+    public String getFilterMinPrice() {
+        return filterMinPrice;
+    }
+
+    public void setFilterMinPrice(String filterMinPrice) {
+        this.filterMinPrice = filterMinPrice;
+    }
+
+    public String getFilterMaxPrice() {
+        return filterMaxPrice;
+    }
+
+    public void setFilterMaxPrice(String filterMaxPrice) {
+        this.filterMaxPrice = filterMaxPrice;
+    }
+
+    public List<Long> getColors() {
+        return colors;
+    }
+
+    public void setColors(List<Long> colors) {
+        this.colors = colors;
+    }
+
+    public List<String> getDimensions() {
+        return dimensions;
+    }
+
+    public void setDimensions(List<String> dimensions) {
+        this.dimensions = dimensions;
+    }
+
+    public List<String> getTagsFromClient() {
+        return tagsFromClient;
+    }
+
+    public void setTagsFromClient(List<String> tagsFromClient) {
+        this.tagsFromClient = tagsFromClient;
+    }
+
+    public List<String> getBrands() {
+        return brands;
+    }
+
+    public void setBrands(List<String> brands) {
+        this.brands = brands;
+    }
+}
