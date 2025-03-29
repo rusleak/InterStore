@@ -1,24 +1,46 @@
 package mainpackage.interstore.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import mainpackage.interstore.model.*;
+import mainpackage.interstore.model.Color;
+import mainpackage.interstore.model.DTOs.ProductDTO;
+import mainpackage.interstore.model.DTOs.TransformerDTO;
+import mainpackage.interstore.model.util.FileManager;
 import mainpackage.interstore.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
     private final MainCategoryService mainCategoryService;
+    private final NestedCategoryService nestedCategoryService;
     private final ProductRepository productRepository;
     private final SubcategoryService subcategoryService;
+    private final DimensionsService dimensionsService;
+    private final ColorService colorService;
+    private final TagService tagService;
+    private final BrandService brandService;
 
-    public ProductService(MainCategoryService mainCategoryService, ProductRepository productRepository, SubcategoryService subcategoryService) {
+
+
+    public ProductService(MainCategoryService mainCategoryService, NestedCategoryService nestedCategoryService, ProductRepository productRepository, SubcategoryService subcategoryService, DimensionsService dimensionsService, ColorService colorService, TagService tagService, BrandService brandService) {
         this.mainCategoryService = mainCategoryService;
+        this.nestedCategoryService = nestedCategoryService;
         this.productRepository = productRepository;
         this.subcategoryService = subcategoryService;
+        this.dimensionsService = dimensionsService;
+        this.colorService = colorService;
+        this.tagService = tagService;
+        this.brandService = brandService;
     }
 
     public List<Product> getProductsByMainCategoryId(long id) {
@@ -201,23 +223,26 @@ public class ProductService {
 
     public TreeSet<String> getAllBrandsFromProducts(List<Product> productList) {
         return productList.stream()
-                .map(Product::getBrand)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toCollection(TreeSet::new));
+                .map(Product::getBrand)          // Получаем объект Brand
+                .filter(Objects::nonNull)        // Фильтруем, чтобы не было null
+                .map(Brand::getName)             // Получаем название бренда
+                .filter(Objects::nonNull)        // Фильтруем, если имя бренда вдруг null
+                .collect(Collectors.toCollection(TreeSet::new)); // Собираем в TreeSet
     }
+
 
     public List<Product> filterProductsByBrands(List<Product> productList, List<String> brands) {
         if (productList == null || brands == null || brands.isEmpty()) {
             return productList;
         }
         return productList.stream()
-                .filter(product -> brands.contains(product.getBrand()))  // Проверяем, есть ли бренд в списке брендов
+                .filter(product -> brands.contains(product.getBrand().getName()))  // Проверяем, есть ли бренд в списке брендов
                 .collect(Collectors.toList());  // Собираем отфильтрованные продукты в список
     }
 
    ////////////////////PRODUCT PAGE///////////////
    public Product findById(Long productId) {
-       return productRepository.findById(productId).orElseThrow(() -> new NoSuchElementException("No product found with ID: " + productId));
+       return productRepository.findById(productId).orElseThrow(() -> new EntityNotFoundException("No product found with ID: " + productId));
    }
 
 
@@ -231,7 +256,7 @@ public class ProductService {
         model.addAttribute("productDescription",product.getDescription());
         model.addAttribute("productColors",product.getColors());
         model.addAttribute("productDimensions",product.getDimensions());
-        model.addAttribute("productId",product.getId().toString());
+        model.addAttribute("productId",product.getOneCId().toString());
         try {
 
             model.addAttribute("productDiscountedPrice",product.getDiscountedPrice().toString() + " грн");
@@ -245,7 +270,123 @@ public class ProductService {
         }
     }
 
-    //CART
+    private void enrichProductWithRelations(Product product, List<Color> colors, List<Tag> tags, List<Dimensions> dimensions, NestedCategory nestedCategory, Brand brand) {
+        product.setColors(colors);
+        product.setTagList(tags);
+        product.setDimensions(dimensions);
+        product.setNestedCategory(nestedCategory);
+        product.setBrand(brand);
+    }
+    public Optional<Product> findByOne_CId(Long oneC_id){
+        return productRepository.findByOneCId(oneC_id);
+    }
 
+    private void validateProductDTOCollections(ProductDTO dto) throws Exception {
+        if (dto.getColorIds() == null || dto.getColorIds().isEmpty()) {
+            throw new Exception("Colors list is empty");
+        }
+        if (dto.getTagIds() == null || dto.getTagIds().isEmpty()) {
+            throw new Exception("Tag list is empty");
+        }
+        if (dto.getDimensionsIds() == null || dto.getDimensionsIds().isEmpty()) {
+            throw new Exception("Dimensions list is empty");
+        }
+        if (dto.getNestedCategoryId() == null) {
+            throw new Exception("Nested category is missing");
+        }
+        if(dto.getBrandId() == null) {
+            throw new Exception("Brand is missing");
+        }
+        if(dto.getName() == null) {
+            throw new Exception("Name is missing");
+        }
+        if (dto.getPrice() == null) {
+            throw new Exception("Price is missing");
+        }
+        if(dto.getOneCId() == null) {
+            throw new Exception("OneC id is missing");
+        }
+        if(dto.getIsActive() == null) {
+            throw new Exception("Active status is missing");
+        }
+    }
+    private void validateProductCollectionsBeforeSave(Product product) throws Exception {
+        if (product.getColors() == null || product.getColors().isEmpty()) {
+            throw new Exception("Colors list is empty");
+        }
+        if (product.getTagList() == null || product.getTagList().isEmpty()) {
+            throw new Exception("Tag list is empty");
+        }
+        if (product.getDimensions() == null || product.getDimensions().isEmpty()) {
+            throw new Exception("Dimensions list is empty");
+        }
+        if (product.getNestedCategory() == null) {
+            throw new Exception("Nested category is missing");
+        }
+        if(product.getBrand() == null) {
+            throw new Exception("Brand is missing");
+        }
+        if(product.getName() == null) {
+            throw new Exception("Name is missing");
+        }
+        if (product.getPrice() == null) {
+            throw new Exception("Price is missing");
+        }
+        if(product.getOneCId() == null) {
+            throw new Exception("OneC id is missing");
+        }
+        if(product.getIsActive() == null) {
+            throw new Exception("Active status is missing");
+        }
+    }
+    public void createProduct(ProductDTO productDTO, List<MultipartFile> images) throws Exception {
+        validateProductDTOCollections(productDTO);
+        Product product = new Product();
+        TransformerDTO.dtoToProductWithoutRelations(productDTO,product);
 
+        List<Color> colors = colorService.loadColors(productDTO.getColorIds());
+        List<Tag> tags = tagService.loadTags(productDTO.getTagIds());
+        List<Dimensions> dimensions = dimensionsService.loadDimensions(productDTO.getDimensionsIds());
+        NestedCategory nestedCategory = nestedCategoryService.loadNestedCategory(productDTO.getNestedCategoryId());
+        Brand brand = brandService.loadBrand(productDTO.getBrandId());
+
+        enrichProductWithRelations(product, colors, tags, dimensions, nestedCategory, brand);
+        validateProductCollectionsBeforeSave(product);
+
+        FileManager.saveProductImages(product,images,productDTO.getProductImages());
+        productRepository.save(product);
+    }
+
+    public void updateProduct(ProductDTO productDTO, List<MultipartFile> images) throws Exception {
+        validateProductDTOCollections(productDTO);
+        Optional<Product> optionalProduct = findByOne_CId(productDTO.getOneCId());
+        Product product;
+        if(optionalProduct.isPresent()) {
+            product = optionalProduct.get();
+        } else {
+            throw new EntityNotFoundException("Product with such 1C id not found");
+        }
+        TransformerDTO.dtoToProductWithoutRelations(productDTO,product);
+        List<Color> colors = colorService.loadColors(productDTO.getColorIds());
+        List<Tag> tags = tagService.loadTags(productDTO.getTagIds());
+        List<Dimensions> dimensions = dimensionsService.loadDimensions(productDTO.getDimensionsIds());
+        NestedCategory nestedCategory = nestedCategoryService.loadNestedCategory(productDTO.getNestedCategoryId());
+        Brand brand = brandService.loadBrand(productDTO.getBrandId());
+        enrichProductWithRelations(product, colors, tags, dimensions, nestedCategory, brand);
+        validateProductCollectionsBeforeSave(product);
+        FileManager.saveProductImages(product,images,productDTO.getProductImages());
+        productRepository.save(product);
+    }
+
+    public void updateIsActiveStatus(List<Long> productsIds, Integer status) {
+        List<Product> productList = productRepository.findAllById(productsIds);
+        for (Product product : productList) {
+            product.setIsActive(status);
+        }
+        productRepository.saveAll(productList);
+    }
+
+    public List<Product> findAllById(List<Long> productIds) {
+        return productRepository.findAllById(productIds);
+    }
 }

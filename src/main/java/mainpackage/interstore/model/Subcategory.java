@@ -25,9 +25,6 @@ public class Subcategory implements Comparable<Subcategory>{
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String imageURL;
-
     @OneToMany(mappedBy = "subcategory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<NestedCategory> nestedCategories = new ArrayList<>();
 
@@ -55,14 +52,6 @@ public class Subcategory implements Comparable<Subcategory>{
         this.name = name;
     }
 
-    public String getImageURL() {
-        return imageURL;
-    }
-
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
-    }
-
     public List<NestedCategory> getNestedCategories() {
         return nestedCategories;
     }
@@ -82,5 +71,11 @@ public class Subcategory implements Comparable<Subcategory>{
         return this.id.compareTo(o.id);
     }
 
+    @Override
+    public String toString() {
+        return "Subcategory{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }
 

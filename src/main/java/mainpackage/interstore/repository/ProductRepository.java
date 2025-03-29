@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> getProductsByNestedCategoryId(Long id);
     Optional<Product> findById(Long id);
+    Optional<Product> findByOneCId(Long oneC_id);
+
 }

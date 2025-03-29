@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-//TODO разбить по методам
+//TODO pagination
 @Controller
 @RequestMapping("")
 public class ProductController {

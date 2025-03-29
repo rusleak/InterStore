@@ -63,6 +63,12 @@ public class Color implements Comparable<Color>{
         return id;
     }
 
+    @Override
+    public String toString() {
+        return "Color{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 
     @Override
     public int compareTo(Color o) {

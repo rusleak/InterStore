@@ -28,9 +28,6 @@ public class NestedCategory {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "image_url", nullable = false)
-    private String imageURL;
-
     @OneToMany(mappedBy = "nestedCategory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> products = new ArrayList<>();
 
@@ -56,14 +53,6 @@ public class NestedCategory {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getImageURL() {
-        return imageURL;
-    }
-
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
     }
 
     public List<Product> getProducts() {
