@@ -303,9 +303,6 @@ public class ProductService {
         if (dto.getPrice() == null) {
             throw new Exception("Price is missing");
         }
-        if (dto.getDiscountedPrice() == null) {
-            throw new Exception("Discounted price is missing");
-        }
         if(dto.getOneCId() == null) {
             throw new Exception("OneC id is missing");
         }
@@ -334,9 +331,6 @@ public class ProductService {
         }
         if (product.getPrice() == null) {
             throw new Exception("Price is missing");
-        }
-        if (product.getDiscountedPrice() == null) {
-            throw new Exception("Discounted price is missing");
         }
         if(product.getOneCId() == null) {
             throw new Exception("OneC id is missing");

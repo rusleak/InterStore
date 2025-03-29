@@ -29,9 +29,13 @@ public class BrandService {
         return brandRepository.findById(id);
     }
 
-    public Brand loadBrand(Long brandId) {
+    public Brand loadBrand(Long brandId) throws Exception {
         Optional<Brand> optionalBrand = brandRepository.findById(brandId);
-        return optionalBrand.orElse(new Brand());  // Если не найдено, возвращаем новый объект
+        if(optionalBrand.isPresent()){
+            return optionalBrand.get();  // Если не найдено, возвращаем новый объект
+        } else {
+         throw new Exception("Brand not found");
+        }
     }
 
     public void validateBrandDTO(BrandDTO brandDTO) throws Exception {
