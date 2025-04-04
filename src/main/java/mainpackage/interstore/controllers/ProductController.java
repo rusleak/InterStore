@@ -8,6 +8,9 @@ import mainpackage.interstore.service.MainCategoryService;
 import mainpackage.interstore.service.ProductService;
 import mainpackage.interstore.service.SubcategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -34,77 +37,81 @@ public class ProductController {
     }
 
     @GetMapping("/main-category/{id}")
-    public String getProducts(@PathVariable("id") Long id,
-                              @ModelAttribute ProductFilterDTO productFilterDTO,
-                              Model model) {
-        model.addAttribute("mainCategoryId", id);
-        model.addAttribute("nestedCategoryId", productFilterDTO.getNestedCategoryId());
-        model.addAttribute("subcategoryId", productFilterDTO.getSubcategoryId());
+    public String getProducts(
+            @PathVariable("id") Long id,
+            @RequestParam(required = false) Long subcategoryId,
+            @RequestParam(required = false) Long nestedCategoryId,
+            @RequestParam(required = false) String filterMinPrice,
+            @RequestParam(required = false) String filterMaxPrice,
+            @RequestParam(required = false) List<Long> colors,
+            @RequestParam(required = false) List<String> dimensions,
+            @RequestParam(required = false) List<String> tagsFromClient,
+            @RequestParam(required = false) List<String> brands,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "16") int size,
+            Model model) {
 
-        //Filtered products
-        List<Product> products = productService.getFilteredProducts(id, productFilterDTO.getSubcategoryId(), productFilterDTO.getNestedCategoryId());
+        // Проверка и установка значения size по умолчанию, если необходимо
+        if (size <= 0) {
+            size = 16;
+        }
+
+        Pageable pageable = PageRequest.of(page, size);
+        model.addAttribute("mainCategoryId", id);
+        model.addAttribute("subcategoryId", subcategoryId);
+        model.addAttribute("nestedCategoryId", nestedCategoryId);
+
+        // Если нужно, можно создать объект ProductFilterDTO вручную
+        ProductFilterDTO filterDTO = new ProductFilterDTO();
+        filterDTO.setSubcategoryId(subcategoryId);
+        filterDTO.setNestedCategoryId(nestedCategoryId);
+        filterDTO.setFilterMinPrice(filterMinPrice);
+        filterDTO.setFilterMaxPrice(filterMaxPrice);
+        filterDTO.setColors(colors);
+        filterDTO.setDimensions(dimensions);
+        filterDTO.setTagsFromClient(tagsFromClient);
+        filterDTO.setBrands(brands);
+        filterDTO.setPage(page);
+        filterDTO.setSize(size);
+
+        // Получаем товары с учетом фильтров
+        Page<Product> pageOfProducts = productService.getFilteredProducts(filterDTO, pageable);
+        List<Product> products = pageOfProducts.getContent();
         products = productService.excludeNullPictures(products);
 
-        // Available colors for current product list
-        List<Color> availableColors = colorService.getAvailableColors(products);
-        if (availableColors != null) {
-            Collections.sort(availableColors);
-        }
-        model.addAttribute("availableColors", availableColors);
-
-        // Brand filtering
-        model.addAttribute("availableBrands", productService.getAllBrandsFromProducts(products));
-        model.addAttribute("selectedBrands", productFilterDTO.getBrands());
-
-        // Firstly get dimensions and tags from subcategory/nestedcategory product list to display them all
-        if (productFilterDTO.getSubcategoryId() != null) {
-            model.addAttribute("availableDimensions", productService.getAllDimensionsFromProducts(products));
-            model.addAttribute("availableTags", productService.getAllTagsFromProducts(products));
-        }
-
-        // Filtering by dimensions
-        products = productService.filterByDimensions(products, productFilterDTO.getDimensions());
-        // Filtering by tags
-        products = productService.filterProductsByTags(products, productFilterDTO.getTagsFromClient());
-        model.addAttribute("selectedTags", productFilterDTO.getTagsFromClient());
-        model.addAttribute("selectedDimensions", productFilterDTO.getDimensions());
-
-        // Preserve price range filters
-        model.addAttribute("filterMinPrice", productFilterDTO.getFilterMinPrice());
-        model.addAttribute("filterMaxPrice", productFilterDTO.getFilterMaxPrice());
-
-        // Price placeholders
-        double[] minAndMaxPrice = productService.getMinAndMaxPriceFromProductList(products);
-        Integer minPrice = (int) Math.floor(minAndMaxPrice[0]);
-        Integer maxPrice = (int) Math.floor(minAndMaxPrice[1]);
-        model.addAttribute("placeholderFromPrice", minPrice);
-        model.addAttribute("placeholderToPrice", maxPrice);
-
-        // Products in price range
-        products = productService.getProductsFromMinToMaxPrice(products, productFilterDTO.getFilterMinPrice(), productFilterDTO.getFilterMaxPrice());
-
-        // Preserve color filters
-        model.addAttribute("selectedColors", productFilterDTO.getColors());
-
-        // Color filtering
-        if (productFilterDTO.getColors() != null && !productFilterDTO.getColors().isEmpty()) {
-            products = productService.filterProductsByColors(products, productFilterDTO.getColors());
-        }
-
-        products = productService.filterProductsByBrands(products, productFilterDTO.getBrands());
-
-        // Sorting by decreasing price
-        products.sort(Comparator.comparing(Product::getPrice).reversed());
         model.addAttribute("productsList", products);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", pageOfProducts.getTotalPages());
 
-        // Category filters
+        // Передача остальных атрибутов в модель (цвета, бренды, теги, размеры и т.д.)
+        model.addAttribute("availableColors", colorService.getAvailableColors(id));
+        model.addAttribute("availableBrands", productService.getAllBrandsFromProducts(products));
+
+        if (subcategoryId != null) {
+            model.addAttribute("availableTags", productService.getAllTagsFromProducts(products));
+            model.addAttribute("availableDimensions", productService.getAllDimensionsFromProducts(products));
+        }
+
+        // Выбранные фильтры (если нужно, можно напрямую передавать request params)
+        model.addAttribute("selectedColors", colors);
+        model.addAttribute("selectedBrands", brands);
+        model.addAttribute("selectedTags", tagsFromClient);
+        model.addAttribute("selectedDimensions", dimensions);
+
+        // Цена
+        model.addAttribute("filterMinPrice", filterMinPrice);
+        model.addAttribute("filterMaxPrice", filterMaxPrice);
+        double[] priceRange = productService.getMinAndMaxPriceFromProductList(products);
+        model.addAttribute("placeholderFromPrice", (int) Math.floor(priceRange[0]));
+        model.addAttribute("placeholderToPrice", (int) Math.floor(priceRange[1]));
+
+        // Категории и текущая активная
         model.addAttribute("categoryFilters", subcategoryService.getCategoriesFilter(id));
-
-        // Adding current active category
-        model.addAttribute("activeCategory", mainCategoryService.getActiveCategory(id, productFilterDTO.getSubcategoryId(), productFilterDTO.getNestedCategoryId(), products));
+        model.addAttribute("activeCategory", mainCategoryService.getActiveCategory(id, subcategoryId, nestedCategoryId, products));
 
         return "products";
     }
+
 
     @GetMapping("product/{id}")
     public String getProduct(@PathVariable("id") Long id,

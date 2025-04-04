@@ -9,10 +9,13 @@ public class ProductFilterDTO {
     private String filterMinPrice;
     private String filterMaxPrice;
 
-    private List<Long> colors;
+    public List<Long> colors;
     private List<String> dimensions;
     private List<String> tagsFromClient;
     private List<String> brands;
+
+    private int page;
+    private int size;
 
     public Long getSubcategoryId() {
         return subcategoryId;
@@ -76,5 +79,21 @@ public class ProductFilterDTO {
 
     public void setBrands(List<String> brands) {
         this.brands = brands;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
     }
 }

@@ -16,11 +16,11 @@
     <div class="categories">
         <div class="category" th:each="mainCategory : ${mainCategoryList}">
             <!-- Ссылка оборачивает изображение -->
-            <a th:href="@{/main-category/{id}(id=${mainCategory.getId()})}">
+            <a th:href="@{/main-category/{id}(id=${mainCategory.getId()}, page=0, size=20)}">
                 <img th:src="${'/main_category_images/'+mainCategory.getImageUrl()}" alt="Category Image">
             </a>
             <!-- Ссылка для текста -->
-            <a th:href="@{/main-category/{id}(id=${mainCategory.getId()})}">
+            <a th:href="@{/main-category/{id}(id=${mainCategory.getId()}, page=0, size=20)}">
                 <h3 th:text="${mainCategory.getName()}">Category Name</h3>
             </a>
         </div>
