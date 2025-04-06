@@ -2,6 +2,7 @@ package mainpackage.interstore.repository;
 
 import mainpackage.interstore.model.Product;
 import mainpackage.interstore.model.Subcategory;
+import mainpackage.interstore.model.util.PriceRange;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -50,4 +51,22 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("tags") List<String> tags,
             @Param("brands") List<String> brands,
             Pageable pageable);
+
+    //PRICE RANGE
+    @Query(value = "SELECT FLOOR(MIN(p.price)) - 1 AS minPrice, CEILING(MAX(p.price)) + 1 AS maxPrice " +
+            "FROM products p " +
+            "JOIN nested_categories nc ON p.nested_category_id = nc.id " +
+            "JOIN subcategories s ON nc.subcategory_id = s.id " + // исправлено имя таблицы subcategory
+            "WHERE s.id = :subCategoryId", nativeQuery = true)
+    PriceRange findPriceRangeBySubCategory(@Param("subCategoryId") Long subCategoryId);
+
+
+    @Query(value = "SELECT FLOOR(MIN(p.price)) - 1 AS minPrice, CEILING(MAX(p.price)) + 1 AS maxPrice " +
+            "FROM products p " +
+            "JOIN nested_categories nc ON p.nested_category_id = nc.id " +
+            "JOIN subcategories s ON nc.subcategory_id = s.id " + // исправлено имя таблицы subcategory
+            "JOIN main_categories m ON s.main_category_id = m.id " + // исправлено имя таблицы main_category
+            "WHERE m.id = :mainCategoryId", nativeQuery = true)
+    PriceRange findPriceRangeByMainCategory(@Param("mainCategoryId") Long mainCategoryId);
+
 }

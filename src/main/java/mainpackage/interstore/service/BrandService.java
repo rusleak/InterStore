@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BrandService {
@@ -110,5 +111,17 @@ public class BrandService {
         } else {
             throw new Exception("Brand with this id not found");
         }
+    }
+    public List<String> getBrandNames(List<Brand> brands) {
+        return brands.stream()
+                .map(Brand::getName)
+                .collect(Collectors.toList());
+    }
+
+    public List<Brand> findAvailableBrandsBySubcategory(Long subcategoryId) {
+        return brandRepository.findAvailableBrandsBySubcategory(subcategoryId);
+    }
+    public List<Brand> findAvailableBrandsByMainCategory(Long mainCategoryId) {
+        return brandRepository.findAvailableBrandsByMainCategory(mainCategoryId);
     }
 }

@@ -144,7 +144,12 @@ public class ColorService {
         }
     }
 
-    public List<Color> getAvailableColors(Long id) {
-        return findAll();
+    public List<Color> getAvailableColorsByMainCatId(Long mainCategoryId) {
+        return colorRepository.findAvailableColorsByMainCategory(mainCategoryId);
     }
+
+    public List<Color> getColorsBySubcategory(Long subcategoryId) {
+        return colorRepository.findAvailableColorsBySubcategory(subcategoryId);
+    }
+
 }

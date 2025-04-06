@@ -2,11 +2,9 @@ package mainpackage.interstore.controllers;
 
 import mainpackage.interstore.model.*;
 import mainpackage.interstore.model.DTOs.ProductFilterDTO;
+import mainpackage.interstore.model.util.PriceRange;
 import mainpackage.interstore.repository.ProductRepository;
-import mainpackage.interstore.service.ColorService;
-import mainpackage.interstore.service.MainCategoryService;
-import mainpackage.interstore.service.ProductService;
-import mainpackage.interstore.service.SubcategoryService;
+import mainpackage.interstore.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,15 +19,21 @@ import java.util.*;
 @RequestMapping("")
 public class ProductController {
     private final MainCategoryService mainCategoryService;
+    private final BrandService brandService;
+    private final DimensionsService dimensionsService;
+    private final TagService tagService;
     private final ProductService productService;
     private final ColorService colorService;
     private final SubcategoryService subcategoryService;
     private final ProductRepository productRepository;
 
     @Autowired
-    public ProductController(MainCategoryService mainCategoryService, ProductService productService, ColorService colorService, SubcategoryService subcategoryService,
+    public ProductController(MainCategoryService mainCategoryService, BrandService brandService, DimensionsService dimensionsService, TagService tagService, ProductService productService, ColorService colorService, SubcategoryService subcategoryService,
                              ProductRepository productRepository) {
         this.mainCategoryService = mainCategoryService;
+        this.brandService = brandService;
+        this.dimensionsService = dimensionsService;
+        this.tagService = tagService;
         this.productService = productService;
         this.colorService = colorService;
         this.subcategoryService = subcategoryService;
@@ -78,18 +82,30 @@ public class ProductController {
         Page<Product> pageOfProducts = productService.getFilteredProducts(filterDTO, pageable);
         List<Product> products = pageOfProducts.getContent();
         products = productService.excludeNullPictures(products);
+        //TODO исключить isActive == 0
 
         model.addAttribute("productsList", products);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", pageOfProducts.getTotalPages());
 
+        PriceRange priceRange = null;
         // Передача остальных атрибутов в модель (цвета, бренды, теги, размеры и т.д.)
-        model.addAttribute("availableColors", colorService.getAvailableColors(id));
-        model.addAttribute("availableBrands", productService.getAllBrandsFromProducts(products));
-
         if (subcategoryId != null) {
-            model.addAttribute("availableTags", productService.getAllTagsFromProducts(products));
-            model.addAttribute("availableDimensions", productService.getAllDimensionsFromProducts(products));
+            priceRange = productRepository.findPriceRangeBySubCategory(subcategoryId);
+            model.addAttribute("availableColors", colorService.getColorsBySubcategory(subcategoryId));
+            model.addAttribute("availableTags", tagService.findAvailableTagsBySubcategory(subcategoryId));
+            model.addAttribute("availableDimensions", dimensionsService.findAvailableDimensionsBySubcategory(subcategoryId));
+            model.addAttribute("availableBrands", brandService.getBrandNames(brandService.findAvailableBrandsBySubcategory(subcategoryId)));
+            System.out.println(tagService.findAvailableTagsBySubcategory(subcategoryId));
+            System.out.println(dimensionsService.findAvailableDimensionsBySubcategory(subcategoryId));
+        } else {
+            priceRange = productRepository.findPriceRangeByMainCategory(id);
+            model.addAttribute("availableTags", tagService.findAvailableTagsByMainCategory(id));
+            model.addAttribute("availableDimensions", dimensionsService.findAvailableDimensionsByMainCategory(id));
+            model.addAttribute("availableColors", colorService.getAvailableColorsByMainCatId(id));
+            model.addAttribute("availableBrands", brandService.getBrandNames(brandService.findAvailableBrandsByMainCategory(id)));
+            System.out.println(tagService.findAvailableTagsByMainCategory(id));
+            System.out.println(dimensionsService.findAvailableDimensionsByMainCategory(id));
         }
 
         // Выбранные фильтры (если нужно, можно напрямую передавать request params)
@@ -97,13 +113,16 @@ public class ProductController {
         model.addAttribute("selectedBrands", brands);
         model.addAttribute("selectedTags", tagsFromClient);
         model.addAttribute("selectedDimensions", dimensions);
+        System.out.println("From client " + tagsFromClient);
+        System.out.println("From client " + dimensions);
 
+        //TODO
         // Цена
         model.addAttribute("filterMinPrice", filterMinPrice);
         model.addAttribute("filterMaxPrice", filterMaxPrice);
-        double[] priceRange = productService.getMinAndMaxPriceFromProductList(products);
-        model.addAttribute("placeholderFromPrice", (int) Math.floor(priceRange[0]));
-        model.addAttribute("placeholderToPrice", (int) Math.floor(priceRange[1]));
+//        double[] priceRange = productService.getMinAndMaxPriceFromProductList(products);
+        model.addAttribute("placeholderFromPrice", priceRange.getMinPrice());
+        model.addAttribute("placeholderToPrice", priceRange.getMaxPrice());
 
         // Категории и текущая активная
         model.addAttribute("categoryFilters", subcategoryService.getCategoriesFilter(id));

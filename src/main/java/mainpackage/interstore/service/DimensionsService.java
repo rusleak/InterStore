@@ -35,5 +35,11 @@ public class DimensionsService {
         }
         return dimensions;
     }
+    public List<Dimensions> findAvailableDimensionsByMainCategory(Long mainCategoryId) {
+        return dimensionsRepository.findAvailableDimensionsByMainCategory(mainCategoryId);
+    }
+    public List<Dimensions> findAvailableDimensionsBySubcategory(Long subcategoryId) {
+        return dimensionsRepository.findAvailableDimensionsBySubcategory(subcategoryId);
+    }
 
 }
