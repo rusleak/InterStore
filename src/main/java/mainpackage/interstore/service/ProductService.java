@@ -448,4 +448,10 @@ public class ProductService {
     public List<Product> findAllById(List<Long> productIds) {
         return productRepository.findAllById(productIds);
     }
+
+    public List<Product> excludeNotActiveProducts(List<Product> products) {
+        return products.stream()
+                .filter(product -> product.getIsActive() != null && product.getIsActive() == 1)
+                .collect(Collectors.toList());
+    }
 }

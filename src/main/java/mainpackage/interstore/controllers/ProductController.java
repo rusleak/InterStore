@@ -82,46 +82,25 @@ public class ProductController {
         Page<Product> pageOfProducts = productService.getFilteredProducts(filterDTO, pageable);
         List<Product> products = pageOfProducts.getContent();
         products = productService.excludeNullPictures(products);
-        //TODO исключить isActive == 0
+        products = productService.excludeNotActiveProducts(products);
 
         model.addAttribute("productsList", products);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", pageOfProducts.getTotalPages());
 
-        PriceRange priceRange = null;
+        PriceRange priceRange = fillModelIncludeFilters(model,subcategoryId,id);
         // Передача остальных атрибутов в модель (цвета, бренды, теги, размеры и т.д.)
-        if (subcategoryId != null) {
-            priceRange = productRepository.findPriceRangeBySubCategory(subcategoryId);
-            model.addAttribute("availableColors", colorService.getColorsBySubcategory(subcategoryId));
-            model.addAttribute("availableTags", tagService.findAvailableTagsBySubcategory(subcategoryId));
-            model.addAttribute("availableDimensions", dimensionsService.findAvailableDimensionsBySubcategory(subcategoryId));
-            model.addAttribute("availableBrands", brandService.getBrandNames(brandService.findAvailableBrandsBySubcategory(subcategoryId)));
-            System.out.println(tagService.findAvailableTagsBySubcategory(subcategoryId));
-            System.out.println(dimensionsService.findAvailableDimensionsBySubcategory(subcategoryId));
-        } else {
-            priceRange = productRepository.findPriceRangeByMainCategory(id);
-            model.addAttribute("availableTags", tagService.findAvailableTagsByMainCategory(id));
-            model.addAttribute("availableDimensions", dimensionsService.findAvailableDimensionsByMainCategory(id));
-            model.addAttribute("availableColors", colorService.getAvailableColorsByMainCatId(id));
-            model.addAttribute("availableBrands", brandService.getBrandNames(brandService.findAvailableBrandsByMainCategory(id)));
-            System.out.println(tagService.findAvailableTagsByMainCategory(id));
-            System.out.println(dimensionsService.findAvailableDimensionsByMainCategory(id));
-        }
 
-        //TODO selTags and dimensions не сохраняются в чекбоксах они слетают
 
         // Выбранные фильтры (если нужно, можно напрямую передавать request params)
         model.addAttribute("selectedColors", colors);
         model.addAttribute("selectedBrands", brands);
         model.addAttribute("selectedTags", tags);
         model.addAttribute("selectedDimensions", dimensions);
-        System.out.println("From client " + tags);
-        System.out.println("From client " + dimensions);
 
         // Цена
         model.addAttribute("filterMinPrice", filterMinPrice);
         model.addAttribute("filterMaxPrice", filterMaxPrice);
-//      double[] priceRange = productService.getMinAndMaxPriceFromProductList(products);
         model.addAttribute("placeholderFromPrice", priceRange.getMinPrice());
         model.addAttribute("placeholderToPrice", priceRange.getMaxPrice());
 
@@ -138,5 +117,23 @@ public class ProductController {
                              Model model) {
         productService.fillTheModelProductPage(model, id);
         return "productPage";
+    }
+
+    private PriceRange fillModelIncludeFilters(Model model, Long subcategoryId, Long mainCatId){
+        PriceRange priceRange = null;
+        if (subcategoryId != null) {
+            priceRange = productRepository.findPriceRangeBySubCategory(subcategoryId);
+            model.addAttribute("availableColors", colorService.getColorsBySubcategory(subcategoryId));
+            model.addAttribute("availableTags", tagService.findAvailableTagsBySubcategory(subcategoryId));
+            model.addAttribute("availableDimensions", dimensionsService.findAvailableDimensionsBySubcategory(subcategoryId));
+            model.addAttribute("availableBrands", brandService.getBrandNames(brandService.findAvailableBrandsBySubcategory(subcategoryId)));
+        } else {
+            priceRange = productRepository.findPriceRangeByMainCategory(mainCatId);
+            model.addAttribute("availableTags", tagService.findAvailableTagsByMainCategory(mainCatId));
+            model.addAttribute("availableDimensions", dimensionsService.findAvailableDimensionsByMainCategory(mainCatId));
+            model.addAttribute("availableColors", colorService.getAvailableColorsByMainCatId(mainCatId));
+            model.addAttribute("availableBrands", brandService.getBrandNames(brandService.findAvailableBrandsByMainCategory(mainCatId)));
+        }
+        return priceRange;
     }
 }
