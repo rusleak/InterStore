@@ -11,11 +11,11 @@ public class ProductFilterDTO {
 
     public List<Long> colors;
     private List<String> dimensions;
-    private List<String> tagsFromClient;
+    private List<String> tags;
     private List<String> brands;
 
     private int page;
-    private int size;
+    private int size = 16;
 
     public Long getSubcategoryId() {
         return subcategoryId;
@@ -65,12 +65,12 @@ public class ProductFilterDTO {
         this.dimensions = dimensions;
     }
 
-    public List<String> getTagsFromClient() {
-        return tagsFromClient;
+    public List<String> getTags() {
+        return tags;
     }
 
-    public void setTagsFromClient(List<String> tagsFromClient) {
-        this.tagsFromClient = tagsFromClient;
+    public void setTags(List<String> tags) {
+        this.tags = tags;
     }
 
     public List<String> getBrands() {

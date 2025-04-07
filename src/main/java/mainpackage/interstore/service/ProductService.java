@@ -213,7 +213,7 @@ public class ProductService {
                 maxPriceDecimal,         // Pass the converted BigDecimal (or null)
                 dto.getColors(),
                 dto.getDimensions(),
-                dto.getTagsFromClient(),
+                dto.getTags(),
                 dto.getBrands(),
                 pageable
         );

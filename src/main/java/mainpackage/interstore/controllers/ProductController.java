@@ -43,70 +43,41 @@ public class ProductController {
     @GetMapping("/main-category/{id}")
     public String getProducts(
             @PathVariable("id") Long id,
-            @RequestParam(required = false) Long subcategoryId,
-            @RequestParam(required = false) Long nestedCategoryId,
-            @RequestParam(required = false) String filterMinPrice,
-            @RequestParam(required = false) String filterMaxPrice,
-            @RequestParam(required = false) List<Long> colors,
-            @RequestParam(required = false) List<String> dimensions,
-            @RequestParam(required = false) List<String> tags,
-            @RequestParam(required = false) List<String> brands,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "16") int size,
+            @ModelAttribute ProductFilterDTO filterDTO,
             Model model) {
-
-        // Проверка и установка значения size по умолчанию, если необходимо
-        if (size <= 0) {
-            size = 16;
+        // Здесь внутри можно установить значения по умолчанию, если необходимо
+        if (filterDTO.getSize() <= 0) {
+            filterDTO.setSize(16);
         }
-
-        Pageable pageable = PageRequest.of(page, size);
+        // Остальная логика, например:
+        Pageable pageable = PageRequest.of(filterDTO.getPage(), filterDTO.getSize());
+        model.addAttribute("size",filterDTO.getSize());
         model.addAttribute("mainCategoryId", id);
-        model.addAttribute("subcategoryId", subcategoryId);
-        model.addAttribute("nestedCategoryId", nestedCategoryId);
+        model.addAttribute("subcategoryId", filterDTO.getSubcategoryId());
+        model.addAttribute("nestedCategoryId", filterDTO.getNestedCategoryId());
 
-        // Если нужно, можно создать объект ProductFilterDTO вручную
-        ProductFilterDTO filterDTO = new ProductFilterDTO();
-        filterDTO.setSubcategoryId(subcategoryId);
-        filterDTO.setNestedCategoryId(nestedCategoryId);
-        filterDTO.setFilterMinPrice(filterMinPrice);
-        filterDTO.setFilterMaxPrice(filterMaxPrice);
-        filterDTO.setColors(colors);
-        filterDTO.setDimensions(dimensions);
-        filterDTO.setTagsFromClient(tags);
-        filterDTO.setBrands(brands);
-        filterDTO.setPage(page);
-        filterDTO.setSize(size);
-
-        // Получаем товары с учетом фильтров
         Page<Product> pageOfProducts = productService.getFilteredProducts(filterDTO, pageable);
         List<Product> products = pageOfProducts.getContent();
         products = productService.excludeNullPictures(products);
         products = productService.excludeNotActiveProducts(products);
 
         model.addAttribute("productsList", products);
-        model.addAttribute("currentPage", page);
+        model.addAttribute("currentPage", filterDTO.getPage());
         model.addAttribute("totalPages", pageOfProducts.getTotalPages());
 
-        PriceRange priceRange = fillModelIncludeFilters(model,subcategoryId,id);
-        // Передача остальных атрибутов в модель (цвета, бренды, теги, размеры и т.д.)
+        PriceRange priceRange = fillModelIncludeFilters(model, filterDTO.getSubcategoryId(), id);
+        model.addAttribute("selectedColors", filterDTO.getColors());
+        model.addAttribute("selectedBrands", filterDTO.getBrands());
+        model.addAttribute("selectedTags", filterDTO.getTags());
+        model.addAttribute("selectedDimensions", filterDTO.getDimensions());
 
-
-        // Выбранные фильтры (если нужно, можно напрямую передавать request params)
-        model.addAttribute("selectedColors", colors);
-        model.addAttribute("selectedBrands", brands);
-        model.addAttribute("selectedTags", tags);
-        model.addAttribute("selectedDimensions", dimensions);
-
-        // Цена
-        model.addAttribute("filterMinPrice", filterMinPrice);
-        model.addAttribute("filterMaxPrice", filterMaxPrice);
+        model.addAttribute("filterMinPrice", filterDTO.getFilterMinPrice());
+        model.addAttribute("filterMaxPrice", filterDTO.getFilterMaxPrice());
         model.addAttribute("placeholderFromPrice", priceRange.getMinPrice());
         model.addAttribute("placeholderToPrice", priceRange.getMaxPrice());
 
-        // Категории и текущая активная
         model.addAttribute("categoryFilters", subcategoryService.getCategoriesFilter(id));
-        model.addAttribute("activeCategory", mainCategoryService.getActiveCategory(id, subcategoryId, nestedCategoryId, products));
+        model.addAttribute("activeCategory", mainCategoryService.getActiveCategory(id, filterDTO.getSubcategoryId(), filterDTO.getNestedCategoryId(), products));
 
         return "products";
     }
