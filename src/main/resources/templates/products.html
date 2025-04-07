@@ -96,12 +96,13 @@
             </div>
             <div class="dimension-filters nested-category dimension-form" th:if="${subcategoryId != null}">
                 <div th:each="dimension : ${availableDimensions}" class="dimension-checkbox">
-                    <input type="checkbox" name="dimensions" th:value="${dimension}" th:id="'dimension-' + ${dimension}"
-                           th:checked="${selectedDimensions != null and #lists.contains(selectedDimensions, dimension)}" />
-                    <label th:for="'dimension-' + ${dimension}" th:text="${dimension}">Розмір</label>
+                    <input type="checkbox" name="dimensions"
+                           th:value="${dimension.size}"
+                           th:id="'dimension-' + ${dimension.size}"
+                           th:checked="${selectedDimensions != null and #lists.contains(selectedDimensions, dimension.size)}" />
+                    <label th:for="'dimension-' + ${dimension.size}" th:text="${dimension.size}">Розмір</label>
                 </div>
             </div>
-
             <!-- Tag Filters -->
             <div class="subcategory-container" th:if="${subcategoryId != null}" onclick="toggleTags(this)" style="margin-top: 5px">
                 <span class="subcategory-link">Теги :</span>
@@ -111,9 +112,11 @@
             </div>
             <div class="tag-filters nested-category tag-form" th:if="${subcategoryId != null}">
                 <div th:each="tag : ${availableTags}" class="tag-checkbox">
-                    <input type="checkbox" name="tagsFromClient" th:value="${tag}" th:id="'tag-' + ${tag}"
-                           th:checked="${selectedTags != null and #lists.contains(selectedTags, tag)}" />
-                    <label th:for="'tag-' + ${tag}" th:text="${tag}">Тег</label>
+                    <input type="checkbox" name="tags"
+                           th:value="${tag.name}"
+                           th:id="'tag-' + ${tag.name}"
+                           th:checked="${selectedTags != null and #lists.contains(selectedTags, tag.name)}" />
+                    <label th:for="'tag-' + ${tag.name}" th:text="${tag.name}">Тег</label>
                 </div>
             </div>
 
@@ -170,6 +173,8 @@
         </ul>
     </div>
 </div>
+<p>Выбранные теги: <span th:text="${selectedTags}"></span></p>
+<p>Доступные теги: <span th:text="${availableTags}"></span></p>
 
 <!-- Включаем footer -->
 <div th:replace="~{includes/footer.html}"></div>

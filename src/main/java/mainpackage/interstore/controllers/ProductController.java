@@ -49,7 +49,7 @@ public class ProductController {
             @RequestParam(required = false) String filterMaxPrice,
             @RequestParam(required = false) List<Long> colors,
             @RequestParam(required = false) List<String> dimensions,
-            @RequestParam(required = false) List<String> tagsFromClient,
+            @RequestParam(required = false) List<String> tags,
             @RequestParam(required = false) List<String> brands,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "16") int size,
@@ -73,7 +73,7 @@ public class ProductController {
         filterDTO.setFilterMaxPrice(filterMaxPrice);
         filterDTO.setColors(colors);
         filterDTO.setDimensions(dimensions);
-        filterDTO.setTagsFromClient(tagsFromClient);
+        filterDTO.setTagsFromClient(tags);
         filterDTO.setBrands(brands);
         filterDTO.setPage(page);
         filterDTO.setSize(size);
@@ -108,19 +108,20 @@ public class ProductController {
             System.out.println(dimensionsService.findAvailableDimensionsByMainCategory(id));
         }
 
+        //TODO selTags and dimensions не сохраняются в чекбоксах они слетают
+
         // Выбранные фильтры (если нужно, можно напрямую передавать request params)
         model.addAttribute("selectedColors", colors);
         model.addAttribute("selectedBrands", brands);
-        model.addAttribute("selectedTags", tagsFromClient);
+        model.addAttribute("selectedTags", tags);
         model.addAttribute("selectedDimensions", dimensions);
-        System.out.println("From client " + tagsFromClient);
+        System.out.println("From client " + tags);
         System.out.println("From client " + dimensions);
 
-        //TODO
         // Цена
         model.addAttribute("filterMinPrice", filterMinPrice);
         model.addAttribute("filterMaxPrice", filterMaxPrice);
-//        double[] priceRange = productService.getMinAndMaxPriceFromProductList(products);
+//      double[] priceRange = productService.getMinAndMaxPriceFromProductList(products);
         model.addAttribute("placeholderFromPrice", priceRange.getMinPrice());
         model.addAttribute("placeholderToPrice", priceRange.getMaxPrice());
 
