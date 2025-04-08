@@ -26,16 +26,6 @@ public class ColorService {
         this.productRepository = productRepository;
     }
 
-    public List<Color> getAvailableColors(List<Product> productList) {
-        Set<Color> availableColors = new HashSet<>();
-
-        for (Product product : productList) {
-            availableColors.addAll(product.getColors()); // Add all colors of the product to the set (to avoid duplicates)
-        }
-
-        return new ArrayList<>(availableColors); // Return as a list
-    }
-
     public Optional<Color> findColorById(Long colorId) {
         return colorRepository.findById(colorId);
     }
@@ -153,4 +143,13 @@ public class ColorService {
             throw new Exception("Can't find color with id " + colorId);
         }
     }
+
+    public List<Color> getAvailableColorsByMainCatId(Long mainCategoryId) {
+        return colorRepository.findAvailableColorsByMainCategory(mainCategoryId);
+    }
+
+    public List<Color> getColorsBySubcategory(Long subcategoryId) {
+        return colorRepository.findAvailableColorsBySubcategory(subcategoryId);
+    }
+
 }

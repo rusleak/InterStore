@@ -19,7 +19,7 @@
             <ul>
                 <li th:each="entry : ${categoryFilters}">
                     <div class="subcategory-container">
-                        <a class="subcategory-link" th:href="@{/main-category/{id}(id=${mainCategoryId}, subcategoryId=${entry.key.id})}">
+                        <a class="subcategory-link" th:href="@{/main-category/{id}(id=${mainCategoryId}, subcategoryId=${entry.key.id}, page=${currentPage}, size=${size})}">
                             <span th:text="${entry.key.name}">Подкатегория</span>
                         </a>
                         <div class="arrow-container" onclick="toggleNestedCategories(this)">
@@ -28,7 +28,7 @@
                     </div>
                     <ul class="nested-category">
                         <li th:each="nestedCategory : ${entry.value}">
-                            <a th:href="@{/main-category/{id}(id=${mainCategoryId}, subcategoryId=${entry.key.id}, nestedCategoryId=${nestedCategory.id})}"
+                            <a th:href="@{/main-category/{id}(id=${mainCategoryId}, subcategoryId=${entry.key.id}, nestedCategoryId=${nestedCategory.id}, page=${currentPage}, size=${size})}"
                                th:text="${nestedCategory.name}">Вкладена категорія</a>
                         </li>
                     </ul>
@@ -36,22 +36,28 @@
             </ul>
         </div>
 
-        <!-- Filter Forms -->
-        <form th:action="@{/main-category/{id}(id=${mainCategoryId})}" method="get" class="filter-form">
-            <input type="hidden" th:name="nestedCategoryId" th:value="${nestedCategoryId}" />
-            <input type="hidden" th:name="subcategoryId" th:value="${subcategoryId}" />
-            <div th:each="selectedColor : ${selectedColors}">
-                <input type="hidden" name="colors" th:value="${selectedColor}" />
-            </div>
-            <div th:each="dimension : ${selectedDimensions}">
-                <input type="hidden" name="dimensions" th:value="${dimension}" />
-            </div>
-            <div th:each="tag : ${selectedTags}">
-                <input type="hidden" name="tagsFromClient" th:value="${tag}" />
-            </div>
-            <div th:each="brand : ${selectedBrands}">
-                <input type="hidden" name="brands" th:value="${brand}" />
-            </div>
+        <!-- Consolidated Filter Form -->
+        <form th:action="@{/main-category/{id}(id=${mainCategoryId}, page=${currentPage}, size=${size})}" method="get" class="filter-form">
+            <input type="hidden" name="nestedCategoryId" th:value="${nestedCategoryId}" />
+            <input type="hidden" name="subcategoryId" th:value="${subcategoryId}" />
+            <input type="hidden" name="page" th:value="${currentPage}" />
+            <input type="hidden" name="size" th:value="${size != null ? size : 16}" />
+
+            <!-- Скрытые инпуты для уже выбранных фильтров -->
+<!--            <div th:each="selectedColor : ${selectedColors}">-->
+<!--                <input type="hidden" name="colors" th:value="${selectedColor}" />-->
+<!--            </div>-->
+<!--            <div th:each="dimension : ${selectedDimensions}">-->
+<!--                <input type="hidden" name="dimensions" th:value="${dimension}" />-->
+<!--            </div>-->
+<!--            <div th:each="tag : ${selectedTags}">-->
+<!--                <input type="hidden" name="tagsFromClient" th:value="${tag}" />-->
+<!--            </div>-->
+<!--            <div th:each="brand : ${selectedBrands}">-->
+<!--                <input type="hidden" name="brands" th:value="${brand}" />-->
+<!--            </div>-->
+
+            <!-- Price Filters -->
             <div class="price-filters">
                 <h3>Цена</h3>
                 <div class="price-range-container">
@@ -65,120 +71,56 @@
                            th:value="${filterMaxPrice}" />
                 </div>
             </div>
-            <button type="submit">Застосувати фільтри</button>
-        </form>
 
-        <!-- Brand Filter Form with dropdown -->
-        <div class="subcategory-container" onclick="toggleBrands(this)" style="margin-bottom: 5px">
-            <span class="subcategory-link">Бренди :</span>
-            <div class="arrow-container">
-                <span class="arrow">▼</span>
+            <!-- Brand Filters -->
+            <div class="subcategory-container" onclick="toggleBrands(this)" style="margin-bottom: 5px">
+                <span class="subcategory-link">Бренди :</span>
+                <div class="arrow-container">
+                    <span class="arrow">▼</span>
+                </div>
             </div>
-        </div>
-        <form th:action="@{/main-category/{id}(id=${mainCategoryId})}" method="get" class="filter-form nested-category brand-form">
-            <input type="hidden" th:name="nestedCategoryId" th:value="${nestedCategoryId}" />
-            <input type="hidden" th:name="subcategoryId" th:value="${subcategoryId}" />
-            <input type="hidden" name="filterMinPrice" th:value="${filterMinPrice}" />
-            <input type="hidden" name="filterMaxPrice" th:value="${filterMaxPrice}" />
-            <div th:each="selectedColor : ${selectedColors}">
-                <input type="hidden" name="colors" th:value="${selectedColor}" />
-            </div>
-            <div th:each="dimension : ${selectedDimensions}">
-                <input type="hidden" name="dimensions" th:value="${dimension}" />
-            </div>
-            <div th:each="tag : ${selectedTags}">
-                <input type="hidden" name="tagsFromClient" th:value="${tag}" />
-            </div>
-            <h3>Бренди</h3>
-            <div class="brand-filters">
+            <div class="brand-filters nested-category brand-form">
                 <div th:each="brand : ${availableBrands}" class="brand-checkbox">
                     <input type="checkbox" name="brands" th:value="${brand}" th:id="'brand-' + ${brand}"
                            th:checked="${selectedBrands != null and #lists.contains(selectedBrands, brand)}" />
                     <label th:for="'brand-' + ${brand}" th:text="${brand}">Бренд</label>
                 </div>
             </div>
-            <button type="submit">Застосувати фільтри</button>
-        </form>
 
-        <!-- Dimension Filter Form -->
-        <div class="subcategory-container" th:if="${subcategoryId != null}" onclick="toggleDimensions(this)">
-            <span class="subcategory-link">Розміри :</span>
-            <div class="arrow-container">
-                <span class="arrow">▼</span>
+            <!-- Dimension Filters -->
+            <div class="subcategory-container" th:if="${subcategoryId != null}" onclick="toggleDimensions(this)">
+                <span class="subcategory-link">Розміри :</span>
+                <div class="arrow-container">
+                    <span class="arrow">▼</span>
+                </div>
             </div>
-        </div>
-        <form th:action="@{/main-category/{id}(id=${mainCategoryId})}" method="get" class="filter-form nested-category dimension-form" th:if="${subcategoryId != null}">
-            <input type="hidden" th:name="nestedCategoryId" th:value="${nestedCategoryId}" />
-            <input type="hidden" th:name="subcategoryId" th:value="${subcategoryId}" />
-            <input type="hidden" name="filterMinPrice" th:value="${filterMinPrice}" />
-            <input type="hidden" name="filterMaxPrice" th:value="${filterMaxPrice}" />
-            <div th:each="selectedColor : ${selectedColors}">
-                <input type="hidden" name="colors" th:value="${selectedColor}" />
-            </div>
-            <div th:each="tag : ${selectedTags}">
-                <input type="hidden" name="tagsFromClient" th:value="${tag}" />
-            </div>
-            <div th:each="brand : ${selectedBrands}">
-                <input type="hidden" name="brands" th:value="${brand}" />
-            </div>
-            <h3>Розміри</h3>
-            <div class="dimension-filters">
+            <div class="dimension-filters nested-category dimension-form" th:if="${subcategoryId != null}">
                 <div th:each="dimension : ${availableDimensions}" class="dimension-checkbox">
-                    <input type="checkbox" name="dimensions" th:value="${dimension}" th:id="'dimension-' + ${dimension}"
-                           th:checked="${selectedDimensions != null and #lists.contains(selectedDimensions, dimension)}" />
-                    <label th:for="'dimension-' + ${dimension}" th:text="${dimension}">Розмір</label>
+                    <input type="checkbox" name="dimensions"
+                           th:value="${dimension.size}"
+                           th:id="'dimension-' + ${dimension.size}"
+                           th:checked="${selectedDimensions != null and #lists.contains(selectedDimensions, dimension.size)}" />
+                    <label th:for="'dimension-' + ${dimension.size}" th:text="${dimension.size}">Розмір</label>
                 </div>
             </div>
-            <button type="submit">Застосувати фільтри</button>
-        </form>
-
-        <!-- Tag Filter Form -->
-        <div class="subcategory-container" th:if="${subcategoryId != null}" onclick="toggleTags(this)" style="margin-top: 5px">
-            <span class="subcategory-link">Теги :</span>
-            <div class="arrow-container">
-                <span class="arrow">▼</span>
+            <!-- Tag Filters -->
+            <div class="subcategory-container" th:if="${subcategoryId != null}" onclick="toggleTags(this)" style="margin-top: 5px">
+                <span class="subcategory-link">Теги :</span>
+                <div class="arrow-container">
+                    <span class="arrow">▼</span>
+                </div>
             </div>
-        </div>
-        <form th:action="@{/main-category/{id}(id=${mainCategoryId})}" method="get" class="filter-form nested-category tag-form" th:if="${subcategoryId != null}">
-            <input type="hidden" th:name="nestedCategoryId" th:value="${nestedCategoryId}" />
-            <input type="hidden" th:name="subcategoryId" th:value="${subcategoryId}" />
-            <input type="hidden" name="filterMinPrice" th:value="${filterMinPrice}" />
-            <input type="hidden" name="filterMaxPrice" th:value="${filterMaxPrice}" />
-            <div th:each="selectedColor : ${selectedColors}">
-                <input type="hidden" name="colors" th:value="${selectedColor}" />
-            </div>
-            <div th:each="dimension : ${selectedDimensions}">
-                <input type="hidden" name="dimensions" th:value="${dimension}" />
-            </div>
-            <div th:each="brand : ${selectedBrands}">
-                <input type="hidden" name="brands" th:value="${brand}" />
-            </div>
-            <h3>Теги</h3>
-            <div class="tag-filters">
+            <div class="tag-filters nested-category tag-form" th:if="${subcategoryId != null}">
                 <div th:each="tag : ${availableTags}" class="tag-checkbox">
-                    <input type="checkbox" name="tagsFromClient" th:value="${tag}" th:id="'tag-' + ${tag}"
-                           th:checked="${selectedTags != null and #lists.contains(selectedTags, tag)}" />
-                    <label th:for="'tag-' + ${tag}" th:text="${tag}">Тег</label>
+                    <input type="checkbox" name="tags"
+                           th:value="${tag.name}"
+                           th:id="'tag-' + ${tag.name}"
+                           th:checked="${selectedTags != null and #lists.contains(selectedTags, tag.name)}" />
+                    <label th:for="'tag-' + ${tag.name}" th:text="${tag.name}">Тег</label>
                 </div>
             </div>
-            <button type="submit">Застосувати фільтри</button>
-        </form>
 
-        <!-- Color Filter Form -->
-        <form th:action="@{/main-category/{id}(id=${mainCategoryId})}" method="get" class="filter-form">
-            <input type="hidden" th:name="nestedCategoryId" th:value="${nestedCategoryId}" />
-            <input type="hidden" th:name="subcategoryId" th:value="${subcategoryId}" />
-            <input type="hidden" name="filterMinPrice" th:value="${filterMinPrice}" />
-            <input type="hidden" name="filterMaxPrice" th:value="${filterMaxPrice}" />
-            <div th:each="dimension : ${selectedDimensions}">
-                <input type="hidden" name="dimensions" th:value="${dimension}" />
-            </div>
-            <div th:each="tag : ${selectedTags}">
-                <input type="hidden" name="tagsFromClient" th:value="${tag}" />
-            </div>
-            <div th:each="brand : ${selectedBrands}">
-                <input type="hidden" name="brands" th:value="${brand}" />
-            </div>
+            <!-- Color Filters -->
             <h3>Цвета</h3>
             <div class="color-filters">
                 <div th:each="color : ${availableColors}" class="color-checkbox">
@@ -189,11 +131,13 @@
                     </label>
                 </div>
             </div>
+
+            <!-- Submit Button -->
             <button type="submit">Застосувати фільтри</button>
         </form>
 
         <!-- Reset Filters Button -->
-        <a th:href="@{/main-category/{id}(id=${mainCategoryId})}" class="reset-filters-button">Видалити фільтри</a>
+        <a th:href="@{/main-category/{id}(id=${mainCategoryId}, page=0, size=${size})}" class="reset-filters-button">Видалити фільтри</a>
     </div>
 
     <!-- Блок с товарами -->
@@ -201,21 +145,39 @@
         <div class="product" th:each="product : ${productsList}">
             <a th:href="@{/product/{id}(id=${product.id})}">
                 <div class="product-image-wrapper">
-                    <img th:src="@{/product_images/{imageName}(imageName=${product.productImages.get(0)})}" alt="Product Image">
+                    <img th:src="@{'/product_images/' + ${product.productImages.get(0)}}" alt="Product Image">
                 </div>
                 <div class="product-info">
                     <h3 th:text="${product.name}">Product Name</h3>
                     <p th:text="${product.price}">Product Price</p>
+                    <p th:text="${product.brand.name}">Brand</p>
                 </div>
             </a>
         </div>
     </div>
-</div>
 
+    <!-- Pagination Controls -->
+    <div class="pagination">
+        <ul>
+            <li th:if="${currentPage > 0}">
+                <a th:href="@{/main-category/{id}(id=${mainCategoryId}, page=${currentPage - 1}, size=${size})}">Previous</a>
+            </li>
+            <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                <a th:if="${i != currentPage}" th:href="@{/main-category/{id}(id=${mainCategoryId}, page=${i}, size=${size})}"
+                   th:text="${i + 1}">Page Number</a>
+                <span th:if="${i == currentPage}" th:text="${i + 1}">Current Page</span>
+            </li>
+            <li th:if="${currentPage < totalPages - 1}">
+                <a th:href="@{/main-category/{id}(id=${mainCategoryId}, page=${currentPage + 1}, size=${size})}">Next</a>
+            </li>
+        </ul>
+    </div>
+</div>
 <!-- Включаем footer -->
 <div th:replace="~{includes/footer.html}"></div>
 
 <script>
+    // Функции для сворачивания/разворачивания списков
     function toggleNestedCategories(element) {
         element.parentElement.parentElement.classList.toggle('active');
     }

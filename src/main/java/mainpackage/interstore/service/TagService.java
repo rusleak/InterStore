@@ -121,4 +121,10 @@ public class TagService {
             throw new Exception("Can't find tag with id " + tagId);
         }
     }
+    public List<Tag> findAvailableTagsByMainCategory(Long mainCategoryId) {
+        return tagRepository.findAvailableTagsByMainCategory(mainCategoryId);
+    }
+    public List<Tag> findAvailableTagsBySubcategory(Long subcategoryId) {
+        return tagRepository.findAvailableTagsBySubcategory(subcategoryId);
+    }
 }

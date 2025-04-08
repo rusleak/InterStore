@@ -4,9 +4,13 @@ import jakarta.persistence.EntityNotFoundException;
 import mainpackage.interstore.model.*;
 import mainpackage.interstore.model.Color;
 import mainpackage.interstore.model.DTOs.ProductDTO;
+import mainpackage.interstore.model.DTOs.ProductFilterDTO;
 import mainpackage.interstore.model.DTOs.TransformerDTO;
 import mainpackage.interstore.model.util.FileManager;
 import mainpackage.interstore.repository.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,7 +21,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
+import static org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties.UiService.LOGGER;
 
 @Service
 public class ProductService {
@@ -29,6 +37,7 @@ public class ProductService {
     private final ColorService colorService;
     private final TagService tagService;
     private final BrandService brandService;
+    private static final Logger LOGGER = Logger.getLogger(ProductService.class.getName());
 
 
 
@@ -160,13 +169,63 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    public List<Product> getFilteredProducts(Long mainCategoryId, Long subcategoryId, Long nestedCategoryId) {
-        if (nestedCategoryId != null) {
-            return getProductsByNestedCategoryId(nestedCategoryId);
-        } else if (subcategoryId != null) {
-            return getProductsBySubCategoryId(subcategoryId);
-        } else {
-            return getProductsByMainCategoryId(mainCategoryId);
+    public Page<Product> getFilteredProducts(ProductFilterDTO dto, Pageable pageable) {
+
+        // 1. Get the price strings from the DTO
+        String minPriceString = dto.getFilterMinPrice();
+        String maxPriceString = dto.getFilterMaxPrice();
+
+        // 2. Initialize BigDecimal variables to null
+        BigDecimal minPriceDecimal = null;
+        BigDecimal maxPriceDecimal = null;
+
+        // 3. Convert min price string to BigDecimal, handling nulls and format errors
+        if (minPriceString != null && !minPriceString.trim().isEmpty()) {
+            try {
+                // Use trim() to remove leading/trailing whitespace before conversion
+                minPriceDecimal = new BigDecimal(minPriceString.trim());
+            } catch (NumberFormatException e) {
+                // Log the error if the string is not a valid number
+                LOGGER.log(Level.WARNING, "Invalid number format for filterMinPrice: '" + minPriceString + "'", e);
+                // Keep minPriceDecimal as null, effectively ignoring this filter criteria
+                // Alternatively, you could throw an exception if invalid input is unacceptable
+            }
+        }
+
+        // 4. Convert max price string to BigDecimal, handling nulls and format errors
+        if (maxPriceString != null && !maxPriceString.trim().isEmpty()) {
+            try {
+                // Use trim() to remove leading/trailing whitespace before conversion
+                maxPriceDecimal = new BigDecimal(maxPriceString.trim());
+            } catch (NumberFormatException e) {
+                // Log the error if the string is not a valid number
+                LOGGER.log(Level.WARNING, "Invalid number format for filterMaxPrice: '" + maxPriceString + "'", e);
+                // Keep maxPriceDecimal as null, effectively ignoring this filter criteria
+                // Alternatively, you could throw an exception
+            }
+        }
+
+        // 5. Call the repository method with the converted BigDecimal values (or null)
+        return productRepository.findFilteredProducts(
+                dto.getNestedCategoryId(),
+                dto.getSubcategoryId(),
+                minPriceDecimal,         // Pass the converted BigDecimal (or null)
+                maxPriceDecimal,         // Pass the converted BigDecimal (or null)
+                dto.getColors(),
+                dto.getDimensions(),
+                dto.getTags(),
+                dto.getBrands(),
+                pageable
+        );
+    }
+
+
+
+    private BigDecimal parsePrice(String price) {
+        try {
+            return price != null && !price.isEmpty() ? new BigDecimal(price) : null;
+        } catch (NumberFormatException e) {
+            return null;
         }
     }
 
@@ -388,5 +447,11 @@ public class ProductService {
 
     public List<Product> findAllById(List<Long> productIds) {
         return productRepository.findAllById(productIds);
+    }
+
+    public List<Product> excludeNotActiveProducts(List<Product> products) {
+        return products.stream()
+                .filter(product -> product.getIsActive() != null && product.getIsActive() == 1)
+                .collect(Collectors.toList());
     }
 }
